@@ -1,16 +1,16 @@
-import { Message } from 'discord.js';
-import { Command, parseParamsToArray } from 'comtroller';
+import { Command } from 'comtroller';
 import { saveUserBit } from 'yeonna-core';
 
+import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 export const bitsave: Command =
 {
   name: 'bitsave',
-  aliases: [ 'bs' ],
-  run: async ({ message, params }: { message: Message, params: string }) =>
+  aliases: ['bs'],
+  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
-    if(! params)
+    if(!params)
       return message.channel.send('Please add content to the bit.');
 
     try
@@ -23,19 +23,15 @@ export const bitsave: Command =
         discordGuildID: 'true',
       });
 
-      if(! userBit)
+      if(!userBit)
         return message.channel.send('You already saved that bit.');
 
       message.channel.send('Saved bit.');
     }
-    catch(error)
+    catch(error: any)
     {
       Log.error(error);
       message.channel.send('Could not save bit.');
-    }
-    finally
-    {
-      message.channel.stopTyping(true);
     }
   },
 };

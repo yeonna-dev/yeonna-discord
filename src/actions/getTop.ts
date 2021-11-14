@@ -1,13 +1,10 @@
-import { GuildMember, Message } from 'discord.js';
-
-import { findDiscordUser } from './findDiscordUser';
-
 import { getTopCollectibles, getTopPoints } from 'yeonna-core';
+import { DiscordMessage } from '../utilities/discord';
 
 // TODO: Update responses
-export async function getTop(message: Message, collectibles?: boolean)
+export async function getTop(message: DiscordMessage, collectibles?: boolean)
 {
-  if(! message.guild)
+  if(message.channel.isDM())
     return message.channel.send('This command can only be used in a guild.');
 
   message.channel.startTyping();
@@ -23,20 +20,23 @@ export async function getTop(message: Message, collectibles?: boolean)
   for(const i in top)
   {
     const { discordID, points } = top[i];
-    if(! discordID)
+    if(!discordID)
       continue;
 
-    const discordUser = await findDiscordUser(message, discordID);
-    if(! discordUser)
-      continue;
+    let username;
+    const member = await message.guild.getMember(discordID);
+    if(!member)
+    {
+      const user = await message.client.getUser(discordID);
+      if(!user)
+        continue;
 
-    const name = discordUser instanceof GuildMember
-      ? discordUser.displayName
-      : discordUser.username;
+      username = user.username;
+    }
+    else username = member.displayName;
 
-    board += `${parseInt(i) + 1}. ${points} - ${name}\n`;
+    board += `${parseInt(i) + 1}. ${points} - ${username}\n`;
   }
 
   message.channel.send(board);
-  message.channel.stopTyping(true);
 }

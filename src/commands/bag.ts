@@ -1,19 +1,20 @@
 import { Command } from 'comtroller';
-import { Message } from 'discord.js';
 import { table } from 'table';
 
 import { getUserInventory } from '../actions/getUserInventory';
 
+import { DiscordMessage } from '../utilities/discord';
+
 export const bag: Command =
 {
   name: 'bag',
-  aliases: [ 'b' ],
-  run: async ({ message }: { message: Message }) =>
+  aliases: ['b'],
+  run: async ({ message }: { message: DiscordMessage; }) =>
   {
     message.channel.startTyping();
 
     const items = await getUserInventory(message);
-    if(! items)
+    if(!items)
       return;
 
     let totalAmount = 0;
@@ -30,46 +31,44 @@ export const bag: Command =
       ]);
     }
 
-    const tableData =
-    [
-      [ 'Item', 'Amount', 'Cost' ],
+    const tableData = [
+      ['Item', 'Amount', 'Cost'],
       ...inventoryTableData,
-      [ 'Total', totalAmount, totalCost ],
+      ['Total', totalAmount, totalCost],
     ];
 
     const bag = '```ml\n'
-      + table(tableData,{
-          border:
-          {
-            topBody: `─`,
-            topJoin: `┬`,
-            topLeft: `┌`,
-            topRight: `┐`,
+      + table(tableData, {
+        border:
+        {
+          topBody: `─`,
+          topJoin: `┬`,
+          topLeft: `┌`,
+          topRight: `┐`,
 
-            bottomBody: `─`,
-            bottomJoin: `┴`,
-            bottomLeft: `└`,
-            bottomRight: `┘`,
+          bottomBody: `─`,
+          bottomJoin: `┴`,
+          bottomLeft: `└`,
+          bottomRight: `┘`,
 
-            bodyLeft: `│`,
-            bodyRight: `│`,
-            bodyJoin: `│`,
+          bodyLeft: `│`,
+          bodyRight: `│`,
+          bodyJoin: `│`,
 
-            joinBody: `─`,
-            joinLeft: `├`,
-            joinRight: `┤`,
-            joinJoin: `┼`
-          },
-          drawHorizontalLine: (index, size) => (
-            index === 0
-            || index === 1
-            || index === size - 1
-            || index === size
-          ),
-        })
+          joinBody: `─`,
+          joinLeft: `├`,
+          joinRight: `┤`,
+          joinJoin: `┼`
+        },
+        drawHorizontalLine: (index, size) => (
+          index === 0
+          || index === 1
+          || index === size - 1
+          || index === size
+        ),
+      })
       + '\n```';
 
     message.channel.send(bag);
-    message.channel.stopTyping(true);
   },
 };

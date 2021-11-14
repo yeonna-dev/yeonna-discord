@@ -1,29 +1,40 @@
-import { Message } from 'discord.js';
-import { Command, parseParamsToArray } from 'comtroller';
+import { Command } from 'comtroller';
+
 import { getUserInventory } from '../actions/getUserInventory';
+
+import { DiscordMessage } from '../utilities/discord';
+import { Log } from '../utilities/logger';
 
 export const sell: Command =
 {
   name: 'sell',
-  run: async ({ message, params }: { message: Message, params: string }) =>
+  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
     message.channel.startTyping();
 
-    const items = await getUserInventory(message);
-    if(! items)
-      return;
+    let items;
+    try
+    {
+      items = await getUserInventory(message);
+      if(!items || items.length === 0)
+        return message.channel.send('You do not have items.');
+    }
+    catch(error: any)
+    {
+      Log.error(error);
+    }
 
-    if(items.length === 0)
-      return message.channel.send('You do not have items.');
+    if(!items)
+      return message.channel.send('Cannot sell items');
 
     const itemsToSell = params
       .trim()
       .replace(/\s\s+/g, ' ')
       .replace(/\s*,\s*/g, ',')
-      .split(',');
+      .split(',')
+      .join('\n');
 
     message.channel.send(itemsToSell);
-    message.channel.stopTyping(true);
   },
 };
 

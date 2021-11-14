@@ -1,4 +1,3 @@
-import { GuildMember, Message } from 'discord.js';
 import { Command, parseParamsToArray } from 'comtroller';
 
 import
@@ -8,11 +7,13 @@ import
   updateUserCollectibles,
 } from 'yeonna-core';
 
+import { DiscordMessage } from '../utilities/discord';
+import { Log } from '../utilities/logger';
+
 import { cooldowns } from '../cooldowns/cooldowns-instance';
-import { findDiscordUser } from '../actions/findDiscordUser';
+
 import { getIdFromMention } from '../helpers/getIdFromMention';
 import { getTimeLeft } from '../helpers/getTimeLeft';
-import { Log } from '../utilities/logger';
 
 /* Add 1 hour cooldown for getting collectibles. */
 cooldowns.add('collectible-get', 3600000, true);
@@ -24,16 +25,16 @@ cooldowns.add('collectible-give', 60000, true);
 export const collectible: Command =
 {
   name: 'collectible',
-  aliases: [ 'c' ],
-  run: async ({ message, params }: { message: Message, params: string }) =>
+  aliases: ['c'],
+  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
     const userIdentifier = message.author.id;
     const discordGuildID = message.guild?.id;
 
-    let mentionedMember = message.mentions.members?.first();
-    let [ receiverID ] = parseParamsToArray(params);
+    let mentionedMember = message.mentions.members.first();
+    let [receiverID] = parseParamsToArray(params);
 
-    const toGet = ! mentionedMember && ! receiverID;
+    const toGet = !mentionedMember && !receiverID;
     const cooldown = await cooldowns.check(`collectible-${toGet ? 'get' : 'give'}`, userIdentifier);
     if(cooldown)
       return message.channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
@@ -50,18 +51,16 @@ export const collectible: Command =
         discordGuildID,
       });
 
-      message.channel.send(`${message.member?.displayName} claimed 1 collectible.`);
-      message.channel.stopTyping(true);
-      return;
+      return message.channel.send(`${message.member.displayName} claimed 1 collectible.`);
     }
 
     message.channel.startTyping();
 
-    if(! mentionedMember)
+    if(!mentionedMember)
     {
       receiverID = getIdFromMention(receiverID);
-      const receiverMember = await findDiscordUser(message, receiverID, true);
-      if(! receiverMember || ! (receiverMember instanceof GuildMember))
+      const receiverMember = await message.guild.getMember(receiverID);
+      if(!receiverMember)
         return message.channel.send('User is not a member of this server.');
 
       mentionedMember = receiverMember;
@@ -78,7 +77,7 @@ export const collectible: Command =
       });
       message.channel.send(`${mentionedMember.displayName} received 1 collectible.`);
     }
-    catch(error)
+    catch(error: any)
     {
       if(error instanceof NotEnoughCollectibles)
         message.channel.send('Not enough collectibles.');
@@ -87,10 +86,6 @@ export const collectible: Command =
         Log.error(error);
         message.channel.send('Could not transfer collectible.');
       }
-    }
-    finally
-    {
-      message.channel.stopTyping(true);
     }
   },
 };

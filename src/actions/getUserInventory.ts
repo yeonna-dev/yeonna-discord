@@ -1,13 +1,12 @@
-import { Message } from 'discord.js';
-
 import { getUserItems } from 'yeonna-core';
 
+import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 /* Returns `undefined` when there was an error caught and an empty array when there are no items. */
-export async function getUserInventory(message: Message)
+export async function getUserInventory(message: DiscordMessage)
 {
-  if(! message.guild)
+  if(!message.inGuild())
     return;
 
   try
@@ -17,7 +16,7 @@ export async function getUserInventory(message: Message)
       discordGuildID: message.guild.id,
     });
   }
-  catch(error)
+  catch(error: any)
   {
     Log.error(error);
     message.channel.send('Cannot get user items.');

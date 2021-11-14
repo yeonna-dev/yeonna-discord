@@ -1,8 +1,10 @@
-import { Message } from 'discord.js';
 import { Command } from 'comtroller';
 import { obtainRandomItem } from 'yeonna-core';
 
+import { DiscordMessage } from '../utilities/discord';
+
 import { cooldowns } from '../cooldowns/cooldowns-instance';
+
 import { getTimeLeft } from '../helpers/getTimeLeft';
 
 const name = 'search';
@@ -13,14 +15,14 @@ cooldowns.add(name, 25000);
 export const search: Command =
 {
   name,
-  aliases: [ 's' ],
-  run: async ({ message }: { message: Message }) =>
+  aliases: ['s'],
+  run: async ({ message }: { message: DiscordMessage; }) =>
   {
     const cooldown = await cooldowns.check(name, message.author.id);
     if(cooldown)
       return message.channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
 
-    if(! message.guild)
+    if(!message.guild)
       return;
 
     message.channel.startTyping();
@@ -35,7 +37,5 @@ export const search: Command =
       ? `Found **${item.name}**!`
       : 'Found trash.'
     );
-
-    message.channel.stopTyping(true);
   },
 };

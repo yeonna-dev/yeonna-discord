@@ -1,22 +1,22 @@
-import { Message } from 'discord.js';
 import { Command, parseParamsToArray } from 'comtroller';
-
 import { getUserPoints } from 'yeonna-core';
-import { getIdFromMention } from '../helpers/getIdFromMention';
 
+import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
+
+import { getIdFromMention } from '../helpers/getIdFromMention';
 
 // TODO: Update message
 export const points: Command =
 {
   name: 'points',
-  aliases: [ 'p' ],
-  run: async ({ message, params }: { message: Message, params: string }) =>
+  aliases: ['p'],
+  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
-    if(! message.guild)
+    if(!message.guild)
       return message.channel.send('This command can only be used in a guild.');
 
-    let [ userIdentifier ] = parseParamsToArray(params);
+    let [userIdentifier] = parseParamsToArray(params);
     userIdentifier = userIdentifier || message.author.id;
     userIdentifier = getIdFromMention(userIdentifier);
 
@@ -25,16 +25,12 @@ export const points: Command =
     try
     {
       const points = await getUserPoints({ userIdentifier, discordGuildID: message.guild.id });
-      message.channel.send(points?.toString() || 0);
+      message.channel.send(points?.toString() || '0');
     }
-    catch(error)
+    catch(error: any)
     {
       Log.error(error);
-      message.channel.send(0);
-    }
-    finally
-    {
-      message.channel.stopTyping(true);
+      message.channel.send('0');
     }
   },
 };

@@ -1,21 +1,22 @@
-import { Message, MessageReaction, User } from 'discord.js';
 import { Command, parseParamsToArray } from 'comtroller';
 import { findUserBits } from 'yeonna-core';
 
+import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 export const bitfind: Command =
 {
   name: 'bitfind',
-  aliases: [ 'bf' ],
-  run: async ({ message, params }: { message: Message, params: string }) =>
+  aliases: ['bf'],
+  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
-    const [ search ] = parseParamsToArray(params);
+    const [search] = parseParamsToArray(params);
     const userIdentifier = message.author.id;
     try
     {
       message.channel.startTyping();
       const result = await findUserBits({ userIdentifier, search });
+
       const bitsPerPage = 5;
       const pages: [any[]] = result.reduce((batches, element, i) =>
       {
@@ -27,52 +28,24 @@ export const bitfind: Command =
         return batches;
       }, []);
 
-      let pageNumber = 0;
-      const getPageContent = () =>
+      const createPage = (pageNumber: number) =>
       {
         const pageData = pages[pageNumber];
         const pageContent = pageData
-            .map(({ bit }, i) => `${(pageNumber * bitsPerPage) + i + 1}. ${bit.content}`)
-            .join('\n');
-          return `Found bits\n\n${pageContent}`;
+          .map(({ bit }, i) => `${(pageNumber * bitsPerPage) + i + 1}. ${bit.content}`)
+          .join('\n');
+        return `Found bits\n\n${pageContent}`;
       };
 
-      const sentMessage = await message.channel.send(getPageContent());
       if(result.length <= bitsPerPage)
-        return;
+        return message.channel.send(createPage(0));
 
-      const previousIcon = '⬅️';
-      const nextIcon = '➡️';
-      await sentMessage.react(previousIcon);
-      await sentMessage.react(nextIcon);
-
-      const filter = ({ emoji }: MessageReaction, user: User) =>
-        [ previousIcon, nextIcon ].includes(emoji.name) && user.id === userIdentifier;
-      const reactCollector = sentMessage
-        .createReactionCollector(filter, { time: 30000, dispose: true });
-
-      const onReact = async ({ emoji }: MessageReaction) =>
-      {
-        const newPage = pageNumber + (emoji.name === nextIcon ? 1 : -1);
-        if(newPage < 0)
-          return;
-
-        pageNumber = newPage;
-        await sentMessage.edit(getPageContent());
-      };
-
-      reactCollector.on('collect', onReact);
-      reactCollector.on('remove', onReact);
-      reactCollector.on('end', () => sentMessage.reactions.removeAll());
+      message.channel.sendPaginated({ createPage, involvedUserIDs: [userIdentifier] });
     }
-    catch(error)
+    catch(error: any)
     {
       Log.error(error);
       message.channel.send('Cannot find bits.');
-    }
-    finally
-    {
-      message.channel.stopTyping(false);
     }
   },
 };

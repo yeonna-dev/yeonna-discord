@@ -1,6 +1,7 @@
-import { DMChannel, Message } from 'discord.js';
 import winston, { format } from 'winston';
 import 'winston-daily-rotate-file';
+
+import { DiscordMessage } from './discord';
 
 const rotatingFileTransport = new winston.transports.DailyRotateFile({
   dirname: './logs',
@@ -13,13 +14,13 @@ const rotatingFileTransport = new winston.transports.DailyRotateFile({
 const time = (withDate?: boolean) =>
 {
   let timestamp = new Date().toISOString();
-  if(! withDate)
+  if(!withDate)
     timestamp = timestamp.substr(timestamp.indexOf('T') + 1).replace('Z', '');
   return timestamp;
 };
 
 const Logger = winston.createLogger({
-  transports: [ rotatingFileTransport ],
+  transports: [rotatingFileTransport],
   format: format.printf(({ message }) => `[${time()}] ${message}`),
 });
 
@@ -40,34 +41,34 @@ export class Log
 
     if(logInConsole)
       console.log(`[${time(true)}] ${log}`);
-  }
+  };
 
   static info = (message: string, logInConsole?: boolean) =>
-    Log.output(LogLevels.INFO, message, logInConsole)
+    Log.output(LogLevels.INFO, message, logInConsole);
 
   static warn = (message: string, logInConsole?: boolean) =>
-    Log.output(LogLevels.WARNING, message, logInConsole)
+    Log.output(LogLevels.WARNING, message, logInConsole);
 
-  static error = (error: string | Error)  =>
+  static error = (error: string | Error) =>
   {
     let log;
     if(typeof error === 'string')
-      log = error
+      log = error;
     else
       log = error.stack ? error.stack.replace(/Error\:\s+/g, '') : error.message;
 
     Log.output(LogLevels.ERROR, log, true);
-  }
+  };
 
-  static command = (message: Message, logInConsole?: boolean) =>
+  static command = (message: DiscordMessage, logInConsole?: boolean) =>
   {
     let log = '(';
 
-    if(message.guild && ! (message.channel instanceof DMChannel))
+    if(message.inGuild())
       log += `${message.guild.name} - #${message.channel.name}, `;
 
     log += `@${message.author.tag}) '${message.content}'`;
 
     Log.output(LogLevels.COMMAND, log, logInConsole);
-  }
+  };
 }

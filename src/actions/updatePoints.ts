@@ -1,13 +1,11 @@
-import { GuildMember, Message } from 'discord.js';
 import { parseParamsToArray } from 'comtroller';
 
 import { updateUserPoints } from 'yeonna-core';
 
-import { findDiscordUser } from './findDiscordUser';
-
 import { getIdFromMention } from '../helpers/getIdFromMention';
 import { isNumber } from '../helpers/isNumber';
 
+import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 // TODO: Update responses
@@ -17,13 +15,13 @@ export async function updatePoints({
   daily,
   add,
 }: {
-  message: Message,
+  message: DiscordMessage,
   params: string,
   daily?: number,
-  add?: boolean
+  add?: boolean;
 })
 {
-  if(! message.guild)
+  if(!message.guild)
     return message.channel.send('This command can only be used in a guild.');
 
   let user, amount;
@@ -35,8 +33,8 @@ export async function updatePoints({
   }
   else
   {
-    const [ userString, amountString ] = parseParamsToArray(params);
-    if(! userString)
+    const [userString, amountString] = parseParamsToArray(params);
+    if(!userString)
       return message.channel.send(add
         ? 'Add points to who?'
         : 'Set points of who?'
@@ -52,12 +50,9 @@ export async function updatePoints({
 
   message.channel.startTyping();
 
-  const member = await findDiscordUser(message, user, true);
-  if(! member || ! (member instanceof GuildMember))
-  {
-    message.channel.stopTyping(true);
+  const member = await message.guild.getMember(user);
+  if(!member)
     return message.channel.send('User is not a member of this server.');
-  }
 
   try
   {
@@ -67,13 +62,9 @@ export async function updatePoints({
       : `Set points of ${member.displayName} to ${amount}`
     );
   }
-  catch(error)
+  catch(error: any)
   {
     Log.error(error);
     message.channel.send('Could not add points.');
-  }
-  finally
-  {
-    message.channel.stopTyping(true);
   }
 }
