@@ -4,8 +4,8 @@
   "description": "Discord Bot client of the Yeonna project",
   "main": "dist/discord.js",
   "scripts": {
-    "start": "tsc && node dist/discord.js",
-    "start-dev": "ts-node --transpile-only src/discord.ts",
+    "start": "tsc && node dist/start.js",
+    "start-dev": "ts-node --transpile-only src/start.ts",
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'"
   },
   "author": "osairis100@gmail.com",
