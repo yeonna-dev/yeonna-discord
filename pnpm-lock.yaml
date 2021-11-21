@@ -7,7 +7,7 @@ specifiers:
   comtroller: github:esfox/comtroller
   discord.js: ^13.3.0
   dotenv: ^10.0.0
-  nodemon: ^2.0.14
+  nodemon: ^2.0.15
   table: ^6.7.2
   ts-node: ^10.4.0
   typescript: ^4.4.4
@@ -28,7 +28,7 @@ dependencies:
 devDependencies:
   '@types/node': 15.14.9
   dotenv: 10.0.0
-  nodemon: 2.0.14
+  nodemon: 2.0.15
   ts-node: 10.4.0_d3e11751f498564481cc5d710b5b838a
   typescript: 4.4.4
 
@@ -271,7 +271,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       ansi-align: 3.0.1
-      camelcase: 6.2.0
+      camelcase: 6.2.1
       chalk: 4.1.2
       cli-boxes: 2.2.1
       string-width: 4.2.3
@@ -325,8 +325,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /camelcase/6.2.0:
-    resolution: {integrity: sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==}
+  /camelcase/6.2.1:
+    resolution: {integrity: sha512-tVI4q5jjFV5CavAU8DXfza/TJcZutVKo/5Foskmsqcm0MsL91moHvwiGNnqaa2o6PF/7yT5ikDRcVcl8Rj6LCA==}
     engines: {node: '>=10'}
     dev: true
 
@@ -739,6 +739,7 @@ packages:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -1172,8 +1173,8 @@ packages:
     hasBin: true
     dev: false
 
-  /nodemon/2.0.14:
-    resolution: {integrity: sha512-frcpDx+PviKEQRSYzwhckuO2zoHcBYLHI754RE9z5h1RGtrngerc04mLpQQCPWBkH/2ObrX7We9YiwVSYZpFJQ==}
+  /nodemon/2.0.15:
+    resolution: {integrity: sha512-gdHMNx47Gw7b3kWxJV64NI+Q5nfl0y5DgDbiVtShiwa7Z0IZ07Ll4RLFo6AjrhzMtoEZn5PDE3/c2AbVsiCkpA==}
     engines: {node: '>=8.10.0'}
     hasBin: true
     requiresBuild: true
@@ -1509,8 +1510,8 @@ packages:
       lru-cache: 6.0.0
     dev: true
 
-  /signal-exit/3.0.5:
-    resolution: {integrity: sha512-KWcOiKeQj6ZyXx7zq4YxSMgHRlod4czeBQZrPb8OKcohcqAXShm7E20kEMle9WBt26hFcAf0qLOcp5zmY7kOqQ==}
+  /signal-exit/3.0.6:
+    resolution: {integrity: sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==}
     dev: true
 
   /simple-swizzle/0.2.2:
@@ -1847,7 +1848,7 @@ packages:
     dependencies:
       imurmurhash: 0.1.4
       is-typedarray: 1.0.0
-      signal-exit: 3.0.5
+      signal-exit: 3.0.6
       typedarray-to-buffer: 3.1.5
     dev: true
 
