@@ -191,7 +191,7 @@ export function wrapDiscordMessage(message: Message): DiscordMessage
 
     fromBot: message.author.bot,
 
-    inGuild: message.inGuild,
+    inGuild: () => message.inGuild(),
 
     react: message.react,
   };

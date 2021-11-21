@@ -5,6 +5,7 @@ import { getUserInventory } from '../actions/getUserInventory';
 
 import { DiscordMessage } from '../utilities/discord';
 
+// TODO: Update responses.
 export const bag: Command =
 {
   name: 'bag',
@@ -14,8 +15,8 @@ export const bag: Command =
     message.channel.startTyping();
 
     const items = await getUserInventory(message);
-    if(!items)
-      return;
+    if(!items || !items.length)
+      return message.channel.send('You do not have items.');
 
     let totalAmount = 0;
     let totalCost = 0;
@@ -34,7 +35,7 @@ export const bag: Command =
     const tableData = [
       ['Item', 'Amount', 'Cost'],
       ...inventoryTableData,
-      ['Total', totalAmount, totalCost],
+      ['TOTAL', totalAmount, totalCost],
     ];
 
     const bag = '```ml\n'
