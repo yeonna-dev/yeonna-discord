@@ -2,29 +2,33 @@ import
 {
   GuildMember,
   Message,
+  MessageEditOptions,
   MessageEmbed,
+  MessagePayload,
   MessageReaction,
   User,
 } from 'discord.js';
 
 import { Log } from '../logger';
 
-export interface DiscordMessage
+/* Wrapper of the Message class of Discord.js */
+export class DiscordMessage
 {
-  original: Message;
-  client:
-  {
+  public original: Message;
+  public content: string;
+  public fromBot: Boolean;
+  public client: {
     ping: Number;
     getUser(discordID: string): Promise<User> | undefined;
   };
-  guild:
-  {
+
+  public guild: {
     id: string | undefined;
     name: string | undefined;
     getMember(discordID: string): Promise<GuildMember> | undefined;
   };
-  channel:
-  {
+
+  public channel: {
     name: string | undefined;
     isDM(): boolean;
     startTyping(): Promise<void>;
@@ -44,43 +48,35 @@ export interface DiscordMessage
       involvedUserIDs: string[],
     }): Promise<void>;
   };
-  mentions:
-  {
+
+  public member: {
+    displayName: string | undefined;
+  };
+
+  public author: {
+    id: string;
+    tag: string;
+  };
+
+  public mentions: {
     members:
     {
       first(): GuildMember | undefined;
     };
   };
-  member:
+
+  constructor(message: Message)
   {
-    displayName: string | undefined;
-  };
-  author:
-  {
-    id: string;
-    tag: string;
-  };
-  content: string;
-  fromBot: boolean;
-  inGuild(): boolean;
-  react(emote: string): Promise<MessageReaction>;
-}
+    this.original = message;
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    this.content = message.content;
 
-/**
- * Creates a wrapper of the Message class of Discord.js
- * @param {Message} message
- * @return {DiscordMessage}
- */
-export function wrapDiscordMessage(message: Message): DiscordMessage
-{
-  return {
-    original: message,
+    this.fromBot = message.author.bot;
 
-    client:
+    this.client =
     {
       ping: message.client.ws.ping,
+
       getUser: discordID =>
       {
         try
@@ -96,10 +92,10 @@ export function wrapDiscordMessage(message: Message): DiscordMessage
           if(error.code !== 10013 && error.code !== 10007)
             Log.error(error);
         }
-      },
-    },
+      }
+    };
 
-    guild:
+    this.guild =
     {
       id: message.guild?.id,
 
@@ -118,8 +114,9 @@ export function wrapDiscordMessage(message: Message): DiscordMessage
             Log.error(error);
         }
       },
-    },
-    channel:
+    };
+
+    this.channel =
     {
       name: message.channel.type !== 'DM' ? message.channel.name : undefined,
 
@@ -130,7 +127,7 @@ export function wrapDiscordMessage(message: Message): DiscordMessage
       send: async options =>
       {
         const sentMessage = await message.channel.send(options);
-        return wrapDiscordMessage(sentMessage);
+        return new DiscordMessage(sentMessage);
       },
 
       sendPaginated: async ({
@@ -165,34 +162,30 @@ export function wrapDiscordMessage(message: Message): DiscordMessage
         reactCollector.on('remove', onReact);
         reactCollector.on('end', () => sentMessage.reactions.removeAll());
       },
-    },
+    };
 
-    mentions:
+    this.member =
+    {
+      displayName: message.member?.displayName,
+    };
+
+    this.author =
+    {
+      id: message.author.id,
+
+      tag: message.author.tag
+    };
+
+    this.mentions =
     {
       members:
       {
         first: () => message.mentions.members?.first(),
       },
-    },
+    };
+  }
 
-    member:
-    {
-      displayName: message.member?.displayName,
-    },
+  public inGuild = () => this.original.inGuild();
 
-    author:
-    {
-      id: message.author.id,
-
-      tag: message.author.tag
-    },
-
-    content: message.content,
-
-    fromBot: message.author.bot,
-
-    inGuild: () => message.inGuild(),
-
-    react: message.react,
-  };
+  public edit = (params: string | MessagePayload | MessageEditOptions) => this.original.edit(params);
 }

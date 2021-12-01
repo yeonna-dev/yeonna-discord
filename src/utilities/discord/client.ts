@@ -5,7 +5,7 @@ import
   Intents,
 } from 'discord.js';
 
-import { DiscordMessage, wrapDiscordMessage } from './message';
+import { DiscordMessage } from './message';
 
 import { Log } from '../logger';
 
@@ -50,6 +50,6 @@ export class Discord
 
   onMessage(listener: (message: DiscordMessage) => Awaitable<void>)
   {
-    this.client.on('messageCreate', message => listener(wrapDiscordMessage(message)));
+    this.client.on('messageCreate', message => listener(new DiscordMessage(message)));
   }
 }
