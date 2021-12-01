@@ -52,4 +52,12 @@ export class Discord
   {
     this.client.on('messageCreate', message => listener(new DiscordMessage(message)));
   }
+
+  async sendMessageInChannel(channelID: string, message: string)
+  {
+    const channel = await this.client.channels.fetch(channelID);
+    if(!channel) throw new Error('Channel not found');
+    if(!channel.isText()) throw new Error('Cannot send a message in the channel with the given ID');
+    channel.send(message);
+  }
 }
