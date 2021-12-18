@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc && node dist/start.js",
     "start-dev": "ts-node --transpile-only src/start.ts",
-    "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'"
+    "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'",
+    "update-core": "pnpm rm yeonna-core && pnpm i yeonna-dev/yeonna-core"
   },
   "author": "osairis100@gmail.com",
   "license": "MIT",

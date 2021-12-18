@@ -19,7 +19,7 @@ export async function getTop(message: DiscordMessage, collectibles?: boolean)
   let board = '';
   for(const i in top)
   {
-    const { discordID, points } = top[i];
+    const { discordID, amount } = top[i];
     if(!discordID)
       continue;
 
@@ -35,7 +35,7 @@ export async function getTop(message: DiscordMessage, collectibles?: boolean)
     }
     else username = member.displayName;
 
-    board += `${parseInt(i) + 1}. ${points} - ${username}\n`;
+    board += `${parseInt(i) + 1}. ${amount} - ${username}\n`;
   }
 
   message.channel.send(board);

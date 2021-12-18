@@ -4,6 +4,7 @@ import { findUserBits } from 'yeonna-core';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
+// TODO: Update responses.
 export const bitfind: Command =
 {
   name: 'bitfind',
@@ -15,7 +16,10 @@ export const bitfind: Command =
     try
     {
       message.channel.startTyping();
+
       const result = await findUserBits({ userIdentifier, search });
+      if(result.length === 0)
+        return message.channel.send('No bits found.');
 
       const bitsPerPage = 5;
       const pages: [any[]] = result.reduce((batches, element, i) =>
