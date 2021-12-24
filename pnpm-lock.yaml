@@ -29,7 +29,7 @@ dependencies:
   table: 6.7.2
   winston: 3.3.3
   winston-daily-rotate-file: 4.5.5_winston@3.3.3
-  yeonna-core: github.com/yeonna-dev/yeonna-core/550fa34b3a5cbf26390802d4853b4ee31c4b9202
+  yeonna-core: github.com/yeonna-dev/yeonna-core/1cd97588426c7a2446dabe786b3e8ece0ab1cbd6
 
 devDependencies:
   '@types/jsonfile': 6.0.1
@@ -954,8 +954,8 @@ packages:
       json-buffer: 3.0.0
     dev: true
 
-  /knex/0.95.14_pg@8.7.1:
-    resolution: {integrity: sha512-j4qLjWySrC/JRRVtOpoR2LcS1yBOsd7Krc6mEukPvmTDX/w11pD52Pq9FYR56/kLXGeAV8jFdWBjsZFi1mscWg==}
+  /knex/0.95.15_pg@8.7.1:
+    resolution: {integrity: sha512-Loq6WgHaWlmL2bfZGWPsy4l8xw4pOE+tmLGkPG0auBppxpI0UcK+GYCycJcqz9W54f2LiGewkCVLBm3Wq4ur/w==}
     engines: {node: '>=10'}
     hasBin: true
     peerDependencies:
@@ -1314,13 +1314,13 @@ packages:
       pg-pool: 3.4.1_pg@8.7.1
       pg-protocol: 1.5.0
       pg-types: 2.2.0
-      pgpass: 1.0.4
+      pgpass: 1.0.5
     dev: false
 
-  /pgpass/1.0.4:
-    resolution: {integrity: sha512-YmuA56alyBq7M59vxVBfPJrGSozru8QAdoNlWuW3cz8l+UX3cWge0vTvjKhsSHSJpo3Bom8/Mm6hf0TR5GY0+w==}
+  /pgpass/1.0.5:
+    resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
     dependencies:
-      split2: 3.2.2
+      split2: 4.1.0
     dev: false
 
   /picomatch/2.3.0:
@@ -1524,10 +1524,9 @@ packages:
     resolution: {integrity: sha512-2sqgzeFlid6N4Z2fUQ1cvFmTOLRi/sEDzSQ0OKYchqgoPmQBVyM3959qYx3fpS6Esef80KjmpgPeEr028dP3OA==}
     dev: false
 
-  /split2/3.2.2:
-    resolution: {integrity: sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==}
-    dependencies:
-      readable-stream: 3.6.0
+  /split2/4.1.0:
+    resolution: {integrity: sha512-VBiJxFkxiXRlUIeyMQi8s4hgvKCSjtknJv/LVYbrgALPwf5zSKmEwV9Lst25AkvMDnvxODugjdl6KZgwKM1WYQ==}
+    engines: {node: '>= 10.x'}
     dev: false
 
   /stack-trace/0.0.10:
@@ -1866,12 +1865,12 @@ packages:
       nedb-promises: 5.0.2
     dev: false
 
-  github.com/yeonna-dev/yeonna-core/550fa34b3a5cbf26390802d4853b4ee31c4b9202:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/550fa34b3a5cbf26390802d4853b4ee31c4b9202}
+  github.com/yeonna-dev/yeonna-core/1cd97588426c7a2446dabe786b3e8ece0ab1cbd6:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/1cd97588426c7a2446dabe786b3e8ece0ab1cbd6}
     name: yeonna-core
-    version: 0.0.2
+    version: 0.0.3
     dependencies:
-      knex: 0.95.14_pg@8.7.1
+      knex: 0.95.15_pg@8.7.1
       nanoid-good: 3.1.0
       pg: 8.7.1
     transitivePeerDependencies:

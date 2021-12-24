@@ -10,7 +10,7 @@ export async function loadCommands()
   for(const commandFile of commandFiles)
   {
     const command = await import(`${__dirname}/${commandFile}`);
-    commands.push(command[commandFile.substr(0, commandFile.lastIndexOf('.'))]);
+    commands.push(command[commandFile.substring(0, commandFile.lastIndexOf('.'))]);
   }
 
   return commands;

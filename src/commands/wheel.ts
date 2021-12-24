@@ -51,7 +51,7 @@ export const wheel: Command =
       {
         await updateUserPoints({
           userIdentifier: message.author.id,
-          discordGuildID: message.guild?.id,
+          discordGuildId: message.guild?.id,
           amount: reward,
           add: true,
         });

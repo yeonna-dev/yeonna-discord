@@ -43,7 +43,7 @@ export const give: Command =
         fromUserIdentifier: message.author.id,
         toUserIdentifier: user,
         amount,
-        discordGuildID: message.guild.id,
+        discordGuildId: message.guild.id,
       });
 
       message.channel.send(`Transferred ${amount} points to ${member.displayName}.`);

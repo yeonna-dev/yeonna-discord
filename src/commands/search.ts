@@ -29,7 +29,7 @@ export const search: Command =
 
     const item = await obtainRandomItem({
       userIdentifier: message.author.id,
-      discordGuildID: message.guild.id,
+      discordGuildId: message.guild.id,
     });
 
     // TODO: Update message

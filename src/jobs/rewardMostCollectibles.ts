@@ -33,18 +33,18 @@ export const rewardMostCollectibles = new class
   {
     const config = await Config.get();
     const discordGuilds = config.servers;
-    const discordGuildIDs = [];
+    const discordGuildIds = [];
     const topCollectiblesPromises = [];
-    for(const discordGuildID in discordGuilds)
+    for(const discordGuildId in discordGuilds)
     {
-      discordGuildIDs.push(discordGuildID);
+      discordGuildIds.push(discordGuildId);
 
-      const discordGuild = discordGuilds[discordGuildID];
+      const discordGuild = discordGuilds[discordGuildId];
       const mostCollectibles = discordGuild.mostCollectiblesReward;
       if(!mostCollectibles) continue;
       topCollectiblesPromises.push(getTopCollectibles({
         count: mostCollectibles.prizes.length,
-        discordGuildID,
+        discordGuildId,
       }));
     }
 
@@ -54,35 +54,35 @@ export const rewardMostCollectibles = new class
     const messages = [];
     for(const i in topCollectibles)
     {
-      const discordGuildID = discordGuildIDs[i];
-      const discordGuild = discordGuilds[discordGuildID];
+      const discordGuildId = discordGuildIds[i];
+      const discordGuild = discordGuilds[discordGuildId];
       const settings = discordGuild.mostCollectiblesReward;
       if(!settings) continue;
 
-      const channelID = settings.channel;
+      const channelId = settings.channel;
       const prizes = settings.prizes;
-      if(!channelID || !prizes) continue;
+      if(!channelId || !prizes) continue;
 
       const winners = topCollectibles[i];
       const winnersText = [];
       for(const i in winners)
       {
-        const { discordID } = winners[i];
-        if(!discordID) continue;
+        const { discordId } = winners[i];
+        if(!discordId) continue;
 
         const reward = prizes[i];
         updateUserPointsPromises.push(updateUserPoints({
-          userIdentifier: discordID,
-          discordGuildID: discordGuildID,
+          userIdentifier: discordId,
+          discordGuildId,
           amount: reward,
           add: true,
         }));
 
-        winnersText.push(`${Number(i) + 1}. <@${discordID}> = ${reward}`);
+        winnersText.push(`${Number(i) + 1}. <@${discordId}> = ${reward}`);
       }
 
       // TODO: Update message
-      messages.push({ channelID, mesesage: `Winners\n${winnersText.join('\n')}` });
+      messages.push({ channelID: channelId, mesesage: `Winners\n${winnersText.join('\n')}` });
     }
 
     await Promise.all(updateUserPointsPromises);

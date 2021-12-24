@@ -23,10 +23,12 @@ export const bag: Command =
     const inventoryTableData = [];
     for(const { name, amount, price } of items)
     {
+      if(!price || !name) continue;
+
       totalAmount += amount;
       totalCost += amount * price;
       inventoryTableData.push([
-        name.length >= 20 ? `${name.substr(0, 19)}…` : name,
+        name.length >= 20 ? `${name.substring(0, 19)}…` : name,
         amount,
         amount * price,
       ]);

@@ -20,7 +20,7 @@ export const bitsave: Command =
       const userBit = await saveUserBit({
         userIdentifier: message.author.id,
         content: params,
-        discordGuildID: 'true',
+        discordGuildId: 'true',
       });
 
       if(!userBit)

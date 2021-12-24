@@ -12,22 +12,22 @@ export async function getTop(message: DiscordMessage, collectibles?: boolean)
   const count = 10;
   const guild = message.guild.id;
   const top = await (collectibles
-    ? getTopCollectibles({ count, discordGuildID: guild })
-    : getTopPoints({ count, discordGuildID: guild })
+    ? getTopCollectibles({ count, discordGuildId: guild })
+    : getTopPoints({ count, discordGuildId: guild })
   );
 
   let board = '';
   for(const i in top)
   {
-    const { discordID, amount } = top[i];
-    if(!discordID)
+    const { discordId, amount } = top[i];
+    if(!discordId)
       continue;
 
     let username;
-    const member = await message.guild.getMember(discordID);
+    const member = await message.guild.getMember(discordId);
     if(!member)
     {
-      const user = await message.client.getUser(discordID);
+      const user = await message.client.getUser(discordId);
       if(!user)
         continue;
 

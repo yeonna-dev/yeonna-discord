@@ -29,12 +29,12 @@ export const collectible: Command =
   run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
     const userIdentifier = message.author.id;
-    const discordGuildID = message.guild?.id;
+    const discordGuildId = message.guild?.id;
 
     let mentionedMember = message.mentions.members.first();
-    let [receiverID] = parseParamsToArray(params);
+    let [receiverId] = parseParamsToArray(params);
 
-    const toGet = !mentionedMember && !receiverID;
+    const toGet = !mentionedMember && !receiverId;
     const cooldown = await cooldowns.check(`collectible-${toGet ? 'get' : 'give'}`, userIdentifier);
     if(cooldown)
       return message.channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
@@ -48,7 +48,7 @@ export const collectible: Command =
         userIdentifier,
         amount: 1,
         add: true,
-        discordGuildID,
+        discordGuildId,
       });
 
       return message.channel.send(`${message.member.displayName} claimed 1 collectible.`);
@@ -58,8 +58,8 @@ export const collectible: Command =
 
     if(!mentionedMember)
     {
-      receiverID = getIdFromMention(receiverID);
-      const receiverMember = await message.guild.getMember(receiverID);
+      receiverId = getIdFromMention(receiverId);
+      const receiverMember = await message.guild.getMember(receiverId);
       if(!receiverMember)
         return message.channel.send('User is not a member of this server.');
 
@@ -73,7 +73,7 @@ export const collectible: Command =
         fromUserIdentifier: userIdentifier,
         toUserIdentifier: mentionedMember.id,
         amount: 1,
-        discordGuildID,
+        discordGuildId,
       });
       message.channel.send(`${mentionedMember.displayName} received 1 collectible.`);
     }

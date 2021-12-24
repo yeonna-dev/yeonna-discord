@@ -22,7 +22,7 @@ export const bitfind: Command =
         return message.channel.send('No bits found.');
 
       const bitsPerPage = 5;
-      const pages: [any[]] = result.reduce((batches, element, i) =>
+      const pages = result.reduce((batches, element, i) =>
       {
         i = Math.floor(i / bitsPerPage);
         if(!batches[i])
@@ -30,7 +30,7 @@ export const bitfind: Command =
 
         batches[i].push(element);
         return batches;
-      }, []);
+      }, [] as any[][]);
 
       const createPage = (pageNumber: number) =>
       {
@@ -38,6 +38,7 @@ export const bitfind: Command =
         const pageContent = pageData
           .map(({ bit }, i) => `${(pageNumber * bitsPerPage) + i + 1}. ${bit.content}`)
           .join('\n');
+
         return `Found bits\n\n${pageContent}`;
       };
 

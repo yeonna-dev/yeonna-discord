@@ -24,7 +24,7 @@ export const points: Command =
 
     try
     {
-      const points = await getUserPoints({ userIdentifier, discordGuildID: message.guild.id });
+      const points = await getUserPoints({ userIdentifier, discordGuildId: message.guild.id });
       message.channel.send(points?.toString() || '0');
     }
     catch(error: any)
