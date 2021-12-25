@@ -4,7 +4,7 @@ import { getUserPoints } from 'yeonna-core';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { getIdFromMention } from '../helpers/getIdFromMention';
+import { getGuildMember } from '../helpers/getGuildMember';
 
 // TODO: Update message
 export const points: Command =
@@ -17,8 +17,16 @@ export const points: Command =
       return message.channel.send('This command can only be used in a guild.');
 
     let [userIdentifier] = parseParamsToArray(params);
-    userIdentifier = userIdentifier || message.author.id;
-    userIdentifier = getIdFromMention(userIdentifier);
+    if(userIdentifier)
+    {
+      const member = await getGuildMember(message, userIdentifier);
+      if(!member)
+        return;
+
+      userIdentifier = member.id;
+    }
+    else
+      userIdentifier = message.author.id;
 
     message.channel.startTyping();
 

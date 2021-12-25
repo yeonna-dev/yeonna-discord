@@ -12,7 +12,7 @@ import { Log } from '../utilities/logger';
 
 import { cooldowns } from '../cooldowns/cooldowns-instance';
 
-import { getIdFromMention } from '../helpers/getIdFromMention';
+import { getGuildMember } from '../helpers/getGuildMember';
 import { getTimeLeft } from '../helpers/getTimeLeft';
 
 /* Add 1 hour cooldown for getting collectibles. */
@@ -58,10 +58,9 @@ export const collectible: Command =
 
     if(!mentionedMember)
     {
-      receiverId = getIdFromMention(receiverId);
-      const receiverMember = await message.guild.getMember(receiverId);
+      const receiverMember = await getGuildMember(message, receiverId);
       if(!receiverMember)
-        return message.channel.send('User is not a member of this server.');
+        return;
 
       mentionedMember = receiverMember;
     }

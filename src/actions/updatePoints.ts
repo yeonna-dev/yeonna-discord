@@ -2,7 +2,7 @@ import { parseParamsToArray } from 'comtroller';
 
 import { updateUserPoints } from 'yeonna-core';
 
-import { getIdFromMention } from '../helpers/getIdFromMention';
+import { getGuildMember } from '../helpers/getGuildMember';
 import { isNumber } from '../helpers/isNumber';
 
 import { DiscordMessage } from '../utilities/discord';
@@ -24,7 +24,10 @@ export async function updatePoints({
   if(!message.guild)
     return message.channel.send('This command can only be used in a guild.');
 
-  let user, amount;
+  let
+    user: string,
+    amount: number;
+
   if(daily)
   {
     user = message.author.id;
@@ -44,19 +47,19 @@ export async function updatePoints({
     if(isNumber(amountString))
       return message.channel.send('Please include the amount.');
 
-    user = getIdFromMention(userString);
+    user = userString;
     amount = parseFloat(amountString);
   }
 
-  message.channel.startTyping();
-
-  const member = await message.guild.getMember(user);
+  const member = await getGuildMember(message, user);
   if(!member)
-    return message.channel.send('User is not a member of this server.');
+    return;
+
+  message.channel.startTyping();
 
   try
   {
-    await updateUserPoints({ userIdentifier: user, amount, discordGuildId: message.guild.id, add });
+    await updateUserPoints({ userIdentifier: member.id, amount, discordGuildId: message.guild.id, add });
     message.channel.send(add
       ? `Added ${amount} points to ${member.displayName}.`
       : `Set points of ${member.displayName} to ${amount}`

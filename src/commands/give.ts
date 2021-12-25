@@ -5,7 +5,7 @@ import { transferUserPoints, NotEnoughPoints } from 'yeonna-core';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { getIdFromMention } from '../helpers/getIdFromMention';
+import { getGuildMember } from '../helpers/getGuildMember';
 import { isNumber } from '../helpers/isNumber';
 
 // TODO: Update responses
@@ -19,8 +19,8 @@ export const give: Command =
       return message.channel.send('This command can only be used in a guild.');
 
     /* Get the receiver user and amount. */
-    let [user, amountString] = parseParamsToArray(params);
-    if(!user)
+    let [toUserIdentifier, amountString] = parseParamsToArray(params);
+    if(!toUserIdentifier)
       return message.channel.send('Transfer points to who?');
 
     /* Check if the given value is a valid number. */
@@ -30,10 +30,11 @@ export const give: Command =
     message.channel.startTyping();
 
     /* Check if the receiver is a valid guild member. */
-    user = getIdFromMention(user);
-    const member = await message.guild.getMember(user);
+    const member = await getGuildMember(message, toUserIdentifier);
     if(!member)
-      return message.channel.send('User is not a member of this server.');
+      return;
+
+    toUserIdentifier = member.id;
 
     /* Transfer points. */
     const amount = parseFloat(amountString);
@@ -41,7 +42,7 @@ export const give: Command =
     {
       await transferUserPoints({
         fromUserIdentifier: message.author.id,
-        toUserIdentifier: user,
+        toUserIdentifier,
         amount,
         discordGuildId: message.guild.id,
       });
