@@ -4,13 +4,14 @@ type ConfigType = {
   servers: {
     [key: string]:
     {
-      pointsName?: string,
-      collectiblesName?: string,
+      pointsName?: string;
+      collectiblesName?: string;
       mostCollectiblesReward?:
       {
         channel: string;
         prizes: number[];
       };
+      roleRequestsApprovalChannel: string;
     };
   };
 };
@@ -22,24 +23,37 @@ export class Config
 
   private static async read()
   {
-    this.config = await jsonfile.readFile(this.configFile);
+    Config.config = await jsonfile.readFile(Config.configFile);
   }
 
   private static async write(newConfig?: ConfigType)
   {
-    await jsonfile.writeFile(this.configFile, newConfig || this.config, { spaces: 2 });
+    await jsonfile.writeFile(Config.configFile, newConfig || Config.config, { spaces: 2 });
   }
 
   /* Create the initial config data */
   static async init()
   {
-    await this.read();
-    await this.write();
+    await Config.read();
+    await Config.write();
   }
 
   static async get(): Promise<ConfigType>
   {
-    await this.read();
-    return this.config;
+    await Config.read();
+    return Config.config;
+  }
+
+  static async ofServer(guildId: string)
+  {
+    const config = await Config.get();
+    return config.servers[guildId] || {};
+  }
+
+  static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
+  {
+    const config = await Config.get();
+    config.servers[guildId].roleRequestsApprovalChannel = channelId;
+    await Config.write(config);
   }
 };

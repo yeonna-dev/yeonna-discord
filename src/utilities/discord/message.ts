@@ -1,11 +1,16 @@
+import { MessageOptions } from 'child_process';
 import
 {
+  Channel,
+  ColorResolvable,
   GuildMember,
   Message,
   MessageEditOptions,
   MessageEmbed,
   MessagePayload,
   MessageReaction,
+  Permissions,
+  ReplyMessageOptions,
   User,
 } from 'discord.js';
 
@@ -15,6 +20,7 @@ import { Log } from '../logger';
 export class DiscordMessage
 {
   public original: Message;
+  public id: string;
   public content: string;
   public fromBot: Boolean;
   public client: {
@@ -56,6 +62,7 @@ export class DiscordMessage
   public author: {
     id: string;
     tag: string;
+    mention: string;
   };
 
   public mentions: {
@@ -63,11 +70,17 @@ export class DiscordMessage
     {
       first(): GuildMember | undefined;
     };
+    channels:
+    {
+      first(): Channel | undefined;
+    };
   };
 
   constructor(message: Message)
   {
     this.original = message;
+
+    this.id = message.id;
 
     this.content = message.content;
 
@@ -146,7 +159,7 @@ export class DiscordMessage
           [previousIcon, nextIcon].includes(emoji.name || '') && involvedUserIDs.includes(user.id);
 
         const reactCollector = sentMessage
-          .createReactionCollector({ filter, time: 30000, dispose: true });
+          .createReactionCollector({ filter, time: 50000, dispose: true });
 
         const onReact = async ({ emoji }: MessageReaction) =>
         {
@@ -173,7 +186,9 @@ export class DiscordMessage
     {
       id: message.author.id,
 
-      tag: message.author.tag
+      tag: message.author.tag,
+
+      mention: `<@${message.author.id}>`,
     };
 
     this.mentions =
@@ -182,10 +197,141 @@ export class DiscordMessage
       {
         first: () => message.mentions.members?.first(),
       },
+      channels:
+      {
+        first: () => message.mentions.channels.first(),
+      },
     };
   }
+
+  public canSendInChannel = (channel: Channel) =>
+  {
+    const message = this.original;
+    return message?.guild?.me?.permissionsIn(channel.id).has([
+      Permissions.FLAGS.VIEW_CHANNEL,
+      Permissions.FLAGS.SEND_MESSAGES,
+    ]);
+  };
 
   public inGuild = () => this.original.inGuild();
 
   public edit = (params: string | MessagePayload | MessageEditOptions) => this.original.edit(params);
+
+  public waitReact = async ({
+    reactions,
+    userId,
+    time,
+    onReact,
+  }: {
+    reactions: string | string[],
+    userId?: string,
+    time?: number,
+    onReact: ({ emote, user }: { emote: string | null, user: User | undefined; }) => any,
+  }) =>
+  {
+    if(!Array.isArray(reactions))
+      reactions = [reactions];
+
+    for(const reaction of reactions)
+      await this.original.react(reaction);
+
+    const reactionCollector = this.original.createReactionCollector({
+      filter: (react, user) => (
+        user.id !== this.original.client.user?.id &&
+        reactions.includes(react.emoji.name || '') &&
+        (userId ? user.id === userId : true)
+      ),
+      max: 1,
+      time,
+    });
+
+    reactionCollector.on('collect', (reaction, user) => onReact({
+      emote: reaction.emoji.name,
+      user,
+    }));
+  };
+
+  public waitReplyToMessage = ({
+    messageId,
+    time,
+    onReply,
+  }: {
+    messageId: string,
+    time: number,
+    onReply: (reply: DiscordMessage) => void,
+  }) =>
+  {
+    const messageCollector = this.original.channel.createMessageCollector({
+      filter: message => (
+        message.author.id === this.original.author.id &&
+        message.type === 'REPLY' &&
+        !!message.reference &&
+        message.reference.messageId === messageId
+      ),
+      max: 1,
+      time,
+    });
+
+    messageCollector.on('collect', message =>
+    {
+      onReply(new DiscordMessage(message));
+    });
+  };
+
+  public reply = (options: string | MessagePayload | ReplyMessageOptions) =>
+    this.original.reply(options);
+
+  public sendInChannel = async ({
+    channelId,
+    options,
+  }: {
+    channelId: string,
+    options: string | MessageOptions | MessagePayload,
+  }) =>
+  {
+    const channel = await this.original.client.channels.fetch(channelId);
+    if(!channel || !channel.isText())
+      return;
+
+    const sentMessage = await channel.send(options as MessagePayload);
+    return new DiscordMessage(sentMessage);
+  };
+
+  public sendToUser = async ({
+    userId,
+    options,
+  }: {
+    userId: string,
+    options: string | MessageOptions | MessagePayload,
+  }) =>
+  {
+    const user = await this.original.client.users.fetch(userId);
+    if(!user)
+      return;
+
+    const sentMessage = await user.send(options as MessagePayload);
+    return new DiscordMessage(sentMessage);
+  };
+
+  public createRole = async ({ name, color }: { name: string, color: string, }) =>
+  {
+    const guild = this.original.guild;
+    if(!guild)
+      return;
+
+    if(color === '#000000')
+      color = '#000001';
+
+    const role = await guild.roles.create({ name, color: color as ColorResolvable });
+    return role.id;
+  };
+
+  public assignRole = (roleId?: string) =>
+  {
+    const member = this.original.member;
+    if(!member || !roleId)
+      return;
+
+    return member.roles.add(roleId);
+  };
 }
