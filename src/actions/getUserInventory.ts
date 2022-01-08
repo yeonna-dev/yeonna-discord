@@ -13,7 +13,7 @@ export async function getUserInventory(message: DiscordMessage)
   {
     return getUserItems({
       userIdentifier: message.author.id,
-      discordGuildID: message.guild.id,
+      discordGuildId: message.guild.id,
     });
   }
   catch(error: any)
