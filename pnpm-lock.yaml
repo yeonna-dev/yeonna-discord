@@ -29,7 +29,7 @@ dependencies:
   table: 6.7.2
   winston: 3.3.3
   winston-daily-rotate-file: 4.5.5_winston@3.3.3
-  yeonna-core: github.com/yeonna-dev/yeonna-core/1cd97588426c7a2446dabe786b3e8ece0ab1cbd6
+  yeonna-core: github.com/yeonna-dev/yeonna-core/239fd04fde33170a95746af0297ee2b820f05cbe
 
 devDependencies:
   '@types/jsonfile': 6.0.1
@@ -858,8 +858,8 @@ packages:
       ci-info: 2.0.0
     dev: true
 
-  /is-core-module/2.8.0:
-    resolution: {integrity: sha512-vd15qHsaqrRL7dtH6QNuy0ndJmRDrS9HAM1CAiSifNUFv4x1a0CCVsj18hJ1mShxIG6T2i1sO78MkP56r0nYRw==}
+  /is-core-module/2.8.1:
+    resolution: {integrity: sha512-SdNCUs284hr40hFTFP6l0IfZ/RSrMXF3qgoRHd3/79unUTvrFO/JoXwkGm+5J/Oe3E/b5GsnG330uUNgRpu1PA==}
     dependencies:
       has: 1.0.3
     dev: false
@@ -1424,7 +1424,7 @@ packages:
     resolution: {integrity: sha512-ADsDEH2bvbjltXEP+hTIAmeFekTFK0V2BTxMkok6qILyAJEXV0AFfoWcAq4yfll5VdIMd/RVXq0lR+wQi5ZU3Q==}
     engines: {node: '>= 0.10'}
     dependencies:
-      resolve: 1.20.0
+      resolve: 1.21.0
     dev: false
 
   /registry-auth-token/4.2.1:
@@ -1451,11 +1451,13 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /resolve/1.20.0:
-    resolution: {integrity: sha512-wENBPt4ySzg4ybFQW2TT1zMQucPK95HSh/nq2CFTZVOGut2+pQvSsgtda4d26YrYcr067wjbmzOG8byDPBX63A==}
+  /resolve/1.21.0:
+    resolution: {integrity: sha512-3wCbTpk5WJlyE4mSOtDLhqQmGFi0/TD9VPwmiolnk8U0wRgMEktqCXd3vy5buTO3tljvalNvKrjHEfrd2WpEKA==}
+    hasBin: true
     dependencies:
-      is-core-module: 2.8.0
+      is-core-module: 2.8.1
       path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
     dev: false
 
   /responselike/1.0.2:
@@ -1577,6 +1579,11 @@ packages:
     dependencies:
       has-flag: 4.0.0
     dev: true
+
+  /supports-preserve-symlinks-flag/1.0.0:
+    resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
+    engines: {node: '>= 0.4'}
+    dev: false
 
   /table/6.7.2:
     resolution: {integrity: sha512-UFZK67uvyNivLeQbVtkiUs8Uuuxv24aSL4/Vil2PJVtMgU8Lx0CYkP12uCGa3kjyQzOSgV1+z9Wkb82fCGsO0g==}
@@ -1865,10 +1872,10 @@ packages:
       nedb-promises: 5.0.2
     dev: false
 
-  github.com/yeonna-dev/yeonna-core/1cd97588426c7a2446dabe786b3e8ece0ab1cbd6:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/1cd97588426c7a2446dabe786b3e8ece0ab1cbd6}
+  github.com/yeonna-dev/yeonna-core/239fd04fde33170a95746af0297ee2b820f05cbe:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/239fd04fde33170a95746af0297ee2b820f05cbe}
     name: yeonna-core
-    version: 0.0.3
+    version: 0.0.4
     dependencies:
       knex: 0.95.15_pg@8.7.1
       nanoid-good: 3.1.0
