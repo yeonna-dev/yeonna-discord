@@ -1,5 +1,13 @@
 import jsonfile from 'jsonfile';
 
+type ConfigType = {
+  prefix?: string;
+  enabledCommands?: string[];
+  guilds: {
+    [key: string]: GuildConfigType;
+  };
+};
+
 type GuildConfigType = {
   pointsName?: string;
   collectiblesName?: string;
@@ -9,13 +17,6 @@ type GuildConfigType = {
     prizes: number[];
   };
   roleRequestsApprovalChannel?: string;
-  enabledCommands?: string[];
-};
-
-type ConfigType = {
-  guilds: {
-    [key: string]: GuildConfigType;
-  };
   enabledCommands?: string[];
 };
 
