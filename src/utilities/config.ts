@@ -1,6 +1,6 @@
 import jsonfile from 'jsonfile';
 
-type ServerConfigType = {
+type GuildConfigType = {
   pointsName?: string;
   collectiblesName?: string;
   mostCollectiblesReward?:
@@ -13,15 +13,15 @@ type ServerConfigType = {
 };
 
 type ConfigType = {
-  servers: {
-    [key: string]: ServerConfigType;
+  guilds: {
+    [key: string]: GuildConfigType;
   };
   enabledCommands?: string[];
 };
 
 export class Config
 {
-  private static config: ConfigType = { servers: {} };
+  private static config: ConfigType = { guilds: {} };
   private static configFile = 'config.json';
 
   private static async read()
@@ -40,8 +40,8 @@ export class Config
   {
     await Config.read();
 
-    if(!Config.config.servers)
-      await Config.write({ servers: {} });
+    if(!Config.config.guilds)
+      await Config.write({ guilds: {} });
     else
       await Config.write(Config.config);
   }
@@ -52,23 +52,23 @@ export class Config
     return Config.config;
   }
 
-  static async ofServer(guildId: string)
+  static async ofGuild(guildId: string)
   {
     const config = await Config.get();
-    const serversConfig = config.servers;
-    return serversConfig ? serversConfig[guildId] : ({} as ServerConfigType);
+    const guildsConfig = config.guilds;
+    return guildsConfig ? guildsConfig[guildId] : ({} as GuildConfigType);
   }
 
   static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
   {
-    const serverConfig = await Config.ofServer(guildId);
-    serverConfig.roleRequestsApprovalChannel = channelId;
-    await Config.updateServerConfig(guildId, serverConfig);
+    const guildConfig = await Config.ofGuild(guildId);
+    guildConfig.roleRequestsApprovalChannel = channelId;
+    await Config.updateGuildConfig(guildId, guildConfig);
   }
 
-  static async updateServerConfig(guildId: string, newServerConfig: ServerConfigType)
+  static async updateGuildConfig(guildId: string, newGuildConfig: GuildConfigType)
   {
-    Config.config.servers[guildId] = newServerConfig;
+    Config.config.guilds[guildId] = newGuildConfig;
     await Config.write();
   }
 };

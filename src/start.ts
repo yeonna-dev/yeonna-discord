@@ -35,7 +35,7 @@ import { Log } from './utilities/logger';
     const guildId = message.guild.id;
     if(guildId)
     {
-      const guildConfig = config.servers[guildId];
+      const guildConfig = config.guilds[guildId];
       enabledCommands = guildConfig?.enabledCommands;
     }
 

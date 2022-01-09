@@ -32,7 +32,7 @@ export const rewardMostCollectibles = new class
   private async job()
   {
     const config = await Config.get();
-    const discordGuilds = config.servers;
+    const discordGuilds = config.guilds;
     const discordGuildIds = [];
     const topCollectiblesPromises = [];
     for(const discordGuildId in discordGuilds)

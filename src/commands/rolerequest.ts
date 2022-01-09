@@ -42,7 +42,7 @@ class RoleRequest
 
     this.guildId = guildId;
 
-    const { roleRequestsApprovalChannel } = await Config.ofServer(this.guildId);
+    const { roleRequestsApprovalChannel } = await Config.ofGuild(this.guildId);
     if(!roleRequestsApprovalChannel)
     {
       const response = this.createMessageWithMention(
