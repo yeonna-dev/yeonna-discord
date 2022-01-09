@@ -56,7 +56,7 @@ export class Config
   {
     const config = await Config.get();
     const guildsConfig = config.guilds;
-    return guildsConfig ? guildsConfig[guildId] : ({} as GuildConfigType);
+    return guildsConfig ? (guildsConfig[guildId] || {}) : ({} as GuildConfigType);
   }
 
   static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
