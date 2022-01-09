@@ -1,5 +1,5 @@
 import schedule from 'node-schedule';
-import { getTopCollectibles, updateUserPoints } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { Config } from '../utilities/config';
 import { Discord } from '../utilities/discord';
@@ -42,7 +42,7 @@ export const rewardMostCollectibles = new class
       const discordGuild = discordGuilds[discordGuildId];
       const mostCollectibles = discordGuild.mostCollectiblesReward;
       if(!mostCollectibles) continue;
-      topCollectiblesPromises.push(getTopCollectibles({
+      topCollectiblesPromises.push(Core.Users.getTopCollectibles({
         count: mostCollectibles.prizes.length,
         discordGuildId,
       }));
@@ -71,7 +71,7 @@ export const rewardMostCollectibles = new class
         if(!discordId) continue;
 
         const reward = prizes[i];
-        updateUserPointsPromises.push(updateUserPoints({
+        updateUserPointsPromises.push(Core.Users.updateUserPoints({
           userIdentifier: discordId,
           discordGuildId,
           amount: reward,

@@ -1,4 +1,4 @@
-import { getTopCollectibles, getTopPoints } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 import { DiscordMessage } from '../utilities/discord';
 
 // TODO: Update responses
@@ -12,8 +12,8 @@ export async function getTop(message: DiscordMessage, collectibles?: boolean)
   const count = 10;
   const guild = message.guild.id;
   const top = await (collectibles
-    ? getTopCollectibles({ count, discordGuildId: guild })
-    : getTopPoints({ count, discordGuildId: guild })
+    ? Core.Users.getTopCollectibles({ count, discordGuildId: guild })
+    : Core.Users.getTopPoints({ count, discordGuildId: guild })
   );
 
   let board = '';

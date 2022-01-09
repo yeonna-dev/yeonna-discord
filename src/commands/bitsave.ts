@@ -1,5 +1,5 @@
 import { Command } from 'comtroller';
-import { saveUserBit } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -17,7 +17,7 @@ export const bitsave: Command =
     {
       message.channel.startTyping();
 
-      const userBit = await saveUserBit({
+      const userBit = await Core.Bits.saveUserBit({
         userIdentifier: message.author.id,
         content: params,
         discordGuildId: 'true',

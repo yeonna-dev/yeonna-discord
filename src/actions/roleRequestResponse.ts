@@ -1,5 +1,5 @@
 import { parseParamsToArray } from 'comtroller';
-import { approveRoleRequest, declineRoleRequest, NonPendingRoleRequest } from 'yeonna-core';
+import { Core, NonPendingRoleRequest } from 'yeonna-core';
 import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestsService';
 
 import { DiscordMessage } from '../utilities/discord';
@@ -28,8 +28,8 @@ export async function roleRequestResponse(
   try
   {
     approvedRoleRequest = await (isApproved
-      ? approveRoleRequest(requestResponseParams)
-      : declineRoleRequest(requestResponseParams)
+      ? Core.Discord.approveRoleRequest(requestResponseParams)
+      : Core.Discord.declineRoleRequest(requestResponseParams)
     );
   }
   catch(error: any)

@@ -1,5 +1,5 @@
 import { Command, parseParamsToArray } from 'comtroller';
-import { updateUserPoints } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -49,7 +49,7 @@ export const wheel: Command =
     {
       try
       {
-        await updateUserPoints({
+        await Core.Users.updateUserPoints({
           userIdentifier: message.author.id,
           discordGuildId: message.guild?.id,
           amount: reward,

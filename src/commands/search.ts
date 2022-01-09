@@ -1,5 +1,5 @@
 import { Command } from 'comtroller';
-import { obtainRandomItem } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 
@@ -27,7 +27,7 @@ export const search: Command =
 
     message.channel.startTyping();
 
-    const item = await obtainRandomItem({
+    const item = await Core.Items.obtainRandomItem({
       userIdentifier: message.author.id,
       discordGuildId: message.guild.id,
     });

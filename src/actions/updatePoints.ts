@@ -1,6 +1,6 @@
 import { parseParamsToArray } from 'comtroller';
 
-import { updateUserPoints } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { getGuildMember } from '../helpers/getGuildMember';
 import { isNumber } from '../helpers/isNumber';
@@ -59,7 +59,7 @@ export async function updatePoints({
 
   try
   {
-    await updateUserPoints({ userIdentifier: member.id, amount, discordGuildId: message.guild.id, add });
+    await Core.Users.updateUserPoints({ userIdentifier: member.id, amount, discordGuildId: message.guild.id, add });
     message.channel.send(add
       ? `Added ${amount} points to ${member.displayName}.`
       : `Set points of ${member.displayName} to ${amount}`

@@ -1,5 +1,5 @@
 import { Command, parseParamsToArray } from 'comtroller';
-import { findUserBits } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -17,7 +17,7 @@ export const bitfind: Command =
     {
       message.channel.startTyping();
 
-      const result = await findUserBits({ userIdentifier, search });
+      const result = await Core.Bits.findUserBits({ userIdentifier, search });
       if(result.length === 0)
         return message.channel.send('No bits found.');
 

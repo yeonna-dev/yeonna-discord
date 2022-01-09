@@ -1,5 +1,5 @@
 import { Command } from 'comtroller';
-import { getUserCollectibles } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 
@@ -13,7 +13,7 @@ export const collectibles: Command =
       return message.channel.send('This command can only be used in a guild.');
 
     message.channel.startTyping();
-    const collectibles = await getUserCollectibles({
+    const collectibles = await Core.Users.getUserCollectibles({
       userIdentifier: message.author.id,
       discordGuildId: message.guild.id,
     });

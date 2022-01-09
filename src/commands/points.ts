@@ -1,12 +1,12 @@
 import { Command, parseParamsToArray } from 'comtroller';
-import { getUserPoints } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 import { getGuildMember } from '../helpers/getGuildMember';
 
-// TODO: Update message
+// TODO: Update responses
 export const points: Command =
 {
   name: 'points',
@@ -32,7 +32,7 @@ export const points: Command =
 
     try
     {
-      const points = await getUserPoints({ userIdentifier, discordGuildId: message.guild.id });
+      const points = await Core.Users.getUserPoints({ userIdentifier, discordGuildId: message.guild.id });
       message.channel.send(points?.toString() || '0');
     }
     catch(error: any)

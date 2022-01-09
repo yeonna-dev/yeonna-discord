@@ -1,4 +1,4 @@
-import { getUserItems } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -11,7 +11,7 @@ export async function getUserInventory(message: DiscordMessage)
 
   try
   {
-    return getUserItems({
+    return Core.Items.getUserItems({
       userIdentifier: message.author.id,
       discordGuildId: message.guild.id,
     });

@@ -1,5 +1,5 @@
 import { Command } from 'comtroller';
-import { createRoleRequest } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 import { ColorResolvable, MessageEmbed } from 'discord.js';
 
 import { DiscordMessage } from '../utilities/discord';
@@ -163,7 +163,7 @@ class RoleRequest
 
     try
     {
-      const roleRequest = await createRoleRequest({
+      const roleRequest = await Core.Discord.createRoleRequest({
         roleName: this.name,
         roleColor: this.color,
         requesterDiscordId: this.message.author.id,

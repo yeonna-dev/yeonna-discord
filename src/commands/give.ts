@@ -1,6 +1,6 @@
 import { Command, parseParamsToArray } from 'comtroller';
 
-import { transferUserPoints, NotEnoughPoints } from 'yeonna-core';
+import { Core, NotEnoughPoints } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -40,7 +40,7 @@ export const give: Command =
     const amount = parseFloat(amountString);
     try
     {
-      await transferUserPoints({
+      await Core.Users.transferUserPoints({
         fromUserIdentifier: message.author.id,
         toUserIdentifier,
         amount,

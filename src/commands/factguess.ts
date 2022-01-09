@@ -3,7 +3,7 @@ import { Command } from 'comtroller';
 import axios from 'axios';
 import cheerio from 'cheerio';
 
-import { updateUserPoints } from 'yeonna-core';
+import { Core } from 'yeonna-core';
 
 import { cooldowns } from '../cooldowns/cooldowns-instance';
 import { waitResponse } from '../helpers/waitResponse';
@@ -15,8 +15,7 @@ const command = 'factguess';
 /* Add 30 second cooldown. */
 cooldowns.add(command, 30000);
 
-const members =
-[
+const members = [
   { name: 'Nayeon', hangul: '나연' },
   { name: 'Jeongyeon', hangul: '정연' },
   { name: 'Momo', hangul: '모모' },
@@ -25,11 +24,10 @@ const members =
   { name: 'Mina', hangul: '미나' },
   { name: 'Dahyun', hangul: '다현' },
   { name: 'Chaeyoung', hangul: '채영' },
-  { name: 'Tzuyu', hangul: '쯔위'  }
+  { name: 'Tzuyu', hangul: '쯔위' }
 ];
 
-const filteredText =
-[
+const filteredText = [
   'twice members profile', 'nationality', 'stage name', 'birth name', 'blood type',
   'zodiac', 'weight', 'twitter', 'instagram', 'representative color',
   'show more', 'older brother', 'hanlim', 'ambidextrous',
@@ -43,8 +41,8 @@ const misspelledNamesRegex = /Jungyeon|Chaeyeong|Ji-hyo/g;
 export const factguess: Command =
 {
   name: 'factguess',
-  aliases: [ 'fg' ],
-  run: async ({ message }: { message: Message }) =>
+  aliases: ['fg'],
+  run: async ({ message }: { message: Message; }) =>
   {
     message.channel.send('kprofiles changed so now this command is broken...');
 

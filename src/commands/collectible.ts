@@ -1,11 +1,6 @@
 import { Command, parseParamsToArray } from 'comtroller';
 
-import
-{
-  NotEnoughCollectibles,
-  transferUserCollectibles,
-  updateUserCollectibles,
-} from 'yeonna-core';
+import { Core, NotEnoughCollectibles } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -44,7 +39,7 @@ export const collectible: Command =
       message.channel.startTyping();
 
       /* Claim collectible. */
-      await updateUserCollectibles({
+      await Core.Users.updateUserCollectibles({
         userIdentifier,
         amount: 1,
         add: true,
@@ -68,7 +63,7 @@ export const collectible: Command =
     try
     {
       /* Give collectible. */
-      await transferUserCollectibles({
+      await Core.Users.transferUserCollectibles({
         fromUserIdentifier: userIdentifier,
         toUserIdentifier: mentionedMember.id,
         amount: 1,
