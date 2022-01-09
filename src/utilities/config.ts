@@ -31,13 +31,18 @@ export class Config
   private static async write(newConfig?: ConfigType)
   {
     await jsonfile.writeFile(Config.configFile, newConfig || Config.config, { spaces: 2 });
+    Config.config = newConfig || Config.config;
   }
 
   /* Create the initial config data */
   static async init()
   {
     await Config.read();
-    await Config.write();
+
+    if(!Config.config.servers)
+      await Config.write({ servers: {} });
+    else
+      await Config.write(Config.config);
   }
 
   static async get(): Promise<ConfigType>
@@ -49,13 +54,17 @@ export class Config
   static async ofServer(guildId: string)
   {
     const config = await Config.get();
-    return config.servers[guildId] || {};
+    const serversConfig = config.servers;
+    return serversConfig ? serversConfig[guildId] : ({} as any);
   }
 
   static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
   {
-    const config = await Config.get();
-    config.servers[guildId].roleRequestsApprovalChannel = channelId;
-    await Config.write(config);
+    const serverConfig = await Config.ofServer(guildId);
+    if(!serverConfig.roleRequestsApprovalChannel)
+      return;
+
+    serverConfig.roleRequestsApprovalChannel = channelId;
+    await Config.write(serverConfig);
   }
 };
