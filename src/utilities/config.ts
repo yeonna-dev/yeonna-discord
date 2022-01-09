@@ -1,19 +1,20 @@
 import jsonfile from 'jsonfile';
 
+type ServerConfigType = {
+  pointsName?: string;
+  collectiblesName?: string;
+  mostCollectiblesReward?:
+  {
+    channel: string;
+    prizes: number[];
+  };
+  roleRequestsApprovalChannel?: string;
+  enabledCommands?: string[];
+};
+
 type ConfigType = {
   servers: {
-    [key: string]:
-    {
-      pointsName?: string;
-      collectiblesName?: string;
-      mostCollectiblesReward?:
-      {
-        channel: string;
-        prizes: number[];
-      };
-      roleRequestsApprovalChannel: string;
-      enabledCommands: string[];
-    };
+    [key: string]: ServerConfigType;
   };
   enabledCommands?: string[];
 };
@@ -55,16 +56,19 @@ export class Config
   {
     const config = await Config.get();
     const serversConfig = config.servers;
-    return serversConfig ? serversConfig[guildId] : ({} as any);
+    return serversConfig ? serversConfig[guildId] : ({} as ServerConfigType);
   }
 
   static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
   {
     const serverConfig = await Config.ofServer(guildId);
-    if(!serverConfig.roleRequestsApprovalChannel)
-      return;
-
     serverConfig.roleRequestsApprovalChannel = channelId;
-    await Config.write(serverConfig);
+    await Config.updateServerConfig(guildId, serverConfig);
+  }
+
+  static async updateServerConfig(guildId: string, newServerConfig: ServerConfigType)
+  {
+    Config.config.servers[guildId] = newServerConfig;
+    await Config.write();
   }
 };
