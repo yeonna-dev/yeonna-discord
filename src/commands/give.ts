@@ -36,6 +36,10 @@ export const give: Command =
 
     toUserIdentifier = member.id;
 
+    /* Check if the receiver is the giver. */
+    if(toUserIdentifier === message.author.id)
+      return message.channel.send('You cannot give points to yourself.');
+
     /* Transfer points. */
     const amount = parseFloat(amountString);
     try
