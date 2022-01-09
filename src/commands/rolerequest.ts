@@ -190,10 +190,10 @@ class RoleRequest
         `Name: **${this.name || '(No name specified)'}**`
         + `\nColor: **${this.color || '(No color specified)'}**`
         + `\nRequested By: __${this.message.author.mention}__`
-        + `\n\nTo approve, copy this: \`;rra ${this.requestId}\``
-        + `\nTo decline, copy this: \`;rrd ${this.requestId}\``
+        + `\n\nTo approve, copy this: \n\`;rra ${this.requestId}\``
+        + `\n\nTo decline, copy this: \n\`;rrd ${this.requestId}\``
       )
-      .setFooter(`ID: ${this.requestId}`)
+      .setFooter({ text: `ID: ${this.requestId}` })
       .setTimestamp();
 
     this.message.sendInChannel({
