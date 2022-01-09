@@ -26,9 +26,21 @@ import { Log } from './utilities/logger';
     if(message.fromBot)
       return;
 
-    const command = comtroller.run(message.content, { message });
-    if(command)
-      Log.command(message);
+    const command = comtroller.get(message.content);
+    if(!command)
+      return;
+
+    const enabledCommands = process.env.ENABLED_COMMANDS;
+    if(
+      enabledCommands &&
+      enabledCommands !== 'all' &&
+      !enabledCommands.split(',').includes(command.name)
+    )
+      return;
+
+    const [, params = ''] = message.content.split(/\s(.+)/g);
+    command.run({ params, message });
+    Log.command(message);
   });
 
   startJobs(bot);
