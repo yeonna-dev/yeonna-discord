@@ -15,7 +15,7 @@ const time = (withDate?: boolean) =>
 {
   let timestamp = new Date().toISOString();
   if(!withDate)
-    timestamp = timestamp.substr(timestamp.indexOf('T') + 1).replace('Z', '');
+    timestamp = timestamp.substring(timestamp.indexOf('T') + 1).replace('Z', '');
   return timestamp;
 };
 
