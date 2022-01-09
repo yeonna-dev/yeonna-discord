@@ -14,6 +14,7 @@ import { Log } from './utilities/logger';
 {
   Config.init();
 
+  const config = await Config.get();
   const commands = await loadCommands();
   const comtroller = new Comtroller({
     commands,
@@ -30,12 +31,18 @@ import { Log } from './utilities/logger';
     if(!command)
       return;
 
-    const enabledCommands = process.env.ENABLED_COMMANDS;
-    if(
-      enabledCommands &&
-      enabledCommands !== 'all' &&
-      !enabledCommands.split(',').includes(command.name)
-    )
+    let enabledCommands;
+    const guildId = message.guild.id;
+    if(guildId)
+    {
+      const guildConfig = config.servers[guildId];
+      enabledCommands = guildConfig?.enabledCommands;
+    }
+
+    if(!enabledCommands)
+      enabledCommands = config?.enabledCommands;
+
+    if(enabledCommands && !enabledCommands.includes(command.name))
       return;
 
     const [, params = ''] = message.content.split(/\s(.+)/g);

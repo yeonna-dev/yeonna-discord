@@ -12,8 +12,10 @@ type ConfigType = {
         prizes: number[];
       };
       roleRequestsApprovalChannel: string;
+      enabledCommands: string[];
     };
   };
+  enabledCommands?: string[];
 };
 
 export class Config
