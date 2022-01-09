@@ -215,7 +215,7 @@ export class DiscordMessage
     };
   }
 
-  public canSendInChannel = (channel: Channel) =>
+  public canSendInChannel = (channel: TextBasedChannel) =>
   {
     const message = this.original;
     return message?.guild?.me?.permissionsIn(channel.id).has([
