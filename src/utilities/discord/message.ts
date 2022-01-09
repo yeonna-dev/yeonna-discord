@@ -11,6 +11,7 @@ import
   MessageReaction,
   Permissions,
   ReplyMessageOptions,
+  TextBasedChannel,
   User,
 } from 'discord.js';
 
@@ -72,7 +73,7 @@ export class DiscordMessage
     };
     channels:
     {
-      first(): Channel | undefined;
+      first(): TextBasedChannel | undefined;
     };
   };
 
@@ -173,7 +174,17 @@ export class DiscordMessage
 
         reactCollector.on('collect', onReact);
         reactCollector.on('remove', onReact);
-        reactCollector.on('end', () => sentMessage.reactions.removeAll());
+        reactCollector.on('end', async () =>
+        {
+          try
+          {
+            await sentMessage.reactions.removeAll();
+          }
+          catch(error: any)
+          {
+            Log.error(error);
+          }
+        });
       },
     };
 
