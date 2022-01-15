@@ -2,7 +2,7 @@ import { parseParamsToArray } from 'comtroller';
 
 import { Core } from 'yeonna-core';
 
-import { getGuildMember } from '../helpers/getGuildMember';
+import { getGuildMember } from './getGuildMember';
 import { isNumber } from '../helpers/isNumber';
 
 import { DiscordMessage } from '../utilities/discord';

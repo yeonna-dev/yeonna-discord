@@ -5,7 +5,7 @@ import { Core, NotEnoughPoints } from 'yeonna-core';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { getGuildMember } from '../helpers/getGuildMember';
+import { getGuildMember } from '../actions/getGuildMember';
 import { isNumber } from '../helpers/isNumber';
 
 // TODO: Update responses

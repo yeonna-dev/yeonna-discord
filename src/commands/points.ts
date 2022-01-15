@@ -4,7 +4,7 @@ import { Core } from 'yeonna-core';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { getGuildMember } from '../helpers/getGuildMember';
+import { getGuildMember } from '../actions/getGuildMember';
 
 // TODO: Update responses
 export const points: Command =

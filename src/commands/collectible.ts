@@ -7,7 +7,7 @@ import { Log } from '../utilities/logger';
 
 import { cooldowns } from '../cooldowns/cooldowns-instance';
 
-import { getGuildMember } from '../helpers/getGuildMember';
+import { getGuildMember } from '../actions/getGuildMember';
 import { getTimeLeft } from '../helpers/getTimeLeft';
 
 /* Add 1 hour cooldown for getting collectibles. */
