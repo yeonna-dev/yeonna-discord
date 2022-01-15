@@ -6,7 +6,7 @@ import cheerio from 'cheerio';
 import { Core } from 'yeonna-core';
 
 import { cooldowns } from '../cooldowns/cooldowns-instance';
-import { waitResponse } from '../helpers/waitResponse';
+import { waitResponse } from '../actions/waitResponse';
 import { getTimeLeft } from '../helpers/getTimeLeft';
 import { Log } from '../utilities/logger';
 
