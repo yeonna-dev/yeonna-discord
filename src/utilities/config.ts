@@ -2,7 +2,7 @@ import jsonfile from 'jsonfile';
 
 type ConfigType = {
   prefix?: string;
-  enabledCommands?: string[];
+  enabledCommands?: string[] | 'all';
   guilds: {
     [key: string]: GuildConfigType;
   };
@@ -18,19 +18,24 @@ type GuildConfigType = {
   };
   roleRequestsApprovalChannel?: string;
   enabledCommands?: string[];
+  reactRepost?: {
+    count?: number;
+    channel?: string;
+    color?: string;
+  };
 };
 
 export class Config
 {
-  private static config: ConfigType = { guilds: {} };
   private static configFile = 'config.json';
+  static config: ConfigType = { guilds: {} };
 
   private static async read()
   {
     Config.config = await jsonfile.readFile(Config.configFile);
   }
 
-  private static async write(newConfig?: ConfigType)
+  static async write(newConfig?: ConfigType)
   {
     await jsonfile.writeFile(Config.configFile, newConfig || Config.config, { spaces: 2 });
     Config.config = newConfig || Config.config;
@@ -53,16 +58,15 @@ export class Config
     return Config.config;
   }
 
-  static async ofGuild(guildId: string)
+  static ofGuild(guildId: string)
   {
-    const config = await Config.get();
-    const guildsConfig = config.guilds;
-    return guildsConfig ? (guildsConfig[guildId] || {}) : ({} as GuildConfigType);
+    const guildsConfig = Config.config.guilds[guildId] || {};
+    return guildsConfig as GuildConfigType;
   }
 
   static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
   {
-    const guildConfig = await Config.ofGuild(guildId);
+    const guildConfig = Config.ofGuild(guildId);
     guildConfig.roleRequestsApprovalChannel = channelId;
     await Config.updateGuildConfig(guildId, guildConfig);
   }

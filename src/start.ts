@@ -12,9 +12,9 @@ import { Log } from './utilities/logger';
 
 (async () =>
 {
-  Config.init();
+  await Config.init();
+  const { config } = Config;
 
-  const config = await Config.get();
   const commands = await loadCommands();
   const comtroller = new Comtroller({
     commands,
@@ -42,7 +42,7 @@ import { Log } from './utilities/logger';
     if(!enabledCommands)
       enabledCommands = config?.enabledCommands;
 
-    if(enabledCommands && !enabledCommands.includes(command.name))
+    if(enabledCommands && enabledCommands !== 'all' && !enabledCommands.includes(command.name))
       return;
 
     const [, params = ''] = message.content.split(/\s(.+)/g);
