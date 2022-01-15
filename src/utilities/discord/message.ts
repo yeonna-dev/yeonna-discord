@@ -1,7 +1,5 @@
-import { MessageOptions } from 'child_process';
 import
 {
-  Channel,
   ColorResolvable,
   GuildMember,
   Message,
@@ -9,6 +7,7 @@ import
   MessageEmbed,
   MessagePayload,
   MessageReaction,
+  MessageOptions,
   Permissions,
   ReplyMessageOptions,
   TextBasedChannel,
@@ -297,7 +296,7 @@ export class DiscordMessage
     options,
   }: {
     channelId: string,
-    options: string | MessageOptions | MessagePayload,
+    options: string | MessageOptions,
   }) =>
   {
     const channel = await this.original.client.channels.fetch(channelId);

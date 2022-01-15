@@ -1,11 +1,11 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
-import { ColorResolvable, MessageEmbed } from 'discord.js';
+import { MessageOptions } from 'discord.js';
 
 import { DiscordMessage } from '../utilities/discord';
-import colors from '../utilities/color-names.json';
 import { Config } from '../utilities/config';
-import { MessageOptions } from 'child_process';
+import colors from '../utilities/color-names.json';
+import { createDiscordEmbed } from '../helpers/createEmbed';
 
 export const rolerequest: Command =
 {
@@ -42,7 +42,7 @@ class RoleRequest
 
     this.guildId = guildId;
 
-    const { roleRequestsApprovalChannel } = await Config.ofGuild(this.guildId);
+    const { roleRequestsApprovalChannel } = Config.ofGuild(this.guildId);
     if(!roleRequestsApprovalChannel)
     {
       const response = this.createMessageWithMention(
@@ -183,18 +183,18 @@ class RoleRequest
     if(!this.roleRequestsChannel)
       return this.message.channel.send('No role requests channel has been set.');
 
-    const roleRequestEmbed = new MessageEmbed()
-      .setColor((this.color || 'DEFAULT') as ColorResolvable)
-      .setTitle('✋ Role Request')
-      .setDescription(
-        `Name: **${this.name || '(No name specified)'}**`
+    const botPrefix = Config.config.prefix;
+    const roleRequestEmbed = createDiscordEmbed({
+      color: (this.color || 'DEFAULT'),
+      title: '✋ Role Request',
+      description: `Name: **${this.name || '(No name specified)'}**`
         + `\nColor: **${this.color || '(No color specified)'}**`
         + `\nRequested By: __${this.message.author.mention}__`
-        + `\n\nTo approve, copy this: \n\`;rra ${this.requestId}\``
-        + `\n\nTo decline, copy this: \n\`;rrd ${this.requestId}\``
-      )
-      .setFooter({ text: `ID: ${this.requestId}` })
-      .setTimestamp();
+        + `\n\nTo approve, copy this: \n\`${botPrefix}rra ${this.requestId}\``
+        + `\n\nTo decline, copy this: \n\`${botPrefix}rrd ${this.requestId}\``,
+      footer: { text: `ID: ${this.requestId}` },
+      timestamp: new Date()
+    });
 
     this.message.sendInChannel({
       channelId: this.roleRequestsChannel,
@@ -204,9 +204,10 @@ class RoleRequest
 
   sendRequestResponse()
   {
-    const roleEmbed = new MessageEmbed()
-      .setTitle(this.name || '(No name specified)')
-      .setColor(this.color as ColorResolvable || 'DEFAULT');
+    const roleEmbed = createDiscordEmbed({
+      title: this.name || '(No name specified)',
+      color: this.color || 'DEFAULT',
+    });
 
     const content = this.createMessageWithMention(
       'Successfully created a request for the role below.'
