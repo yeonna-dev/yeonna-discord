@@ -64,6 +64,12 @@ export class Config
     return guildsConfig as GuildConfigType;
   }
 
+  static async updateGuildConfig(guildId: string, newGuildConfig: GuildConfigType)
+  {
+    Config.config.guilds[guildId] = newGuildConfig;
+    await Config.write();
+  }
+
   static async setRoleRequestsApprovalChannel(guildId: string, channelId: string)
   {
     const guildConfig = Config.ofGuild(guildId);
@@ -71,9 +77,13 @@ export class Config
     await Config.updateGuildConfig(guildId, guildConfig);
   }
 
-  static async updateGuildConfig(guildId: string, newGuildConfig: GuildConfigType)
+  static async setReactRepostChannel(guildId: string, channelId: string)
   {
-    Config.config.guilds[guildId] = newGuildConfig;
-    await Config.write();
+    const guildConfig = Config.ofGuild(guildId);
+    if(!guildConfig.reactRepost)
+      return;
+
+    guildConfig.reactRepost.channel = channelId;
+    await Config.updateGuildConfig(guildId, guildConfig);
   }
 };
