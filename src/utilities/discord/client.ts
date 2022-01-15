@@ -14,7 +14,7 @@ export { DiscordMessage };
 /** Abstraction of Discord.js Client class. */
 export class Discord
 {
-  private client: Client;
+  public client: Client;
 
   constructor()
   {
@@ -39,6 +39,7 @@ export class Discord
         Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
         Intents.FLAGS.DIRECT_MESSAGE_TYPING,
       ],
+      partials: ['USER', 'MESSAGE', 'REACTION'],
     });
 
     this.client.login(process.env.BOT_TOKEN);
