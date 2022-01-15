@@ -35,6 +35,7 @@ export class DiscordMessage
   };
 
   public channel: {
+    id: string;
     name: string | undefined;
     isDM(): boolean;
     startTyping(): Promise<void>;
@@ -131,6 +132,8 @@ export class DiscordMessage
 
     this.channel =
     {
+      id: message.channel.id,
+
       name: message.channel.type !== 'DM' ? message.channel.name : undefined,
 
       isDM: () => message.channel.type === 'DM',
