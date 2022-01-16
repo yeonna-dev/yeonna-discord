@@ -339,9 +339,13 @@ export class DiscordMessage
     return role.id;
   };
 
-  public assignRole = (roleId?: string) =>
+  public assignRole = async (memberId: string, roleId: string) =>
   {
-    const member = this.original.member;
+    const guild = this.original.guild;
+    if(!guild)
+      return;
+
+    const member = await guild.members.fetch(memberId);
     if(!member || !roleId)
       return;
 

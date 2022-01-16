@@ -57,7 +57,10 @@ export async function roleRequestResponse(
         color: roleColor,
       });
 
-      await message.assignRole(createdRoleId);
+      if(!createdRoleId)
+        return;
+
+      await message.assignRole(requesterDiscordId, createdRoleId);
     }
     catch(error: any)
     {
