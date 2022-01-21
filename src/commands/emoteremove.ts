@@ -22,9 +22,13 @@ export const emoteremove: Command =
       return message.channel.send('Cannot get the emojis of this server.');
 
     let [, emoteName] = cleanString(content).split(' ');
-
+    if(!emoteName)
+      return message.channel.send('Please type the emote or the name of the emote.');
 
     const emoteIdMatch = emoteName.match(/(?:<a?)?:\w+:(\d+)>?/i);
+    if(!emoteIdMatch)
+      return message.channel.send('Please type the emote or the name of the emote.');
+
     let emoteToDelete;
 
     /* If there is not emote in the message, try finding the emote to delete by name. */
