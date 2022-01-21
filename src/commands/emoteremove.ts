@@ -15,12 +15,6 @@ export const emoteremove: Command =
   {
     const { content } = message;
 
-    message.channel.startTyping();
-
-    const emotes = await getGuildEmotes(message.original);
-    if(!emotes)
-      return message.channel.send('Cannot get the emojis of this server.');
-
     let [, emoteName] = cleanString(content).split(' ');
     if(!emoteName)
       return message.channel.send('Please type the emote or the name of the emote.');
@@ -28,6 +22,11 @@ export const emoteremove: Command =
     const emoteIdMatch = emoteName.match(/(?:<a?)?:\w+:(\d+)>?/i);
     if(!emoteIdMatch)
       return message.channel.send('Please type the emote or the name of the emote.');
+
+    message.channel.startTyping();
+    const emotes = await getGuildEmotes(message.original);
+    if(!emotes)
+      return message.channel.send('Cannot get the emojis of this server.');
 
     let emoteToDelete;
 
