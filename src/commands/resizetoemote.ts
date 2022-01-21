@@ -16,7 +16,7 @@ export const resizetoemote: Command =
   {
     let url = getMedia(message.original, true);
     if(!url)
-      return message.channel.send('Please add a valid image link or attachment or try again.');
+      return message.channel.send('Please add a valid image link or attachment.');
 
     try
     {
