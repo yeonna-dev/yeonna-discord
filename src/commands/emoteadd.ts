@@ -16,13 +16,11 @@ export const emoteadd: Command =
   {
     message.channel.startTyping();
 
-    let media = getMedia(
-      message.original,
-      'Please add a valid image or gif link or attachment or try again.',
-    );
-
+    let media = getMedia(message.original);
     if(!media)
-      return;
+      return message.channel.send(
+        'Please add a valid image or gif link or attachment or try again.'
+      );
 
     let { content } = message;
     content = cleanString(content).replace(media, '');

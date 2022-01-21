@@ -49,7 +49,7 @@ export class Log
   static warn = (message: string, logInConsole?: boolean) =>
     Log.output(LogLevels.WARNING, message, logInConsole);
 
-  static error = (error: string | Error) =>
+  static error = (error: string | Error | any) =>
   {
     let log;
     if(typeof error === 'string')

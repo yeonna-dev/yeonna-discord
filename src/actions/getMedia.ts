@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 
-const mediaTypes = ['jpg', 'png', 'gif', 'webp'];
+const imageMediaTypes = ['jpg', 'png', 'webp'];
+let mediaTypes = [...imageMediaTypes, 'gif'];
 
 /**
  * Gets the media in the given Discord message.
@@ -9,15 +10,10 @@ const mediaTypes = ['jpg', 'png', 'gif', 'webp'];
  * @param {string[]} mediaTypes
  * @param {string} errorMessage
  */
-export function getMedia(
-  message: Message,
-  errorMessage: string = 'Please add an image link or attachment or try again.',
-)
+export function getMedia(message: Message, imageOnly?: boolean)
 {
-  function respondError()
-  {
-    message.channel.send(errorMessage);
-  }
+  if(imageOnly)
+    mediaTypes = imageMediaTypes;
 
   /* If the message has a URL, check if it is a valid image type and get the URL. */
   const urlMatch = message.content.trim().toLowerCase().match(/\bhttps?:\/\/\S+/gi);
@@ -27,16 +23,16 @@ export function getMedia(
     const [beforeQueryPart] = url.split(/[#?]/);
     const extensionSplit = beforeQueryPart?.split('.');
     if(!extensionSplit)
-      return respondError();
+      return;
 
     const urlExtension = extensionSplit.pop() || '';
-    return mediaTypes.includes(urlExtension) ? url : respondError();
+    return mediaTypes.includes(urlExtension) ? url : undefined;
   }
 
   const { attachments } = message;
   const firstAttachment = attachments.first();
   if(!firstAttachment || attachments.size === 0)
-    return respondError();
+    return;
 
   return firstAttachment.url;
 }
