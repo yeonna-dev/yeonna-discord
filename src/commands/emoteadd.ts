@@ -4,14 +4,18 @@ import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 import { getMedia } from '../actions/getMedia';
-import { cleanString } from '../helpers/cleanString';
 import { getGuildEmotes } from '../actions/getGuildEmotes';
+
+import { hasNoEmotePermissions } from '../guards/hasNoEmotePermissions';
+
+import { cleanString } from '../helpers/cleanString';
 
 // TODO: Update responses.
 export const emoteadd: Command =
 {
   name: 'emoteadd',
   aliases: ['ea'],
+  guards: [hasNoEmotePermissions],
   run: async ({ message }: { message: DiscordMessage, }) =>
   {
     message.channel.startTyping();
