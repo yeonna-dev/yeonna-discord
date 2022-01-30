@@ -10,31 +10,31 @@ export const sell: Command =
   name: 'sell',
   run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
-    message.channel.startTyping();
+    // message.channel.startTyping();
 
-    let items;
-    try
-    {
-      items = await getUserInventory(message);
-      if(!items || items.length === 0)
-        return message.channel.send('You do not have items.');
-    }
-    catch(error: any)
-    {
-      Log.error(error);
-    }
+    // let items;
+    // try
+    // {
+    //   items = await getUserInventory(message);
+    //   if(!items || items.length === 0)
+    //     return message.channel.send('You do not have items.');
+    // }
+    // catch(error: any)
+    // {
+    //   Log.error(error);
+    // }
 
-    if(!items)
-      return message.channel.send('Cannot sell items');
+    // if(!items)
+    //   return message.channel.send('Cannot sell items');
 
-    const itemsToSell = params
-      .trim()
-      .replace(/\s\s+/g, ' ')
-      .replace(/\s*,\s*/g, ',')
-      .split(',')
-      .join('\n');
+    // const itemsToSell = params
+    //   .trim()
+    //   .replace(/\s\s+/g, ' ')
+    //   .replace(/\s*,\s*/g, ',')
+    //   .split(',')
+    //   .join('\n');
 
-    message.channel.send(itemsToSell);
+    // message.channel.send(itemsToSell);
   },
 };
 
