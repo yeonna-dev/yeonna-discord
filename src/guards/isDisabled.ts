@@ -2,7 +2,7 @@ import { Command, Guard } from 'comtroller';
 import { Config } from '../utilities/config';
 import { DiscordMessage } from '../utilities/discord';
 
-export const isEnabled: Guard = async (
+export const isDisabled: Guard = async (
   { command, message }: { command: Command, message: DiscordMessage, }
 ) =>
 {

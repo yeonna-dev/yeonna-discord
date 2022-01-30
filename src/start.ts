@@ -4,7 +4,7 @@ dotenv.config();
 import { Comtroller } from 'comtroller';
 
 import { loadCommands } from './commands';
-import { isEnabled } from './guards/isEnabled';
+import { isDisabled } from './guards/isDisabled';
 import { startJobs } from './jobs';
 import { handleReactions } from './events/reactions';
 
@@ -12,7 +12,7 @@ import { Config } from './utilities/config';
 import { Discord } from './utilities/discord';
 import { Log } from './utilities/logger';
 
-const guards = [isEnabled];
+const guards = [isDisabled];
 
 (async () =>
 {
