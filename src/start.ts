@@ -4,12 +4,15 @@ dotenv.config();
 import { Comtroller } from 'comtroller';
 
 import { loadCommands } from './commands';
+import { isEnabled } from './guards/isEnabled';
 import { startJobs } from './jobs';
 import { handleReactions } from './events/reactions';
 
 import { Config } from './utilities/config';
 import { Discord } from './utilities/discord';
 import { Log } from './utilities/logger';
+
+const guards = [isEnabled];
 
 (async () =>
 {
@@ -19,7 +22,11 @@ import { Log } from './utilities/logger';
   const commands = await loadCommands();
   const comtroller = new Comtroller({
     commands,
-    defaults: { prefix: config.prefix || ';' },
+    defaults:
+    {
+      prefix: config.prefix || ';',
+      guards,
+    },
   });
 
   const bot = new Discord();
@@ -28,26 +35,7 @@ import { Log } from './utilities/logger';
     if(message.fromBot)
       return;
 
-    const command = comtroller.get(message.content);
-    if(!command)
-      return;
-
-    let enabledCommands;
-    const guildId = message.guild.id;
-    if(guildId)
-    {
-      const guildConfig = config.guilds[guildId];
-      enabledCommands = guildConfig?.enabledCommands;
-    }
-
-    if(!enabledCommands)
-      enabledCommands = config?.enabledCommands;
-
-    if(enabledCommands && enabledCommands !== 'all' && !enabledCommands.includes(command.name))
-      return;
-
-    const [, params = ''] = message.content.split(/\s(.+)/g);
-    command.run({ params, message });
+    comtroller.run(message.content, { message });
     Log.command(message);
   });
 
