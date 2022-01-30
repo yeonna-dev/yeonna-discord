@@ -5,7 +5,7 @@ import { Log } from '../utilities/logger';
 
 import { getGuildEmotes } from '../actions/getGuildEmotes';
 
-import { hasNoEmotePermissions } from '../guards/hasNoEmotePermissions';
+import { noEmotePermissions } from '../guards/discordMemberPermissions';
 
 import { cleanString } from '../helpers/cleanString';
 
@@ -14,7 +14,7 @@ export const emoteremove: Command =
 {
   name: 'emoteremove',
   aliases: ['erm'],
-  guards: [hasNoEmotePermissions],
+  guards: [noEmotePermissions],
   run: async ({ message }: { message: DiscordMessage, }) =>
   {
     const { content } = message;

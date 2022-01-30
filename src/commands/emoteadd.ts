@@ -6,7 +6,7 @@ import { Log } from '../utilities/logger';
 import { getMedia } from '../actions/getMedia';
 import { getGuildEmotes } from '../actions/getGuildEmotes';
 
-import { hasNoEmotePermissions } from '../guards/hasNoEmotePermissions';
+import { noEmotePermissions } from '../guards/discordMemberPermissions';
 
 import { cleanString } from '../helpers/cleanString';
 
@@ -15,7 +15,7 @@ export const emoteadd: Command =
 {
   name: 'emoteadd',
   aliases: ['ea'],
-  guards: [hasNoEmotePermissions],
+  guards: [noEmotePermissions],
   run: async ({ message }: { message: DiscordMessage, }) =>
   {
     message.channel.startTyping();

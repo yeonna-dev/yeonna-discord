@@ -2,6 +2,8 @@ import { Command } from 'comtroller';
 
 import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
+import { noRolePermissions } from '../guards/discordMemberPermissions';
+
 import { Config } from '../utilities/config';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
@@ -11,6 +13,7 @@ export const rolerequestchannel: Command =
 {
   name: 'rolerequestchannel',
   aliases: ['rrc'],
+  guards: [noRolePermissions],
   run: async ({ message }: { message: DiscordMessage, }) =>
   {
     const guildChannelParameter = getGuildChannelParameter(message, { excludeSameChannel: true });
