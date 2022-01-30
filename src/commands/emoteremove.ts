@@ -3,14 +3,18 @@ import { Command } from 'comtroller';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { cleanString } from '../helpers/cleanString';
 import { getGuildEmotes } from '../actions/getGuildEmotes';
+
+import { hasNoEmotePermissions } from '../guards/hasNoEmotePermissions';
+
+import { cleanString } from '../helpers/cleanString';
 
 // TODO: Update responses.
 export const emoteremove: Command =
 {
   name: 'emoteremove',
   aliases: ['erm'],
+  guards: [hasNoEmotePermissions],
   run: async ({ message }: { message: DiscordMessage, }) =>
   {
     const { content } = message;
