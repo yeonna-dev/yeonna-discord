@@ -16,6 +16,9 @@ export async function getTop(message: DiscordMessage, collectibles?: boolean)
     : Core.Users.getTopPoints({ count, discordGuildId: guild })
   );
 
+  if(top.length === 0)
+    return message.channel.send('No top users.');
+
   let board = '';
   for(const i in top)
   {
