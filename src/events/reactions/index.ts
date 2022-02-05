@@ -3,8 +3,6 @@ import
   Client,
   MessageReaction,
   PartialMessageReaction,
-  PartialUser,
-  User,
 } from 'discord.js';
 
 import { reactRepost } from './handlers';
@@ -19,13 +17,13 @@ const handlers = [
 
 export async function handleReactions(client: Client)
 {
-  client.on('messageReactionAdd', (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
+  client.on('messageReactionAdd', (reaction: MessageReaction | PartialMessageReaction) =>
   {
     for(const { emote, handler } of handlers)
     {
       if(reaction.emoji.name === emote)
       {
-        handler(reaction, user);
+        handler(reaction);
         break;
       }
     }

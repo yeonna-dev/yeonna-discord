@@ -1,9 +1,12 @@
-import { MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
+import { MessageReaction, PartialMessageReaction, TextChannel } from 'discord.js';
+
 import { Config } from '../../../utilities/config';
 import { Log } from '../../../utilities/logger';
-import { createDiscordEmbed } from '../../../helpers/createEmbed';
 
-export async function reactRepost(reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser)
+const reactRepostWebhookName = 'Yeonna - React Repost';
+
+/* This feature uses webhooks to repost messages in the guild's react repost channel. */
+export async function reactRepost(reaction: MessageReaction | PartialMessageReaction)
 {
   const guildId = reaction.message.guildId;
   if(!guildId)
@@ -31,31 +34,46 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   if(!reactRepostChannel)
     return;
 
-  let repostChannel;
+  let repostWebhook;
   try
   {
-    repostChannel = await reaction.client.channels.fetch(reactRepostChannel);
+    const repostChannel = await reaction.client.channels.fetch(reactRepostChannel) as TextChannel;
+    if(!repostChannel?.isText())
+      return;
+
+    /* Get the react repost webhook for the react repost channel.
+      If the webhook is not yet created, it is created for the channel. */
+    const webhooksCollection = await repostChannel.fetchWebhooks();
+    repostWebhook = webhooksCollection.find(webhook => webhook.name === reactRepostWebhookName);
+    if(!repostWebhook)
+      repostWebhook = await repostChannel.createWebhook(reactRepostWebhookName, {
+        avatar: reaction.client.user?.displayAvatarURL(),
+      });
   }
   catch(error: any)
   {
     Log.error(error);
   }
 
-  const reactMessage = reaction.message;
-  if(!repostChannel || !repostChannel.isText() || !reactMessage || !reactMessage.member)
+  const { content, member, attachments } = reaction.message;
+  if(!repostWebhook || !member)
     return;
 
-  const embed = createDiscordEmbed({
-    color: reactRepostConfig.color,
-    author: {
-      name: reactMessage.member.displayName,
-      iconURL: reactMessage.member.displayAvatarURL() || undefined,
-      url: reactMessage.url,
-    },
-    description: (reactMessage.content || undefined),
-    // + `\n\n⎯⎯⎯\n[Go to message](${reactMessage.url})`,
-    timestamp: reactMessage.createdTimestamp,
-  });
+  const attachmentFiles = [];
+  for(const { url } of attachments.toJSON())
+    attachmentFiles.push(url);
 
-  repostChannel.send({ embeds: [embed] });
+  try
+  {
+    await repostWebhook.send({
+      content: content || undefined,
+      username: `${member.displayName}`,
+      avatarURL: member.displayAvatarURL(),
+      files: attachmentFiles
+    });
+  }
+  catch(error)
+  {
+    Log.error(error);
+  }
 }
