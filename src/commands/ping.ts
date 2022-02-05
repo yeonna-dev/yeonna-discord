@@ -2,7 +2,7 @@ import { Command } from 'comtroller';
 
 import { DiscordMessage } from '../utilities/discord';
 
-import { createDiscordEmbed } from '../helpers/createEmbed';
+import { createDiscordEmbed } from '../helpers/createDiscordEmbed';
 
 export const ping: Command =
 {

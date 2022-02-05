@@ -7,20 +7,22 @@ export function createDiscordEmbed({
   author,
   timestamp,
   footer,
+  image,
 }: {
-  title?: string,
-  description?: string,
-  color?: string,
+  title?: string;
+  description?: string;
+  color?: string;
   author?: {
-    name: string,
-    iconURL?: string,
-    url?: string,
+    name: string;
+    iconURL?: string;
+    url?: string;
   };
-  timestamp?: number | Date | null,
+  timestamp?: number | Date | null;
   footer?: {
-    text: string,
+    text: string;
     iconURL?: string;
   };
+  image?: string;
 }): MessageEmbed
 {
   const embed = new MessageEmbed();
@@ -42,6 +44,9 @@ export function createDiscordEmbed({
 
   if(footer)
     embed.setFooter(footer);
+
+  if(image)
+    embed.setImage(image);
 
   return embed;
 }

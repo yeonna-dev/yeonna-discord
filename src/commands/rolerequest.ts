@@ -5,7 +5,7 @@ import { MessageOptions } from 'discord.js';
 import { DiscordMessage } from '../utilities/discord';
 import { Config } from '../utilities/config';
 import colors from '../utilities/color-names.json';
-import { createDiscordEmbed } from '../helpers/createEmbed';
+import { createDiscordEmbed } from '../helpers/createDiscordEmbed';
 
 export const rolerequest: Command =
 {
