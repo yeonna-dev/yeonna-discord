@@ -1,10 +1,10 @@
 import { Command } from 'comtroller';
+import { Config } from 'yeonna-config';
 
 import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
 import { noRolePermissions } from '../guards/discordMemberPermissions';
 
-import { Config } from '../utilities/config';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
@@ -23,7 +23,7 @@ export const rolerequestchannel: Command =
     const { guildId, channel } = guildChannelParameter;
     try
     {
-      await Config.setRoleRequestsApprovalChannel(guildId, channel.id);
+      await Config.updateGuild(guildId, { roleRequestsApprovalChannel: channel.id });
       message.channel.send(`Set the role requests approval channel to ${channel}.`);
     }
     catch(error: any)

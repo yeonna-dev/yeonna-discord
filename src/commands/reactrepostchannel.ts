@@ -1,8 +1,8 @@
 import { Command } from 'comtroller';
+import { Config } from 'yeonna-config';
 
 import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
-import { Config } from '../utilities/config';
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
@@ -19,7 +19,8 @@ export const reactrepostchannel: Command =
     const { guildId, channel } = guildChannelParameter;
     try
     {
-      await Config.setReactRepostChannel(guildId, channel.id);
+      const { reactRepost } = await Config.ofGuild(guildId);
+      await Config.updateGuild(guildId, { reactRepost: { ...reactRepost, channel: channel.id } });
       message.channel.send(`Set the react reposts approval channel to ${channel}.`);
     }
     catch(error: any)

@@ -1,7 +1,7 @@
-import schedule from 'node-schedule';
 import { Core } from 'yeonna-core';
+import { Config } from 'yeonna-config';
+import schedule from 'node-schedule';
 
-import { Config } from '../utilities/config';
 import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
@@ -29,19 +29,25 @@ export const rewardMostCollectibles = new class
     });
   }
 
-  private async job()
+  async job()
   {
-    const config = Config.config;
-    const discordGuilds = config.guilds;
+    const config = await Config.all();
     const discordGuildIds = [];
     const topCollectiblesPromises = [];
-    for(const discordGuildId in discordGuilds)
+    for(const discordGuildId in config)
     {
+      if(discordGuildId === 'global')
+        continue;
+
       discordGuildIds.push(discordGuildId);
 
-      const discordGuild = discordGuilds[discordGuildId];
-      const mostCollectibles = discordGuild.mostCollectiblesReward;
+      const discordGuildConfig = config[discordGuildId];
+      let mostCollectibles = discordGuildConfig.mostCollectiblesReward;
+      if(!mostCollectibles)
+        mostCollectibles = config.global.mostCollectiblesReward;
+
       if(!mostCollectibles) continue;
+
       topCollectiblesPromises.push(Core.Users.getTopCollectibles({
         count: mostCollectibles.prizes.length,
         discordGuildId,
@@ -55,7 +61,7 @@ export const rewardMostCollectibles = new class
     for(const i in topCollectibles)
     {
       const discordGuildId = discordGuildIds[i];
-      const discordGuild = discordGuilds[discordGuildId];
+      const discordGuild = config[discordGuildId];
       const settings = discordGuild.mostCollectiblesReward;
       if(!settings) continue;
 
@@ -82,12 +88,12 @@ export const rewardMostCollectibles = new class
       }
 
       // TODO: Update message
-      messages.push({ channelID: channelId, mesesage: `Winners\n${winnersText.join('\n')}` });
+      messages.push({ channelId, mesesage: `Winners\n${winnersText.join('\n')}` });
     }
 
     await Promise.all(updateUserPointsPromises);
 
-    for(const { channelID, mesesage } of messages)
-      this.discord.sendMessageInChannel(channelID, mesesage);
+    for(const { channelId, mesesage } of messages)
+      this.discord.sendMessageInChannel(channelId, mesesage);
   }
 };

@@ -1,6 +1,6 @@
 import { MessageReaction, PartialMessageReaction, TextChannel } from 'discord.js';
+import { Config } from 'yeonna-config';
 
-import { Config } from '../../../utilities/config';
 import { Log } from '../../../utilities/logger';
 
 const reactRepostWebhookName = 'Yeonna - React Repost';
@@ -12,7 +12,17 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   if(!guildId)
     return;
 
-  const { reactRepost: reactRepostConfig } = Config.ofGuild(guildId);
+  let reactRepostConfig;
+  try
+  {
+    const { reactRepost } = await Config.ofGuild(guildId);
+    reactRepostConfig = reactRepost;
+  }
+  catch(error)
+  {
+    Log.error(error);
+  }
+
   if(!reactRepostConfig)
     return;
 

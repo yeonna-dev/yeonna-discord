@@ -1,10 +1,12 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
+import { Config } from 'yeonna-config';
 import { MessageOptions } from 'discord.js';
 
 import { DiscordMessage } from '../utilities/discord';
-import { Config } from '../utilities/config';
 import colors from '../utilities/color-names.json';
+import { Log } from '../utilities/logger';
+
 import { createDiscordEmbed } from '../helpers/createDiscordEmbed';
 
 export const rolerequest: Command =
@@ -42,9 +44,17 @@ class RoleRequest
 
     this.guildId = guildId;
 
-    const { roleRequestsApprovalChannel } = Config.ofGuild(this.guildId);
-    if(!roleRequestsApprovalChannel)
+
+    let roleRequestsApprovalChannel;
+    try
     {
+      const guildConfig = await Config.ofGuild(this.guildId);
+      roleRequestsApprovalChannel = guildConfig.roleRequestsApprovalChannel;
+    }
+    catch(error)
+    {
+      Log.error(error);
+
       const response = this.createMessageWithMention(
         'The role requests channel has not been set up yet.'
         + ' Please inform the server administrator to set this up.'

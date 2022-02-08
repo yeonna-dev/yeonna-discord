@@ -8,6 +8,7 @@
     "start-dev": "ts-node --transpile-only src/start.ts",
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'",
     "update-core": "pnpm rm yeonna-core && pnpm i yeonna-dev/yeonna-core",
+    "update-config": "pnpm rm yeonna-config && pnpm i yeonna-dev/yeonna-config",
     "update-comtroller": "pnpm rm comtroller && pnpm i esfox/comtroller"
   },
   "author": "osairis100@gmail.com",
@@ -23,6 +24,7 @@
     "table": "^6.7.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5",
+    "yeonna-config": "github:yeonna-dev/yeonna-config",
     "yeonna-core": "github:yeonna-dev/yeonna-core"
   },
   "devDependencies": {
