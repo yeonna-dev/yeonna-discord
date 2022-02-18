@@ -57,7 +57,6 @@ export class Discord
   async sendMessageInChannel(channelId: string, message: string)
   {
     const channel = await this.client.channels.fetch(channelId);
-    console.log(channel);
     if(!channel) throw new Error('Channel not found');
     if(!channel.isText()) throw new Error('Cannot send a message in the channel with the given ID');
     channel.send(message);

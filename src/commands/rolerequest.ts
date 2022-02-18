@@ -184,7 +184,7 @@ class RoleRequest
     }
     catch(error)
     {
-      console.error(error);
+      Log.error(error);
     }
   }
 

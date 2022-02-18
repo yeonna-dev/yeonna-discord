@@ -89,6 +89,6 @@ export async function roleRequestResponse(
   }
   catch(error)
   {
-    console.error(error);
+    Log.error(error);
   }
 }
