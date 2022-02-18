@@ -20,6 +20,9 @@ export const emoteadd: Command =
   {
     message.channel.startTyping();
 
+    /* Add short delay to wait for attachments to load. */
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     let media = getMedia(message.original);
     if(!media)
       return message.channel.send(

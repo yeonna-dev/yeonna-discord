@@ -23,10 +23,6 @@ export const emoteremove: Command =
     if(!emoteName)
       return message.channel.send('Please type the emote or the name of the emote.');
 
-    const emoteIdMatch = emoteName.match(/(?:<a?)?:\w+:(\d+)>?/i);
-    if(!emoteIdMatch)
-      return message.channel.send('Please type the emote or the name of the emote.');
-
     message.channel.startTyping();
     const emotes = await getGuildEmotes(message.original);
     if(!emotes)
@@ -34,7 +30,8 @@ export const emoteremove: Command =
 
     let emoteToDelete;
 
-    /* If there is not emote in the message, try finding the emote to delete by name. */
+    /* If there is no emote in the message, try finding the emote to delete by name. */
+    const emoteIdMatch = emoteName.match(/(?:<a?)?:\w+:(\d+)>?/i);
     if(!emoteIdMatch)
       emoteToDelete = emotes.find(({ name }) => name === emoteName);
     else
