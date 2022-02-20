@@ -88,10 +88,12 @@ export const rewardMostCollectibles = new class
       }
 
       // TODO: Update message
-      messages.push({ channelId, mesesage: `Winners\n${winnersText.join('\n')}` });
+      if(winners.length > 0)
+        messages.push({ channelId, mesesage: `Winners\n${winnersText.join('\n')}` });
     }
 
-    await Promise.all(updateUserPointsPromises);
+    if(updateUserPointsPromises.length > 0)
+      await Promise.all(updateUserPointsPromises);
 
     for(const { channelId, mesesage } of messages)
       this.discord.sendMessageInChannel(channelId, mesesage);
