@@ -7,9 +7,9 @@
     "start": "tsc && node dist/start.js",
     "start-dev": "ts-node --transpile-only src/start.ts",
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'",
-    "update-core": "pnpm rm yeonna-core && pnpm i yeonna-dev/yeonna-core",
-    "update-config": "pnpm rm yeonna-config && pnpm i yeonna-dev/yeonna-config",
-    "update-comtroller": "pnpm rm comtroller && pnpm i esfox/comtroller"
+    "update-core": "pnpm up yeonna-core",
+    "update-config": "pnpm up yeonna-config",
+    "update-comtroller": "pnpm up comtroller"
   },
   "author": "osairis100@gmail.com",
   "license": "MIT",
