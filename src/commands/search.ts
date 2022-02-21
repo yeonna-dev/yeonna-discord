@@ -40,7 +40,7 @@ export const search: Command =
     catch(error)
     {
       Log.error(error);
-      message.channel.send('Oops. Something went wrong. Please try again.');
+      return message.channel.send('Oops. Something went wrong. Please try again.');
     }
 
     // TODO: Update message
