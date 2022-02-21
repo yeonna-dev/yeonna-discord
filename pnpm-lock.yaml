@@ -34,7 +34,7 @@ dependencies:
   winston: 3.5.0
   winston-daily-rotate-file: 4.6.0_winston@3.5.0
   yeonna-config: github.com/yeonna-dev/yeonna-config/cc1455dc0c225f7d47886a42b66eae1b69a03074
-  yeonna-core: github.com/yeonna-dev/yeonna-core/53c3df18a2f872eac551e5c3a7d727980ff9a6ed
+  yeonna-core: github.com/yeonna-dev/yeonna-core/473fea4e9949f3812749c1899906baccd54c2f91
 
 devDependencies:
   '@types/jsonfile': 6.0.1
@@ -2725,7 +2725,7 @@ packages:
   /wide-align/1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 4.2.3
+      string-width: 1.0.2
     dev: false
 
   /widest-line/3.1.0:
@@ -2884,10 +2884,10 @@ packages:
       - utf-8-validate
     dev: false
 
-  github.com/yeonna-dev/yeonna-core/53c3df18a2f872eac551e5c3a7d727980ff9a6ed:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/53c3df18a2f872eac551e5c3a7d727980ff9a6ed}
+  github.com/yeonna-dev/yeonna-core/473fea4e9949f3812749c1899906baccd54c2f91:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/473fea4e9949f3812749c1899906baccd54c2f91}
     name: yeonna-core
-    version: 0.0.11
+    version: 0.0.12
     dependencies:
       knex: 0.95.15_pg@8.7.3
       nanoid-good: 3.1.0
