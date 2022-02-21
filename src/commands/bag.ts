@@ -4,6 +4,7 @@ import { table } from 'table';
 import { getUserInventory } from '../actions/getUserInventory';
 
 import { DiscordMessage } from '../utilities/discord';
+import { Log } from '../utilities/logger';
 
 // TODO: Update responses.
 export const bag: Command =
@@ -14,7 +15,17 @@ export const bag: Command =
   {
     message.channel.startTyping();
 
-    const items = await getUserInventory(message);
+    let items;
+    try
+    {
+      items = await getUserInventory(message);
+    }
+    catch(error)
+    {
+      Log.error(error);
+      return message.channel.send('Cannot get your items. Please try again.');
+    }
+
     if(!items || !items.length)
       return message.channel.send('You do not have items.');
 

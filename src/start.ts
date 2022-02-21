@@ -36,12 +36,8 @@ import { Log } from './utilities/logger';
     comtroller.run(message.content, { message });
     Log.command(message);
 
-    /* Catch all errors and send a response */
-    process.on('uncaughtException', error =>
-    {
-      Log.error(error);
-      message.channel.send('Whoops. An unknown error occurred. Please contact esfox#2053.');
-    });
+    /* Catch all errors */
+    process.on('uncaughtException', error => Log.error(error));
   });
 
   /* Listen to and handle message reactions */
