@@ -3,7 +3,7 @@ import { Core } from 'yeonna-core';
 
 import { DiscordMessage } from '../utilities/discord';
 
-import { cooldowns } from '../cooldowns/cooldowns-instance';
+import { cooldowns, checkCooldownInGuild } from '../cooldowns';
 
 import { getTimeLeft } from '../helpers/getTimeLeft';
 import { Log } from '../utilities/logger';
@@ -19,17 +19,18 @@ export const search: Command =
   aliases: ['s'],
   run: async ({ message }: { message: DiscordMessage; }) =>
   {
-    const cooldown = await cooldowns.check(name, message.author.id);
-    if(cooldown)
-      return message.channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
-
-    if(!message.guild)
+    const { guild, channel, author } = message;
+    if(!guild || !guild.id)
       return;
 
-    message.channel.startTyping();
+    const userIdentifier = author.id;
+    const discordGuildId = guild.id;
 
-    const userIdentifier = message.author.id;
-    const discordGuildId = message.guild.id;
+    const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
+    if(cooldown)
+      return channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
+
+    channel.startTyping();
 
     /* Obtain the random item. */
     let item;
@@ -40,11 +41,11 @@ export const search: Command =
     catch(error)
     {
       Log.error(error);
-      return message.channel.send('Oops. Something went wrong. Please try again.');
+      return channel.send('Oops. Something went wrong. Please try again.');
     }
 
     // TODO: Update message
-    message.channel.send(item
+    channel.send(item
       ? `Found **${item.name}**!`
       : 'Found trash.'
     );
@@ -94,7 +95,7 @@ export const search: Command =
 
     // TODO: Update message
     // TODO: Update points name
-    message.channel.send(
+    channel.send(
       'Congratulations!'
       + `\n\n${completedCollectionsMessage}`
       + `\n\nYou earn a bonus of __**${totalBonus} points**__!`

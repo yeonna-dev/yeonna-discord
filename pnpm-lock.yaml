@@ -34,7 +34,7 @@ dependencies:
   winston: 3.5.0
   winston-daily-rotate-file: 4.6.0_winston@3.5.0
   yeonna-config: github.com/yeonna-dev/yeonna-config/cc1455dc0c225f7d47886a42b66eae1b69a03074
-  yeonna-core: github.com/yeonna-dev/yeonna-core/66b2ea237bd764dc1e2ef1ae57af5cc315caf05d
+  yeonna-core: github.com/yeonna-dev/yeonna-core/25debcdad9c3cee44defa5651e62ad139de00eee
 
 devDependencies:
   '@types/jsonfile': 6.0.1
@@ -2884,10 +2884,10 @@ packages:
       - utf-8-validate
     dev: false
 
-  github.com/yeonna-dev/yeonna-core/66b2ea237bd764dc1e2ef1ae57af5cc315caf05d:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/66b2ea237bd764dc1e2ef1ae57af5cc315caf05d}
+  github.com/yeonna-dev/yeonna-core/25debcdad9c3cee44defa5651e62ad139de00eee:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/25debcdad9c3cee44defa5651e62ad139de00eee}
     name: yeonna-core
-    version: 0.0.13
+    version: 0.0.14
     dependencies:
       knex: 0.95.15_pg@8.7.3
       nanoid-good: 3.1.0

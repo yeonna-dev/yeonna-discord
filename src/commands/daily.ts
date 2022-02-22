@@ -2,7 +2,7 @@ import { Command } from 'comtroller';
 
 import { updatePoints } from '../actions/updatePoints';
 
-import { cooldowns } from '../cooldowns/cooldowns-instance';
+import { checkCooldownInGuild, cooldowns } from '../cooldowns';
 
 import { DiscordMessage } from '../utilities/discord';
 
@@ -20,9 +20,13 @@ export const daily: Command =
   aliases: ['d'],
   run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
   {
-    const cooldown = await cooldowns.check(command, message.author.id);
+    const { guild, author, channel } = message;
+    if(!guild || !guild.id)
+      return;
+
+    const cooldown = await checkCooldownInGuild(command, guild.id, author.id);
     if(cooldown)
-      return message.channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
+      return channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
 
     const rng = Math.floor((Math.random() * 100) + 1);
     const [min, max] = (
