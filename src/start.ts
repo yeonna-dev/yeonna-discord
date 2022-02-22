@@ -56,11 +56,14 @@ import { Log } from './utilities/logger';
         Log.error(error);
       }
 
-      if(!guildPrefix || content.startsWith(prefix))
-        return;
+      if(guildPrefix)
+      {
+        if(content.startsWith(prefix))
+          return;
 
-      if(content.startsWith(guildPrefix))
-        content = content.replace(guildPrefix, prefix);
+        if(content.startsWith(guildPrefix))
+          content = content.replace(guildPrefix, prefix);
+      }
     }
 
     try
