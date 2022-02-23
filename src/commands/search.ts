@@ -47,7 +47,7 @@ export const search: Command =
     // TODO: Update message
     channel.send(item
       ? `Found **${item.name}**!`
-      : 'Found trash.'
+      : 'You found nothing. Keep searching!'
     );
 
     if(!item)
