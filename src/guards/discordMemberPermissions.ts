@@ -2,34 +2,20 @@ import { Guard } from 'comtroller';
 import { Permissions } from 'discord.js';
 import { DiscordMessage } from '../utilities/discord';
 
-function getMember(message: DiscordMessage)
+function hasNoPermission(message: DiscordMessage, permissionFlag: bigint)
 {
-  return message.original.member;
+  const member = message.original.member;
+  if(!member)
+    return true;
+
+  return !member.permissions.has(permissionFlag);
 }
 
 export const noEmotePermissions: Guard = ({ message }: { message: DiscordMessage, }) =>
-{
-  const member = getMember(message);
-  if(!member)
-    return true;
-
-  return !member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS);
-};
+  hasNoPermission(message, Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS);
 
 export const noRolePermissions: Guard = ({ message }: { message: DiscordMessage, }) =>
-{
-  const member = getMember(message);
-  if(!member)
-    return true;
-
-  return !member.permissions.has(Permissions.FLAGS.MANAGE_ROLES);
-};
+  hasNoPermission(message, Permissions.FLAGS.MANAGE_ROLES);
 
 export const noManageChannelPermissions: Guard = ({ message }: { message: DiscordMessage; }) =>
-{
-  const member = getMember(message);
-  if(!member)
-    return true;
-
-  return !member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS);
-};
+  hasNoPermission(message, Permissions.FLAGS.MANAGE_CHANNELS);
