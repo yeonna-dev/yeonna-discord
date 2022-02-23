@@ -3,6 +3,8 @@ import { Config } from 'yeonna-config';
 
 import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
+import { noManageChannelPermissions } from '../guards/discordMemberPermissions';
+
 import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
@@ -10,6 +12,7 @@ export const reactrepostchannel: Command =
 {
   name: 'reactrepostchannel',
   aliases: ['rpc'],
+  guards: [noManageChannelPermissions],
   run: async ({ message }: { message: DiscordMessage; }) =>
   {
     const guildChannelParameter = getGuildChannelParameter(message, { excludeSameChannel: true });
