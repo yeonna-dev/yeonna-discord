@@ -49,10 +49,11 @@ import { Log } from './utilities/logger';
       try
       {
         const guildConfig = await Config.ofGuild(guild.id);
-        guildPrefix = guildConfig.prefix;
+        guildPrefix = guildConfig?.prefix;
       }
       catch(error)
       {
+        Log.command(message, true);
         Log.error(error);
       }
 
@@ -74,6 +75,7 @@ import { Log } from './utilities/logger';
     }
     catch(error)
     {
+      Log.command(message, true);
       Log.error(error);
     }
 
