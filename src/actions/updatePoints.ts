@@ -45,8 +45,22 @@ export async function updatePoints({
   }
 
   const discordGuildId = discord.getGuildId();
-  const mentionedMemberId = discord.getMentionedMemberId();
-  const mentionedMemberDisplayName = discord.getMentionedMemberDisplayName();
+  let mentionedMemberId;
+  let mentionedMemberDisplayName;
+  try
+  {
+    const member = await discord.fetchGuildMember(user);
+    if(!member)
+      return;
+
+    mentionedMemberId = member.id;
+    mentionedMemberDisplayName = member.displayName;
+  }
+  catch(error)
+  {
+    Log.error(error);
+  }
+
   if(!mentionedMemberId || !discordGuildId)
     return;
 
