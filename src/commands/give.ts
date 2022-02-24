@@ -2,10 +2,9 @@ import { Command, parseParamsToArray } from 'comtroller';
 
 import { Core, NotEnoughPoints } from 'yeonna-core';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { getGuildMember } from '../actions/getGuildMember';
 import { isNumber } from '../helpers/isNumber';
 
 // TODO: Update responses
@@ -13,54 +12,62 @@ export const give: Command =
 {
   name: 'give',
   aliases: ['pay'],
-  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
+  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
-    if(!message.guild)
-      return message.channel.send('This command can only be used in a guild.');
-
     /* Get the receiver user and amount. */
     let [toUserIdentifier, amountString] = parseParamsToArray(params);
     if(!toUserIdentifier)
-      return message.channel.send('Transfer points to who?');
+      return discord.send('Transfer points to who?');
 
     /* Check if the given value is a valid number. */
     if(isNumber(amountString))
-      return message.channel.send('Please include the amount.');
+      return discord.send('Please include the amount.');
 
-    message.channel.startTyping();
+    discord.startTyping();
 
-    /* Check if the receiver is a valid guild member. */
-    const member = await getGuildMember(message, toUserIdentifier);
-    if(!member)
-      return;
+    const discordGuildId = discord.getGuildId();
+    const authorId = discord.getAuthorId();
 
-    toUserIdentifier = member.id;
+    try
+    {
+      /* Check if the receiver is a valid guild member. */
+      const memberId = await discord.getGuildMemberId(toUserIdentifier);
+      if(!memberId)
+        return discord.send('User is not a member of this server.');
+
+      toUserIdentifier = memberId;
+    }
+    catch(error)
+    {
+      return Log.error(error);
+    }
 
     /* Check if the receiver is the giver. */
-    if(toUserIdentifier === message.author.id)
-      return message.channel.send('You cannot give points to yourself.');
+    if(toUserIdentifier === authorId)
+      return discord.send('You cannot give points to yourself.');
 
     /* Transfer points. */
     const amount = parseFloat(amountString);
     try
     {
       await Core.Users.transferUserPoints({
-        fromUserIdentifier: message.author.id,
+        fromUserIdentifier: authorId,
         toUserIdentifier,
         amount,
-        discordGuildId: message.guild.id,
+        discordGuildId,
       });
 
-      message.channel.send(`Transferred ${amount} points to ${member.displayName}.`);
+      const memberDisplayName = await discord.getGuildMemberDisplayName();
+      discord.send(`Transferred ${amount} points to ${memberDisplayName}.`);
     }
     catch(error: any)
     {
       if(error instanceof NotEnoughPoints)
-        message.channel.send('Not enough points.');
+        discord.send('Not enough points.');
       else
       {
         Log.error(error);
-        message.channel.send('Could not transfer points.');
+        discord.send('Could not transfer points.');
       }
     }
   },

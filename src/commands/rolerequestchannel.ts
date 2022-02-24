@@ -5,7 +5,7 @@ import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
 import { noRolePermissions } from '../guards/discordMemberPermissions';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 // TODO: Update responses.
@@ -14,22 +14,24 @@ export const rolerequestchannel: Command =
   name: 'rolerequestchannel',
   aliases: ['rrc'],
   guards: [noRolePermissions],
-  run: async ({ message }: { message: DiscordMessage, }) =>
+  run: async ({ discord }: { discord: Discord, }) =>
   {
-    const guildChannelParameter = getGuildChannelParameter(message, { excludeSameChannel: true });
+    const guildChannelParameter = getGuildChannelParameter(discord, { excludeSameChannel: true });
     if(!guildChannelParameter)
       return;
 
-    const { guildId, channel } = guildChannelParameter;
+    discord.startTyping();
+
+    const { guildId, channelId, channelMention } = guildChannelParameter;
     try
     {
-      await Config.updateGuild(guildId, { roleRequestsApprovalChannel: channel.id });
-      message.channel.send(`Set the role requests approval channel to ${channel}.`);
+      await Config.updateGuild(guildId, { roleRequestsApprovalChannel: channelId });
+      discord.send(`Set the role requests approval channel to ${channelMention}.`);
     }
     catch(error: any)
     {
       Log.error(error);
-      message.channel.send('Could not set the channel for role requests.');
+      discord.send('Could not set the channel for role requests.');
     }
   },
 };

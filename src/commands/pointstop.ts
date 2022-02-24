@@ -1,12 +1,12 @@
 import { Command } from 'comtroller';
 
-import { getTop } from '../actions/getTop';
+import { Discord } from '../utilities/discord';
 
-import { DiscordMessage } from '../utilities/discord';
+import { getTop } from '../actions/getTop';
 
 export const pointstop: Command =
 {
   name: 'pointstop',
   aliases: ['ptop'],
-  run: ({ message }: { message: DiscordMessage; }) => getTop(message),
+  run: ({ discord }: { discord: Discord, }) => getTop(discord),
 };

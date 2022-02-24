@@ -2,9 +2,9 @@ import { Command } from 'comtroller';
 
 import { updatePoints } from '../actions/updatePoints';
 
-import { checkCooldownInGuild, cooldowns } from '../cooldowns';
+import { Discord } from '../utilities/discord';
 
-import { DiscordMessage } from '../utilities/discord';
+import { checkCooldownInGuild, cooldowns } from '../cooldowns';
 
 import { getTimeLeft } from '../helpers/getTimeLeft';
 
@@ -18,15 +18,16 @@ export const daily: Command =
 {
   name: command,
   aliases: ['d'],
-  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
+  run: async ({ discord, params }: { discord: Discord, params: string; }) =>
   {
-    const { guild, author, channel } = message;
-    if(!guild || !guild.id)
+    const authorId = discord.getAuthorId();
+    const guildId = discord.getGuildId();
+    if(!guildId)
       return;
 
-    const cooldown = await checkCooldownInGuild(command, guild.id, author.id);
+    const cooldown = await checkCooldownInGuild(command, guildId, authorId);
     if(cooldown)
-      return channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
+      return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
 
     const rng = Math.floor((Math.random() * 100) + 1);
     const [min, max] = (
@@ -35,6 +36,6 @@ export const daily: Command =
     );
 
     const daily = Math.floor(Math.random() * (max - min)) + min;
-    await updatePoints({ message, params, daily });
+    await updatePoints({ discord, params, daily });
   },
 };

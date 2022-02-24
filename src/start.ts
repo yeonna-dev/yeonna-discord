@@ -9,7 +9,7 @@ import { isDisabled } from './guards/isDisabled';
 import { startJobs } from './jobs';
 import { handleReactions } from './events/reactions';
 
-import { Discord } from './utilities/discord';
+import { DiscordClient, Discord } from './utilities/discord';
 import { Log } from './utilities/logger';
 
 (async () =>
@@ -28,13 +28,12 @@ import { Log } from './utilities/logger';
     },
   });
 
-  const bot = new Discord();
-  bot.onMessage(async message =>
+  const bot = new DiscordClient();
+  bot.onGuildMemberMessage(async message =>
   {
-    if(message.fromBot)
-      return;
-
-    let { content, guild } = message;
+    const discord = new Discord(message);
+    const guildId = discord.getGuildId();
+    let content = discord.getMessageContent();
 
     /*
       If the command was done in a guild, get the guild's command prefix
@@ -43,12 +42,12 @@ import { Log } from './utilities/logger';
       with the global prefix to trigger the command.
       If if starts with the global prefix, do not run the command.
     */
-    if(guild.id)
+    if(guildId)
     {
       let guildPrefix;
       try
       {
-        const guildConfig = await Config.ofGuild(guild.id);
+        const guildConfig = await Config.ofGuild(guildId);
         guildPrefix = guildConfig?.prefix;
       }
       catch(error)
@@ -69,7 +68,7 @@ import { Log } from './utilities/logger';
 
     try
     {
-      const command = await comtroller.run(content, { message });
+      const command = await comtroller.run(content, { message, discord });
       if(command)
         Log.command(message);
     }
@@ -78,13 +77,10 @@ import { Log } from './utilities/logger';
       Log.command(message, true);
       Log.error(error);
     }
-
-    /* Catch all errors */
-    process.on('uncaughtException', error => Log.error(error));
   });
 
   /* Listen to and handle message reactions */
-  handleReactions(bot.client);
+  // handleReactions(bot.client);
 
-  startJobs(bot);
+  // startJobs(bot);
 })();

@@ -8,5 +8,5 @@ export const setpoints: Command =
 {
   name: 'setpoints',
   guards: [isDeveloperOnly],
-  run: ({ message, params }) => updatePoints({ message, params }),
+  run: ({ discord, params }) => updatePoints({ discord, params }),
 };

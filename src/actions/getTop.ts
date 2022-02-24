@@ -1,23 +1,22 @@
 import { Core } from 'yeonna-core';
-import { DiscordMessage } from '../utilities/discord';
+
+import { Discord } from '../utilities/discord';
+import { Log } from '../utilities/logger';
 
 // TODO: Update responses
-export async function getTop(message: DiscordMessage, collectibles?: boolean)
+export async function getTop(discord: Discord, collectibles?: boolean)
 {
-  if(message.channel.isDM())
-    return message.channel.send('This command can only be used in a guild.');
-
-  message.channel.startTyping();
+  discord.startTyping();
 
   const count = 10;
-  const guild = message.guild.id;
+  const discordGuildId = discord.getGuildId();
   const top = await (collectibles
-    ? Core.Users.getTopCollectibles({ count, discordGuildId: guild })
-    : Core.Users.getTopPoints({ count, discordGuildId: guild })
+    ? Core.Users.getTopCollectibles({ count, discordGuildId })
+    : Core.Users.getTopPoints({ count, discordGuildId })
   );
 
   if(top.length === 0)
-    return message.channel.send('No top users.');
+    return discord.send('No top users.');
 
   let board = '';
   for(const i in top)
@@ -27,19 +26,35 @@ export async function getTop(message: DiscordMessage, collectibles?: boolean)
       continue;
 
     let username;
-    const member = await message.guild.getMember(discordId);
-    if(!member)
+    const memberDisplayName = await discord.getGuildMemberDisplayName(discordId);
+    if(memberDisplayName)
+      username = memberDisplayName;
+    else
     {
-      const user = await message.client.getUser(discordId);
-      if(!user)
+      let name;
+      try
+      {
+        name = await discord.getUsername(discordId);
+      }
+      catch(error: any)
+      {
+        /*
+        Error code `10013` is when the given user is an unknown user.
+          Error code `10007` is when the user is not a member of the server.
+          There is no need to log these errors because these are expected scenarios.
+        */
+        if(error.code !== 10013 && error.code !== 10007)
+          Log.error(error);
+      }
+
+      if(!name)
         continue;
 
-      username = user.username;
+      username = name;
     }
-    else username = member.displayName;
 
     board += `${parseInt(i) + 1}. ${amount} - ${username}\n`;
   }
 
-  message.channel.send(board);
+  discord.send(board);
 }

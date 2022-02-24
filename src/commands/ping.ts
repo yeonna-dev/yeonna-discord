@@ -1,15 +1,13 @@
 import { Command } from 'comtroller';
 
-import { DiscordMessage } from '../utilities/discord';
-
-import { createDiscordEmbed } from '../helpers/createDiscordEmbed';
+import { Discord } from '../utilities/discord';
 
 export const ping: Command =
 {
   name: 'ping',
-  run: ({ message }: { message: DiscordMessage; }) =>
+  run: ({ discord }: { discord: Discord, }) =>
   {
-    const response = createDiscordEmbed({ title: `${~~(message.client.ping)} ms` });
-    message.channel.send({ embeds: [response] });
+    const embed = discord.createDiscordEmbed({ title: `${~~(discord.getPing())} ms` });
+    discord.sendEmbed(embed);
   },
 };

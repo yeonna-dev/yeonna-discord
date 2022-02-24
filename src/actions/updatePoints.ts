@@ -1,36 +1,32 @@
 import { parseParamsToArray } from 'comtroller';
-
 import { Core } from 'yeonna-core';
 
-import { getGuildMember } from './getGuildMember';
+import { Discord } from '../utilities/discord';
+
 import { isNumber } from '../helpers/isNumber';
 
-import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 // TODO: Update responses
 export async function updatePoints({
-  message,
+  discord,
   params,
   daily,
   add,
 }: {
-  message: DiscordMessage,
+  discord: Discord,
   params: string,
   daily?: number,
   add?: boolean;
 })
 {
-  if(!message.guild)
-    return message.channel.send('This command can only be used in a guild.');
-
   let
     user: string,
     amount: number;
 
   if(daily)
   {
-    user = message.author.id;
+    user = discord.getAuthorId();
     amount = daily;
     add = true;
   }
@@ -38,36 +34,42 @@ export async function updatePoints({
   {
     const [userString, amountString] = parseParamsToArray(params);
     if(!userString)
-      return message.channel.send(add
-        ? 'Add points to who?'
-        : 'Set points of who?'
-      );
+      return discord.send(add ? 'Add points to who?' : 'Set points of who?');
 
     /* Check if the given value is a valid number. */
     if(isNumber(amountString))
-      return message.channel.send('Please include the amount.');
+      return discord.send('Please include the amount.');
 
     user = userString;
     amount = parseFloat(amountString);
   }
 
-  const member = await getGuildMember(message, user);
-  if(!member)
+  const discordGuildId = discord.getGuildId();
+  const mentionedMemberId = discord.getMentionedMemberId();
+  const mentionedMemberDisplayName = discord.getMentionedMemberDisplayName();
+  if(!mentionedMemberId || !discordGuildId)
     return;
 
-  message.channel.startTyping();
+  discord.startTyping();
 
   try
   {
-    await Core.Users.updateUserPoints({ userIdentifier: member.id, amount, discordGuildId: message.guild.id, add });
-    message.channel.send(add
-      ? `Added ${amount} points to ${member.displayName}.`
-      : `Set points of ${member.displayName} to ${amount}`
-    );
+    await Core.Users.updatePoints({
+      userIdentifier: mentionedMemberId,
+      amount,
+      discordGuildId,
+      add,
+    });
+
+    const response = add
+      ? `Added ${amount} points to ${mentionedMemberDisplayName}.`
+      : `Set points of ${mentionedMemberDisplayName} to ${amount}`;
+
+    discord.send(response);
   }
-  catch(error: any)
+  catch(error)
   {
     Log.error(error);
-    message.channel.send('Could not add points.');
+    discord.send('Could not add points.');
   }
 }

@@ -1,9 +1,8 @@
 import { Guard } from 'comtroller';
+import { Discord } from '../utilities/discord';
 
-import { DiscordMessage } from '../utilities/discord';
-
-export const isDeveloperOnly: Guard = async ({ message }: { message: DiscordMessage, }) =>
+export const isDeveloperOnly: Guard = async ({ discord }: { discord: Discord, }) =>
 {
   const developerIds = (process.env.DEVELOPER_IDS || '').split(',');
-  return !developerIds.includes(message.author.id);
+  return !developerIds.includes(discord.getAuthorId());
 };

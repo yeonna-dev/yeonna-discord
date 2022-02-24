@@ -2,36 +2,35 @@ import { Command } from 'comtroller';
 import sharp from 'sharp';
 import axios from 'axios';
 
-import { DiscordMessage } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-import { getMedia } from '../actions/getMedia';
+import { Discord } from '../utilities/discord';
 
 // TODO: Update responses.
 export const resizetoemote: Command =
 {
   name: 'resizetoemote',
   aliases: ['rte'],
-  run: async ({ message }: { message: DiscordMessage, }) =>
+  run: async ({ discord }: { discord: Discord, }) =>
   {
-    let url = getMedia(message.original, true);
+    let url = discord.getMediaFromMessage({ imageOnly: true });
     if(!url)
-      return message.channel.send('Please add a valid image link or attachment.');
+      return discord.send('Please add a valid image link or attachment.');
 
     try
     {
-      message.channel.startTyping();
+      discord.startTyping();
       const { data } = await axios({ url, responseType: 'arraybuffer' });
       const resized = await sharp(data)
         .resize({ height: 48 })
         .toBuffer();
 
-      message.original.channel.send({ files: [{ attachment: resized }] });
+      discord.sendFiles([resized]);
     }
     catch(error: any)
     {
       Log.error(error);
-      message.channel.send('Cannot resize image. Please try again.');
+      discord.send('Cannot resize image. Please try again.');
     }
   },
 };

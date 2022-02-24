@@ -1,25 +1,22 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
 import { Config } from 'yeonna-config';
-import { MessageOptions } from 'discord.js';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import colors from '../utilities/color-names.json';
 import { Log } from '../utilities/logger';
-
-import { createDiscordEmbed } from '../helpers/createDiscordEmbed';
 
 export const rolerequest: Command =
 {
   name: 'rolerequest',
   aliases: ['rr'],
-  run: async ({ message, }: { message: DiscordMessage, params: string, }) =>
-    new RoleRequest(message),
+  run: async ({ discord }: { discord: Discord, params: string, }) =>
+    new RoleRequest(discord),
 };
 
 class RoleRequest
 {
-  private message: DiscordMessage;
+  private discord: Discord;
   private guildId?: string;
   private roleRequestsChannel?: string;
   private name?: string;
@@ -30,17 +27,17 @@ class RoleRequest
 
   private timeoutTime = 60000;
 
-  constructor(message: DiscordMessage)
+  constructor(discord: Discord)
   {
-    this.message = message;
+    this.discord = discord;
     this.start();
   }
 
   async start()
   {
-    const guildId = this.message?.guild?.id;
+    const guildId = this.discord.getGuildId();
     if(!guildId)
-      return this.message.channel.send('This command can only be used in a guild.');
+      return this.discord.send('This command can only be used in a guild.');
 
     this.guildId = guildId;
 
@@ -60,7 +57,7 @@ class RoleRequest
         + ' Please inform the server administrator to set this up.'
       );
 
-      return this.message.channel.send(response);
+      return this.discord.send(response);
     }
 
     this.roleRequestsChannel = roleRequestsApprovalChannel;
@@ -82,11 +79,11 @@ class RoleRequest
     if(!this.name && !this.color)
       return this.sendNoNameOrColor();
 
-    this.message.channel.startTyping();
+    this.discord.startTyping();
 
     const roleRequestId = await this.saveRoleRequest();
     if(!roleRequestId)
-      return this.message.channel.send('Cannot create a role request. Please try again.');
+      return this.discord.send('Cannot create a role request. Please try again.');
 
     this.requestId = roleRequestId;
 
@@ -102,11 +99,11 @@ class RoleRequest
       + "\nReact with ❌ if you don't want a specific name."
     );
 
-    const namePrompt = await this.message.channel.send(response);
+    const namePrompt = await this.discord.send(response);
 
     return new Promise<string | void>(resolve =>
     {
-      this.waitReply(namePrompt, ({ content }) => resolve(content));
+      this.waitReply(namePrompt.getMessageId(), discord => resolve(discord.getMessageContent()));
       this.waitCancel(namePrompt, () => resolve());
     });
   }
@@ -120,22 +117,26 @@ class RoleRequest
       + '\n(Please provide a valid __color hex__ code, e.g. #4caf50.)'
     );
 
-    const colorPrompt = await this.message.channel.send(response);
+    const colorPrompt = await this.discord.send(response);
 
     return new Promise<string | void>(resolve =>
     {
-      this.waitReply(colorPrompt, message =>
+      this.waitReply(colorPrompt.getMessageId(), discord =>
       {
         this.stopTimer();
 
-        let content = message.content.toLowerCase().replace(/\s/g, '') as keyof typeof colors;
+        let content = discord
+          .getMessageContent()
+          .toLowerCase()
+          .replace(/\s/g, '') as keyof typeof colors;
+
         let color = colors[content];
         if(!color)
         {
           if(content.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/))
             color = content;
           else
-            return message.reply(
+            return discord.reply(
               'This color is not valid. Please try using the role request command again.'
             );
         }
@@ -147,20 +148,20 @@ class RoleRequest
     });
   }
 
-  async waitReply(message: DiscordMessage, onReply: (reply: DiscordMessage) => void)
+  async waitReply(messageId: string, onReply: (reply: Discord) => void)
   {
-    this.message.waitReplyToMessage({
-      messageId: message.id,
+    this.discord.waitReplyToMessage({
+      messageId,
       time: this.timeoutTime,
       onReply,
     });
   }
 
-  async waitCancel(message: DiscordMessage, onCancel: () => void)
+  async waitCancel(discord: Discord, onCancel: () => void)
   {
-    await message.waitReact({
+    await discord.waitReact({
       reactions: '❌',
-      userId: this.message.author.id,
+      userId: this.discord.getAuthorId(),
       time: this.timeoutTime,
       onReact: onCancel,
     });
@@ -176,7 +177,7 @@ class RoleRequest
       const roleRequest = await Core.Discord.createRoleRequest({
         roleName: this.name,
         roleColor: this.color,
-        requesterDiscordId: this.message.author.id,
+        requesterDiscordId: this.discord.getAuthorId(),
         discordGuildId: this.guildId,
       });
 
@@ -188,33 +189,50 @@ class RoleRequest
     }
   }
 
-  postRequest()
+  async postRequest()
   {
-    if(!this.roleRequestsChannel)
-      return this.message.channel.send('No role requests channel has been set.');
+    if(!this.guildId)
+      return;
 
-    const botPrefix = Config.config.prefix;
-    const roleRequestEmbed = createDiscordEmbed({
+    if(!this.roleRequestsChannel)
+      return this.discord.send('No role requests channel has been set.');
+
+    let botPrefix;
+    try
+    {
+      const config = await Config.ofGuild(this.guildId);
+      botPrefix = config.prefix;
+
+      if(!botPrefix)
+      {
+        const globalConfig = await Config.global();
+        botPrefix = globalConfig.prefix;
+      }
+    }
+    catch(error)
+    {
+      Log.error(error);
+      botPrefix = ';';
+    }
+
+    const roleRequestEmbed = this.discord.createDiscordEmbed({
       color: (this.color || 'DEFAULT'),
       title: '✋ Role Request',
       description: `Name: **${this.name || '(No name specified)'}**`
         + `\nColor: **${this.color || '(No color specified)'}**`
-        + `\nRequested By: __${this.message.author.mention}__`
-        + `\n\nTo approve, copy this: \n\`${botPrefix}rra ${this.requestId}\``
-        + `\n\nTo decline, copy this: \n\`${botPrefix}rrd ${this.requestId}\``,
+        + `\nRequested By: __${this.discord.getAuthor()}__`
+        + `\n\nTo approve, copy this: \n\`\`\`${botPrefix}rra ${this.requestId}\`\`\``
+        + `\n\nTo decline, copy this: \n\`\`\`${botPrefix}rrd ${this.requestId}\`\`\``,
       footer: { text: `ID: ${this.requestId}` },
       timestamp: new Date()
     });
 
-    this.message.sendInChannel({
-      channelId: this.roleRequestsChannel,
-      options: { embeds: [roleRequestEmbed] } as MessageOptions,
-    });
+    this.discord.sendInChannel(this.roleRequestsChannel, { embeds: [roleRequestEmbed] });
   }
 
   sendRequestResponse()
   {
-    const roleEmbed = createDiscordEmbed({
+    const roleEmbed = this.discord.createDiscordEmbed({
       title: this.name || '(No name specified)',
       color: this.color || 'DEFAULT',
     });
@@ -224,16 +242,13 @@ class RoleRequest
       + '\nPlease wait for it to be approved.'
     );
 
-    this.message.channel.send({
-      content,
-      embeds: [roleEmbed],
-    });
+    this.discord.sendTextWithEmbeds(content, [roleEmbed]);
   }
 
   sendNoNameOrColor()
   {
     const response = this.createMessageWithMention('Please provide either a name or color.');
-    this.message.channel.send(response);
+    this.discord.send(response);
   }
 
   startTimer()
@@ -249,7 +264,7 @@ class RoleRequest
         'You did not respond. Please try using the role request command again.'
       );
 
-      this.message.channel.send(response);
+      this.discord.send(response);
     }, this.timeoutTime);
   }
 
@@ -267,6 +282,6 @@ class RoleRequest
 
   createMessageWithMention(message: string)
   {
-    return `${this.message.author.mention}\n${message}`;
+    return `${this.discord.getAuthor()}\n${message}`;
   }
 }

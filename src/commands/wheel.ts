@@ -1,7 +1,7 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Core } from 'yeonna-core';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 // TODO: Create per-server configurable data
@@ -24,11 +24,11 @@ export const wheel: Command =
 {
   name: 'wheel',
   aliases: ['w'],
-  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
+  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
     let [pickedAnimal] = parseParamsToArray(params);
     if(!pickedAnimal)
-      return message.channel.send('Please choose an animal.');
+      return discord.send('Please choose an animal.');
 
     pickedAnimal = pickedAnimal.toLowerCase();
 
@@ -36,9 +36,9 @@ export const wheel: Command =
       code === pickedAnimal || name.toLowerCase() === pickedAnimal);
 
     if(!animal)
-      return message.channel.send('You cannot choose that animal.');
+      return discord.send('You cannot choose that animal.');
 
-    const sentMessage = await message.channel.send(`You chose **${animal.name}**.`
+    const sentMessage = await discord.send(`You chose **${animal.name}**.`
       + ' Spinning... <a:wheel:857186381583220756>');
 
     await new Promise(resolve => setTimeout(resolve, 4000));
@@ -49,9 +49,9 @@ export const wheel: Command =
     {
       try
       {
-        await Core.Users.updateUserPoints({
-          userIdentifier: message.author.id,
-          discordGuildId: message.guild?.id,
+        await Core.Users.updatePoints({
+          userIdentifier: discord.getAuthorId(),
+          discordGuildId: discord.getGuildId(),
           amount: reward,
           add: true,
         });

@@ -1,37 +1,37 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 export const bitsave: Command =
 {
   name: 'bitsave',
   aliases: ['bs'],
-  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
+  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
     if(!params)
-      return message.channel.send('Please add content to the bit.');
+      return discord.send('Please add content to the bit.');
 
     try
     {
-      message.channel.startTyping();
+      discord.startTyping();
 
       const userBit = await Core.Bits.saveUserBit({
-        userIdentifier: message.author.id,
+        userIdentifier: discord.getAuthorId(),
         content: params,
         discordGuildId: 'true',
       });
 
       if(!userBit)
-        return message.channel.send('You already saved that bit.');
+        return discord.send('You already saved that bit.');
 
-      message.channel.send('Saved bit.');
+      discord.send('Saved bit.');
     }
-    catch(error: any)
+    catch(error)
     {
       Log.error(error);
-      message.channel.send('Could not save bit.');
+      discord.send('Could not save bit.');
     }
   },
 };

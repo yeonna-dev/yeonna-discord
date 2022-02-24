@@ -1,27 +1,12 @@
-import
-{
-  Awaitable,
-  Client,
-  Intents,
-} from 'discord.js';
-
-import { DiscordMessage } from './message';
-
+import { Client, Intents, Message, Awaitable } from 'discord.js';
 import { Log } from '../logger';
 
-export { DiscordMessage };
-
 /** Abstraction of Discord.js Client class. */
-export class Discord
+export class DiscordClient extends Client
 {
-  public client: Client;
-
   constructor()
   {
-    /**
-     * Create and login a Discord client.
-     */
-    this.client = new Client({
+    super({
       intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MEMBERS,
@@ -42,23 +27,21 @@ export class Discord
       partials: ['USER', 'MESSAGE', 'REACTION'],
     });
 
-    this.client.login(process.env.BOT_TOKEN);
-    this.client.on(
-      'ready',
-      () => Log.info(`Discord bot connected as ${this.client.user?.tag}`, true)
-    );
+    this.login(process.env.BOT_TOKEN);
+    this.on('ready', () => Log.info(`Discord bot connected as ${this.user?.tag}`, true));
   }
 
-  onMessage(listener: (message: DiscordMessage) => Awaitable<void>)
+  onGuildMemberMessage(listener: (message: Message) => Awaitable<void>)
   {
-    this.client.on('messageCreate', message => listener(new DiscordMessage(message)));
-  }
+    this.on('messageCreate', message =>
+    {
+      if(message.author.bot)
+        return;
 
-  async sendMessageInChannel(channelId: string, message: string)
-  {
-    const channel = await this.client.channels.fetch(channelId);
-    if(!channel) throw new Error('Channel not found');
-    if(!channel.isText()) throw new Error('Cannot send a message in the channel with the given ID');
-    channel.send(message);
+      if(!message.guild || !message.member)
+        return;
+
+      listener(message);
+    });
   }
 }

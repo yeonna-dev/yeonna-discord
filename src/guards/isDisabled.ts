@@ -1,14 +1,14 @@
 import { Command, Guard } from 'comtroller';
 import { Config } from 'yeonna-config';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 
 export const isDisabled: Guard = async (
-  { command, message }: { command: Command, message: DiscordMessage, }
+  { command, discord }: { command: Command, discord: Discord, }
 ) =>
 {
   let enabledCommands;
-  const guildId = message.guild.id;
+  const guildId = discord.getGuildId();
   if(guildId)
   {
     const guildConfig = await Config.ofGuild(guildId);
@@ -21,5 +21,5 @@ export const isDisabled: Guard = async (
     enabledCommands = globalConfig.enabledCommands;
   }
 
-  return !!enabledCommands && enabledCommands !== 'all' && !enabledCommands.includes(command.name);
+  return enabledCommands !== 'all' && !!enabledCommands && !enabledCommands.includes(command.name);
 };

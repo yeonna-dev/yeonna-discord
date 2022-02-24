@@ -1,9 +1,7 @@
 import { Command } from 'comtroller';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
-
-import { getGuildEmotes } from '../actions/getGuildEmotes';
 
 import { noEmotePermissions } from '../guards/discordMemberPermissions';
 
@@ -15,43 +13,45 @@ export const emoteremove: Command =
   name: 'emoteremove',
   aliases: ['erm'],
   guards: [noEmotePermissions],
-  run: async ({ message }: { message: DiscordMessage, }) =>
+  run: async ({ discord }: { discord: Discord, }) =>
   {
-    const { content } = message;
-
+    const content = discord.getMessageContent();
     let [, emoteName] = cleanString(content).split(' ');
     if(!emoteName)
-      return message.channel.send('Please type the emote or the name of the emote.');
+      return discord.send('Please type the emote or the name of the emote.');
 
-    message.channel.startTyping();
-    const emotes = await getGuildEmotes(message.original);
-    if(!emotes)
-      return message.channel.send('Cannot get the emojis of this server.');
+    discord.startTyping();
+
+    let emoteFindString = emoteName;
+    const emoteIdMatch = emoteName.match(/(?:<a?)?:\w+:(\d+)>?/i);
+    if(emoteIdMatch)
+    {
+      const [, emoteId] = emoteIdMatch;
+      emoteFindString = emoteId;
+    }
 
     let emoteToDelete;
-
-    /* If there is no emote in the message, try finding the emote to delete by name. */
-    const emoteIdMatch = emoteName.match(/(?:<a?)?:\w+:(\d+)>?/i);
-    if(!emoteIdMatch)
-      emoteToDelete = emotes.find(({ name }) => name === emoteName);
-    else
+    try
     {
-      const emoteId = emoteIdMatch[1];
-      emoteToDelete = emotes.find(({ id }) => id === emoteId);
+      emoteToDelete = await discord.findGuildEmoji(emoteFindString);
+    }
+    catch(error)
+    {
+      Log.error(error);
     }
 
     if(!emoteToDelete)
-      return message.channel.send('There is no emote with that name.');
+      return discord.send('There is no emote with that name.');
 
     try
     {
       const deleted = await emoteToDelete.delete();
-      message.channel.send(`\`${deleted}\` has been deleted.`);
+      discord.send(`\`${deleted}\` has been deleted.`);
     }
     catch(error: any)
     {
       Log.error(error);
-      message.channel.send('Cannot rename emote.');
+      discord.send('Cannot rename emote.');
     }
   },
 };

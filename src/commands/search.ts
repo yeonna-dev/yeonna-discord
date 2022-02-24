@@ -1,12 +1,12 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
 
-import { DiscordMessage } from '../utilities/discord';
-
 import { cooldowns, checkCooldownInGuild } from '../cooldowns';
 
-import { getTimeLeft } from '../helpers/getTimeLeft';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
+
+import { getTimeLeft } from '../helpers/getTimeLeft';
 
 const name = 'search';
 
@@ -17,20 +17,18 @@ export const search: Command =
 {
   name,
   aliases: ['s'],
-  run: async ({ message }: { message: DiscordMessage; }) =>
+  run: async ({ discord }: { discord: Discord, }) =>
   {
-    const { guild, channel, author } = message;
-    if(!guild || !guild.id)
+    const userIdentifier = discord.getAuthorId();
+    const discordGuildId = discord.getGuildId();
+    if(!discordGuildId)
       return;
-
-    const userIdentifier = author.id;
-    const discordGuildId = guild.id;
 
     const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
     if(cooldown)
-      return channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
+      return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
 
-    channel.startTyping();
+    discord.startTyping();
 
     /* Obtain the random item. */
     let item;
@@ -41,11 +39,11 @@ export const search: Command =
     catch(error)
     {
       Log.error(error);
-      return channel.send('Oops. Something went wrong. Please try again.');
+      return discord.send('Oops. Something went wrong. Please try again.');
     }
 
     // TODO: Update message
-    channel.send(item
+    discord.send(item
       ? `Found **${item.name}**!`
       : 'You found nothing. Keep searching!'
     );
@@ -79,7 +77,7 @@ export const search: Command =
       totalBonus += collection.fixedBonus || 0;
     }
 
-    await Core.Users.updateUserPoints({
+    await Core.Users.updatePoints({
       userIdentifier,
       amount: totalBonus,
       discordGuildId,
@@ -95,7 +93,7 @@ export const search: Command =
 
     // TODO: Update message
     // TODO: Update points name
-    channel.send(
+    discord.send(
       'Congratulations!'
       + `\n\n${completedCollectionsMessage}`
       + `\n\nYou earn a bonus of __**${totalBonus} points**__!`

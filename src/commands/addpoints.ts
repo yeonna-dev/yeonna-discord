@@ -8,5 +8,5 @@ export const addpoints: Command =
 {
   name: 'addpoints',
   guards: [isDeveloperOnly],
-  run: ({ message, params }) => updatePoints({ message, params, add: true }),
+  run: ({ discord, params }) => updatePoints({ discord, params, add: true }),
 };

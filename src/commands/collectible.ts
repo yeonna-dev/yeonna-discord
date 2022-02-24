@@ -2,12 +2,11 @@ import { Command, parseParamsToArray } from 'comtroller';
 
 import { Core, NotEnoughCollectibles } from 'yeonna-core';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 import { checkCooldownInGuild, cooldowns } from '../cooldowns';
 
-import { getGuildMember } from '../actions/getGuildMember';
 import { getTimeLeft } from '../helpers/getTimeLeft';
 
 /* Add 1 hour cooldown for getting collectibles. */
@@ -21,51 +20,55 @@ export const collectible: Command =
 {
   name: 'collectible',
   aliases: ['c'],
-  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
+  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
-    const { guild, author, mentions, member, channel } = message;
-    if(!guild || !guild.id)
-      return;
+    const userIdentifier = discord.getAuthorId();
+    const discordGuildId = discord.getGuildId() as string;
 
-    const userIdentifier = author.id;
-    const discordGuildId = guild.id;
-
-    let mentionedMember = mentions.members.first();
+    let mentionedMemberId = discord.getMentionedMemberId();
     let [receiverId] = parseParamsToArray(params);
+    const toGet = !mentionedMemberId && !receiverId;
 
-    const toGet = !mentionedMember && !receiverId;
     const cooldown = await checkCooldownInGuild(
       `collectible-${toGet ? 'get' : 'give'}`,
       discordGuildId,
       userIdentifier,
     );
     if(cooldown)
-      return channel.send(`Please wait ${getTimeLeft(cooldown)}.`);
+      return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
+
+    discord.startTyping();
 
     if(toGet)
     {
-      channel.startTyping();
-
       /* Claim collectible. */
-      await Core.Users.updateUserCollectibles({
+      await Core.Users.updateCollectibles({
         userIdentifier,
+        discordGuildId,
         amount: 1,
         add: true,
-        discordGuildId,
       });
 
-      return channel.send(`${member.displayName} claimed 1 collectible.`);
+      const memberDisplayName = await discord.getGuildMemberDisplayName();
+      return discord.send(`${memberDisplayName} claimed 1 collectible.`);
     }
 
-    channel.startTyping();
-
-    if(!mentionedMember)
+    if(!mentionedMemberId)
     {
-      const receiverMember = await getGuildMember(message, receiverId);
+      let receiverMember;
+      try
+      {
+        receiverMember = await discord.getGuildMemberId(receiverId);
+      }
+      catch(error)
+      {
+        Log.error(error);
+      }
+
       if(!receiverMember)
         return;
 
-      mentionedMember = receiverMember;
+      mentionedMemberId = receiverMember;
     }
 
     try
@@ -73,20 +76,22 @@ export const collectible: Command =
       /* Give collectible. */
       await Core.Users.transferUserCollectibles({
         fromUserIdentifier: userIdentifier,
-        toUserIdentifier: mentionedMember.id,
+        toUserIdentifier: mentionedMemberId,
         amount: 1,
         discordGuildId,
       });
-      channel.send(`${mentionedMember.displayName} received 1 collectible.`);
+
+      const receiverDisplayName = discord.getMentionedMemberDisplayName();
+      discord.send(`${receiverDisplayName} received 1 collectible.`);
     }
-    catch(error: any)
+    catch(error)
     {
       if(error instanceof NotEnoughCollectibles)
-        channel.send('Not enough collectibles.');
+        discord.send('Not enough collectibles.');
       else
       {
         Log.error(error);
-        channel.send('Could not transfer collectible.');
+        discord.send('Could not transfer collectible.');
       }
     }
   },

@@ -1,7 +1,6 @@
+import { Message } from 'discord.js';
 import winston, { format } from 'winston';
 import 'winston-daily-rotate-file';
-
-import { DiscordMessage } from './discord';
 
 const rotatingFileTransport = new winston.transports.DailyRotateFile({
   dirname: './logs',
@@ -60,7 +59,7 @@ export class Log
     Log.output(LogLevels.ERROR, log, true);
   };
 
-  static command = (message: DiscordMessage, logInConsole?: boolean) =>
+  static command = (message: Message, logInConsole?: boolean) =>
   {
     let log = '(';
 

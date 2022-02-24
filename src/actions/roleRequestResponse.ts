@@ -2,27 +2,27 @@ import { parseParamsToArray } from 'comtroller';
 import { Core, NonPendingRoleRequest } from 'yeonna-core';
 import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestsService';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 // TODO: Update responses
 export async function roleRequestResponse(
-  message: DiscordMessage,
+  discord: Discord,
   params: string,
   isApproved: Boolean,
 )
 {
   const [requestId] = parseParamsToArray(params);
   if(!requestId)
-    return message.channel.send('No role request ID provided.');
+    return discord.send('No role request ID provided.');
 
   const requestResponseParams =
   {
     requestId,
-    appproverDiscordId: message.author.id,
+    approverDiscordId: discord.getAuthorId(),
   };
 
-  message.channel.startTyping();
+  discord.startTyping();
 
   let approvedRoleRequest: RoleRequest | undefined;
   try
@@ -37,7 +37,7 @@ export async function roleRequestResponse(
     if(!(error instanceof NonPendingRoleRequest))
       Log.error(error);
 
-    message.channel.send(
+    discord.send(
       `Cannot ${isApproved ? 'approve' : 'decline'} the role request.`
       + ' It might not be a pending role request.'
     );
@@ -52,7 +52,7 @@ export async function roleRequestResponse(
   {
     try
     {
-      const createdRoleId = await message.createRole({
+      const createdRoleId = await discord.createRole({
         name: roleName,
         color: roleColor,
       });
@@ -60,12 +60,12 @@ export async function roleRequestResponse(
       if(!createdRoleId)
         return;
 
-      await message.assignRole(requesterDiscordId, createdRoleId);
+      await discord.assignRole(requesterDiscordId, createdRoleId);
     }
     catch(error: any)
     {
       Log.error(error);
-      return message.channel.send(
+      return discord.send(
         'Cannot create and assign the role.'
         + ' I might not have the permissions to do so.'
       );
@@ -80,12 +80,8 @@ export async function roleRequestResponse(
 
   try
   {
-    message.sendToUser({
-      userId: requesterDiscordId,
-      options: response,
-    });
-
-    message.channel.send(`Role request with ID \`${requestId}\` has been **${actionString}**.`);
+    discord.sendToUser(requesterDiscordId, response);
+    discord.send(`Role request with ID \`${requestId}\` has been **${actionString}**.`);
   }
   catch(error)
   {

@@ -5,22 +5,23 @@ import schedule from 'node-schedule';
 import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-export const rewardMostCollectibles = new class
+export class RewardMostCollectibles
 {
-  private discord!: Discord;
+  private static discord: Discord;
 
-  async start(discord: Discord)
+  static async start(discord: Discord)
   {
     this.discord = discord;
 
     const date = new Date();
     date.setUTCHours(12);
+
     const recurrence = { hour: date.getHours(), minute: 0, dayOfWeek: 0 };
     schedule.scheduleJob(recurrence, () =>
     {
       try
       {
-        this.job();
+        this.run();
       }
       catch(error: any)
       {
@@ -29,11 +30,15 @@ export const rewardMostCollectibles = new class
     });
   }
 
-  async job()
+  static async run(discord?: Discord)
   {
+    if(discord)
+      this.discord = discord;
+
     const config = await Config.all();
     const discordGuildIds = [];
     const topCollectiblesPromises = [];
+    const guildsToReward = [];
     for(const discordGuildId in config)
     {
       if(discordGuildId === 'global')
@@ -48,6 +53,7 @@ export const rewardMostCollectibles = new class
 
       if(!mostCollectibles) continue;
 
+      guildsToReward.push(discordGuildId);
       topCollectiblesPromises.push(Core.Users.getTopCollectibles({
         count: mostCollectibles.prizes.length,
         discordGuildId,
@@ -56,11 +62,11 @@ export const rewardMostCollectibles = new class
 
     const topCollectibles = await Promise.all(topCollectiblesPromises);
 
-    const updateUserPointsPromises = [];
-    const messages = [];
+    const updateUserPointsPromises: any = [];
+    const messages: any = [];
     for(const i in topCollectibles)
     {
-      const discordGuildId = discordGuildIds[i];
+      const discordGuildId = guildsToReward[i];
       const discordGuild = config[discordGuildId];
       const settings = discordGuild.mostCollectiblesReward;
       if(!settings) continue;
@@ -77,7 +83,7 @@ export const rewardMostCollectibles = new class
         if(!discordId) continue;
 
         const reward = prizes[i];
-        updateUserPointsPromises.push(Core.Users.updateUserPoints({
+        updateUserPointsPromises.push(Core.Users.updatePoints({
           userIdentifier: discordId,
           discordGuildId,
           amount: reward,
@@ -96,6 +102,6 @@ export const rewardMostCollectibles = new class
       await Promise.all(updateUserPointsPromises);
 
     for(const { channelId, mesesage } of messages)
-      this.discord.sendMessageInChannel(channelId, mesesage);
+      this.discord.sendInChannel(channelId, mesesage);
   }
 };

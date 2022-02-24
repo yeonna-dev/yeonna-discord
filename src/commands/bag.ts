@@ -1,9 +1,8 @@
 import { Command } from 'comtroller';
+import { Core } from 'yeonna-core';
 import { table } from 'table';
 
-import { getUserInventory } from '../actions/getUserInventory';
-
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 // TODO: Update responses.
@@ -11,23 +10,26 @@ export const bag: Command =
 {
   name: 'bag',
   aliases: ['b'],
-  run: async ({ message }: { message: DiscordMessage; }) =>
+  run: async ({ discord }: { discord: Discord, }) =>
   {
-    message.channel.startTyping();
+    discord.startTyping();
 
     let items;
     try
     {
-      items = await getUserInventory(message);
+      items = await Core.Items.getUserItems({
+        userIdentifier: discord.getAuthorId(),
+        discordGuildId: discord.getGuildId(),
+      });
     }
     catch(error)
     {
       Log.error(error);
-      return message.channel.send('Cannot get your items. Please try again.');
+      return discord.send('Cannot get your items. Please try again.');
     }
 
     if(!items || !items.length)
-      return message.channel.send('You do not have items.');
+      return discord.send('You do not have items.');
 
     let totalAmount = 0;
     let totalCost = 0;
@@ -83,6 +85,6 @@ export const bag: Command =
       })
       + '\n```';
 
-    message.channel.send(bag);
+    discord.send(bag);
   },
 };

@@ -1,15 +1,14 @@
 import { Command } from 'comtroller';
 
-import { getUserInventory } from '../actions/getUserInventory';
-
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
 export const sell: Command =
 {
   name: 'sell',
-  run: async ({ message, params }: { message: DiscordMessage, params: string; }) =>
+  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
+    discord.send('soon™️');
     // message.channel.startTyping();
 
     // let items;

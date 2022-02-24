@@ -5,31 +5,34 @@ import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
 import { noManageChannelPermissions } from '../guards/discordMemberPermissions';
 
-import { DiscordMessage } from '../utilities/discord';
+import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
+// TODO: Update responses.
 export const reactrepostchannel: Command =
 {
   name: 'reactrepostchannel',
   aliases: ['rpc'],
   guards: [noManageChannelPermissions],
-  run: async ({ message }: { message: DiscordMessage; }) =>
+  run: async ({ discord }: { discord: Discord, }) =>
   {
-    const guildChannelParameter = getGuildChannelParameter(message, { excludeSameChannel: true });
+    const guildChannelParameter = getGuildChannelParameter(discord, { excludeSameChannel: true });
     if(!guildChannelParameter)
       return;
 
-    const { guildId, channel } = guildChannelParameter;
+    discord.startTyping();
+
+    const { guildId, channelId, channelMention } = guildChannelParameter;
     try
     {
       const { reactRepost } = await Config.ofGuild(guildId);
-      await Config.updateGuild(guildId, { reactRepost: { ...reactRepost, channel: channel.id } });
-      message.channel.send(`Set the react reposts approval channel to ${channel}.`);
+      await Config.updateGuild(guildId, { reactRepost: { ...reactRepost, channel: channelId } });
+      discord.send(`Set the react reposts approval channel to ${channelMention}.`);
     }
     catch(error: any)
     {
       Log.error(error);
-      message.channel.send('Could not set the channel for react reposts.');
+      discord.send('Could not set the channel for react reposts.');
     }
   },
 };
