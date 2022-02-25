@@ -1,8 +1,8 @@
 import { RewardMostCollectibles } from './rewardMostCollectibles';
 
-import { Discord } from '../utilities/discord';
+import { Client } from 'discord.js';
 
-export function startJobs(discord: Discord)
+export function startJobs(client: Client)
 {
-  RewardMostCollectibles.start(discord);
+  RewardMostCollectibles.start(client);
 }

@@ -1,5 +1,6 @@
 import { Core } from 'yeonna-core';
 import { Config } from 'yeonna-config';
+import { Client } from 'discord.js';
 import schedule from 'node-schedule';
 
 import { Discord } from '../utilities/discord';
@@ -7,11 +8,11 @@ import { Log } from '../utilities/logger';
 
 export class RewardMostCollectibles
 {
-  private static discord: Discord;
+  private static client: Client;
 
-  static async start(discord: Discord)
+  static async start(client: Client)
   {
-    this.discord = discord;
+    this.client = client;
 
     const date = new Date();
     date.setUTCHours(12);
@@ -30,10 +31,10 @@ export class RewardMostCollectibles
     });
   }
 
-  static async run(discord?: Discord)
+  static async run(client?: Client)
   {
-    if(discord)
-      this.discord = discord;
+    if(client)
+      this.client = client;
 
     const config = await Config.all();
     const discordGuildIds = [];
@@ -102,6 +103,17 @@ export class RewardMostCollectibles
       await Promise.all(updateUserPointsPromises);
 
     for(const { channelId, mesesage } of messages)
-      this.discord.sendInChannel(channelId, mesesage);
+    {
+      try
+      {
+        const channel = await this.client.channels.fetch(channelId);
+        if(channel && channel.type === 'GUILD_TEXT')
+          channel.send(mesesage);
+      }
+      catch(error)
+      {
+        Log.error(error);
+      }
+    }
   }
 };

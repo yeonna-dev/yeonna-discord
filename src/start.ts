@@ -80,7 +80,7 @@ import { Log } from './utilities/logger';
   });
 
   /* Listen to and handle message reactions */
-  // handleReactions(bot.client);
+  handleReactions(bot);
 
-  // startJobs(bot);
+  startJobs(bot);
 })();
