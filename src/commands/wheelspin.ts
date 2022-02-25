@@ -1,4 +1,5 @@
 import { Command, parseParamsToArray } from 'comtroller';
+import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
 import { cooldowns, checkCooldownInGuild } from '../cooldowns';
@@ -7,30 +8,16 @@ import { getTimeLeft } from '../helpers/getTimeLeft';
 import { Discord } from '../utilities/discord';
 import { Log } from '../utilities/logger';
 
-// TODO: Create per-server configurable data
-const reward = 350;
-const animals = [
-  { code: 'rb', name: 'Rabbit' },
-  { code: 'dr', name: 'Dragon' },
-  { code: 'pi', name: 'Pig' },
-  { code: 'sq', name: 'Squirrel' },
-  { code: 'uc', name: 'Unicorn' },
-  { code: 'pg', name: 'Penguin' },
-  { code: 'eg', name: 'Eagle' },
-  { code: 'tg', name: 'Tiger' },
-  { code: 'dg', name: 'Dog' },
-];
-
-const name = 'wheel';
+const name = 'wheelspin';
 
 /* Add 60 second cooldown. */
 cooldowns.add(name, 60000);
 
 // TODO: Update messages
-export const wheel: Command =
+export const wheelspin: Command =
 {
   name,
-  aliases: ['w'],
+  aliases: ['ws'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
     const userIdentifier = discord.getAuthorId();
@@ -38,29 +25,47 @@ export const wheel: Command =
     if(!discordGuildId)
       return;
 
+    let guildConfig;
+    try
+    {
+      guildConfig = await Config.ofGuild(discordGuildId);
+    }
+    catch(error)
+    {
+      Log.error(error);
+    }
+
+    const wheelSpinConfig = guildConfig?.miniGames?.wheelSpin;
+    const options = wheelSpinConfig?.choices;
+    if(!wheelSpinConfig || !options)
+      return;
+
     const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
     if(cooldown)
       return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
 
-    let [pickedAnimal] = parseParamsToArray(params);
-    if(!pickedAnimal)
+    let [optionIdentifier] = parseParamsToArray(params);
+    if(!optionIdentifier)
       return discord.send('Please choose an animal.');
 
-    pickedAnimal = pickedAnimal.toLowerCase();
+    optionIdentifier = optionIdentifier.toLowerCase();
 
-    const animal = animals.find(({ code, name }) =>
-      code === pickedAnimal || name.toLowerCase() === pickedAnimal);
-
-    if(!animal)
+    const pickedOption = options.find(({ code, name }) =>
+      code === optionIdentifier || name.toLowerCase() === optionIdentifier);
+    if(!pickedOption)
       return discord.send('You cannot choose that animal.');
 
-    const sentMessage = await discord.send(`You chose **${animal.name}**.`
+    const reward = pickedOption.reward || wheelSpinConfig.reward;
+    if(!reward)
+      return;
+
+    const sentMessage = await discord.send(`You chose **${pickedOption.name}**.`
       + ' Spinning... <a:wheel:857186381583220756>');
 
     await new Promise(resolve => setTimeout(resolve, 4000));
 
-    const chosenAnimal = animals[Math.floor(Math.random() * animals.length)];
-    const won = animal.code === chosenAnimal.code;
+    const winningOption = options[Math.floor(Math.random() * options.length)];
+    const won = pickedOption.code === winningOption.code;
     if(won)
     {
       try
@@ -78,7 +83,7 @@ export const wheel: Command =
       }
     }
 
-    await sentMessage.edit(`The wheel stopped at **${chosenAnimal.name}**.`
+    await sentMessage.edit(`The wheel stopped at **${winningOption.name}**.`
       + ` You ${won ? `win __**${reward}**__ points!` : 'lose.'}`);
   },
 };

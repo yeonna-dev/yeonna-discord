@@ -33,7 +33,7 @@ dependencies:
   table: 6.8.0
   winston: 3.5.0
   winston-daily-rotate-file: 4.6.0_winston@3.5.0
-  yeonna-config: github.com/yeonna-dev/yeonna-config/cc1455dc0c225f7d47886a42b66eae1b69a03074
+  yeonna-config: github.com/yeonna-dev/yeonna-config/2d91c13fc99d1d6eb1065ece6497486eed259aa1
   yeonna-core: github.com/yeonna-dev/yeonna-core/29eeda8c9f92207f838901419c681a50d12abd98
 
 devDependencies:
@@ -310,7 +310,7 @@ packages:
       '@firebase/logger': 0.3.2
       '@firebase/util': 1.4.3
       '@firebase/webchannel-wrapper': 0.6.1
-      '@grpc/grpc-js': 1.5.5
+      '@grpc/grpc-js': 1.5.7
       '@grpc/proto-loader': 0.6.9
       node-fetch: 2.6.7
       tslib: 2.3.1
@@ -532,8 +532,8 @@ packages:
     resolution: {integrity: sha512-9FqhNjKQWpQ3fGnSOCovHOm+yhhiorKEqYLAfd525jWavunDJcx8rOW6i6ozAh+FbwcYMkL7b+3j4UR/30MpoQ==}
     dev: false
 
-  /@grpc/grpc-js/1.5.5:
-    resolution: {integrity: sha512-FTd27ItHlsSG/7hp62xgI9YnqSwRbHRSVmDVR8DwOoC+6t8JhHRXe2JL0U8N9GLc0jS0HrtEbO/KP5+G0ebjLQ==}
+  /@grpc/grpc-js/1.5.7:
+    resolution: {integrity: sha512-RAlSbZ9LXo0wNoHKeUlwP9dtGgVBDUbnBKFpfAv5iSqMG4qWz9um2yLH215+Wow1I48etIa1QMS+WAGmsE/7HQ==}
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.6.9
@@ -1421,7 +1421,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.1.2
+      minimatch: 3.0.4
       once: 1.4.0
       path-is-absolute: 1.0.1
     dev: false
@@ -1841,13 +1841,6 @@ packages:
     resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
     dependencies:
       brace-expansion: 1.1.11
-    dev: true
-
-  /minimatch/3.1.2:
-    resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
-    dependencies:
-      brace-expansion: 1.1.11
-    dev: false
 
   /minimist/1.2.5:
     resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==}
@@ -2326,7 +2319,7 @@ packages:
       jszip: 3.7.1
       rimraf: 3.0.2
       tmp: 0.2.1
-      ws: 8.5.0
+      ws: 8.4.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2338,7 +2331,7 @@ packages:
     dependencies:
       jszip: 3.7.1
       tmp: 0.2.1
-      ws: 8.5.0
+      ws: 8.4.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2806,19 +2799,6 @@ packages:
         optional: true
     dev: false
 
-  /ws/8.5.0:
-    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
-
   /xdg-basedir/4.0.0:
     resolution: {integrity: sha512-PSNhEJDejZYV7h50BohL09Er9VaIefr2LMAf3OEmpCkjOi34eYyQYAXUTjEQtZJTKcF0E2UKTh+osDLsgNim9Q==}
     engines: {node: '>=8'}
@@ -2872,10 +2852,10 @@ packages:
       nedb-promises: 5.0.3
     dev: false
 
-  github.com/yeonna-dev/yeonna-config/cc1455dc0c225f7d47886a42b66eae1b69a03074:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-config/tar.gz/cc1455dc0c225f7d47886a42b66eae1b69a03074}
+  github.com/yeonna-dev/yeonna-config/2d91c13fc99d1d6eb1065ece6497486eed259aa1:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-config/tar.gz/2d91c13fc99d1d6eb1065ece6497486eed259aa1}
     name: yeonna-config
-    version: 0.0.4
+    version: 0.0.5
     dependencies:
       firebase: 9.6.7
     transitivePeerDependencies:
