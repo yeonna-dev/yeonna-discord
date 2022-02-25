@@ -25,7 +25,7 @@ specifiers:
 dependencies:
   axios: 0.21.4
   cheerio: 1.0.0-rc.10
-  comtroller: github.com/esfox/comtroller/7777c7acacf38a440d97c93acf8aedfc72e8459e
+  comtroller: github.com/esfox/comtroller/495486712a7ead111c8da5b880460c3a32d38021
   discord.js: 13.6.0
   jsonfile: 6.1.0
   node-schedule: 2.1.0
@@ -2844,10 +2844,10 @@ packages:
     resolution: {integrity: sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==}
     dev: false
 
-  github.com/esfox/comtroller/7777c7acacf38a440d97c93acf8aedfc72e8459e:
-    resolution: {tarball: https://codeload.github.com/esfox/comtroller/tar.gz/7777c7acacf38a440d97c93acf8aedfc72e8459e}
+  github.com/esfox/comtroller/495486712a7ead111c8da5b880460c3a32d38021:
+    resolution: {tarball: https://codeload.github.com/esfox/comtroller/tar.gz/495486712a7ead111c8da5b880460c3a32d38021}
     name: comtroller
-    version: 0.0.9
+    version: 0.0.10
     dependencies:
       nedb-promises: 5.0.3
     dev: false
