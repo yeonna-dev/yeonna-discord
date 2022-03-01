@@ -18,7 +18,7 @@ export const emoteadd: Command =
     discord.startTyping();
 
     /* Add short delay to wait for message attachments to load. */
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
     let media = discord.getMediaFromMessage();
     if(!media)
