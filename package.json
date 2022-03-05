@@ -6,6 +6,7 @@
   "scripts": {
     "start": "tsc && node dist/start.js",
     "start-dev": "ts-node --transpile-only src/start.ts",
+    "build": "tsc",
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'",
     "update-core": "pnpm rm yeonna-core && pnpm i yeonna-dev/yeonna-core",
     "update-config": "pnpm rm yeonna-config && pnpm i yeonna-dev/yeonna-config",
