@@ -76,7 +76,7 @@ import { Log } from './utilities/logger';
       {
         for(const command in guildCommandAliases)
         {
-          const alias = guildCommandAliases[command].find(alias =>
+          const alias = guildCommandAliases[command].find((alias: string) =>
           {
             const contentWithoutPrefix = content.substring((guildPrefix || prefix).length);
             const [commandString] = contentWithoutPrefix.split(' ');

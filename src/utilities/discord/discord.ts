@@ -247,6 +247,11 @@ export class Discord
     return this.message.reply(text);
   }
 
+  replyEmbed(embed: MessageEmbed)
+  {
+    return this.message.reply({ embeds: [embed] });
+  }
+
   async send(text: string)
   {
     const sentMessage = await this.message.channel.send(text);
@@ -317,17 +322,31 @@ export class Discord
     return role.id;
   }
 
-  async assignRole(memberId: string, roleId: string)
+  async getRoles(memberId: string)
   {
-    const guild = this.message.guild;
-    if(!guild)
+    const member = await this.fetchGuildMember(memberId);
+    if(!member)
       return;
 
-    const member = await guild.members.fetch(memberId);
+    return member.roles.cache;
+  }
+
+  async assignRole(memberId: string, roleId: string)
+  {
+    const member = await this.fetchGuildMember(memberId);
     if(!member || !roleId)
       return;
 
     return member.roles.add(roleId);
+  }
+
+  async unassignRole(memberId: string, roleId: string)
+  {
+    const member = await this.fetchGuildMember(memberId);
+    if(!member || !roleId)
+      return;
+
+    return member.roles.remove(roleId);
   }
 
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -453,6 +472,7 @@ export class Discord
     timestamp,
     footer,
     image,
+    fields,
   }: {
     title?: string;
     description?: string;
@@ -468,9 +488,13 @@ export class Discord
       iconURL?: string;
     };
     image?: string;
+    fields?: {
+      name: string;
+      value: string;
+      inline?: boolean;
+    }[];
   }): MessageEmbed
   {
-
     const embed = new MessageEmbed();
 
     if(title)
@@ -493,6 +517,12 @@ export class Discord
 
     if(image)
       embed.setImage(image);
+
+    if(fields)
+    {
+      for(const { name, value, inline } of fields)
+        embed.addField(name, value, inline);
+    }
 
     return embed;
   }
