@@ -35,20 +35,12 @@ import { Log } from './utilities/logger';
     const guildId = discord.getGuildId();
     let content = discord.getMessageContent();
 
-    /*
-      If the command was done in a guild, get the guild's command prefix
-      and check if the message content starts with the guild's prefix.
-      If it does, replace the start of the message content (the prefix part)
-      with the global prefix to trigger the command.
-      If if starts with the global prefix, do not run the command.
-    */
     if(guildId)
     {
-      let guildPrefix;
+      let guildConfig;
       try
       {
-        const guildConfig = await Config.ofGuild(guildId);
-        guildPrefix = guildConfig?.prefix;
+        guildConfig = await Config.ofGuild(guildId);
       }
       catch(error)
       {
@@ -56,6 +48,14 @@ import { Log } from './utilities/logger';
         Log.error(error);
       }
 
+      /*
+        If the command was done in a guild, get the guild's command prefix
+        and check if the message content starts with the guild's prefix.
+        If it does, replace the start of the message content (the prefix part)
+        with the global prefix to trigger the command.
+        If if starts with the global prefix, do not run the command.
+      */
+      const guildPrefix = guildConfig?.prefix;
       if(guildPrefix)
       {
         if(content.startsWith(prefix))
@@ -63,6 +63,32 @@ import { Log } from './utilities/logger';
 
         if(content.startsWith(guildPrefix))
           content = content.replace(guildPrefix, prefix);
+      }
+
+      /*
+        If the command was done in a guild, get the guild's command aliases
+        and check if the command part of the message content starts with any
+        of the aliases. If it does, replace the command part of the message
+        content (the prefix part) with the matched alias to trigger the command.
+      */
+      const guildCommandAliases = guildConfig?.commandAliases;
+      if(guildCommandAliases)
+      {
+        for(const command in guildCommandAliases)
+        {
+          const alias = guildCommandAliases[command].find(alias =>
+          {
+            const contentWithoutPrefix = content.substring((guildPrefix || prefix).length);
+            const [commandString] = contentWithoutPrefix.split(' ');
+            return commandString === alias;
+          });
+
+          if(alias)
+          {
+            content = content.replace(alias, command);
+            break;
+          }
+        }
       }
     }
 
