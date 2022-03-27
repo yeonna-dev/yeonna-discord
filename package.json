@@ -8,8 +8,8 @@
     "start-dev": "ts-node --transpile-only src/start.ts",
     "build": "tsc",
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run start-dev'",
-    "update-core": "pnpm rm yeonna-core && pnpm i yeonna-dev/yeonna-core",
-    "update-config": "pnpm rm yeonna-config && pnpm i yeonna-dev/yeonna-config",
+    "update-core": "pnpm up -L yeonna-core",
+    "update-config": "pnpm up -L yeonna-config",
     "update-comtroller": "pnpm rm comtroller && pnpm i esfox/comtroller"
   },
   "author": "osairis100@gmail.com",
