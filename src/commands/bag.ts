@@ -9,7 +9,7 @@ import { Log } from '../utilities/logger';
 export const bag: Command =
 {
   name: 'bag',
-  aliases: ['b'],
+  aliases: ['b', 'items'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
     discord.startTyping();
