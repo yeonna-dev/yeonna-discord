@@ -322,13 +322,13 @@ export class Discord
     return role.id;
   }
 
-  async getRoles(memberId: string)
+  async getRoles(memberId: string, asCollection?: boolean)
   {
     const member = await this.fetchGuildMember(memberId);
     if(!member)
       return;
 
-    return member.roles.cache;
+    return asCollection ? member.roles : member.roles.cache;
   }
 
   async assignRole(memberId: string, roleId: string)

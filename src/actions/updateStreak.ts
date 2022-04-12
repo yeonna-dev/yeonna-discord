@@ -1,4 +1,5 @@
 import { parseParamsToArray } from 'comtroller';
+import { GuildMemberRoleManager } from 'discord.js';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 import { Discord } from '../utilities/discord';
@@ -102,35 +103,29 @@ export async function updateStreak({
   if(!roleKey)
     return;
 
-  const roleIndex = Number(roleKey);
-  const roleId = streaksRoles[roleIndex];
+  const newRoleId = streaksRoles[Number(roleKey)];
+  const previousRoleId = streaksRoles[Number(previousRoleKey)];
   try
   {
-    const roles = await discord.getRoles(userIdentifier);
+    const roles = await discord.getRoles(userIdentifier, true);
     if(!roles)
       return;
 
-    const currentRole = roles.find(({ name }) => name === previousRoleKey);
+    const rolesManager = roles as GuildMemberRoleManager;
+    const currentRole = rolesManager.cache.find(({ id }) => id === previousRoleId);
+
+    /* Assign the new streak role if there is no streak role yet. */
+    if(!currentRole)
+      return rolesManager.add(newRoleId);
+
+    const rolesToUnassign = Object.values(streaksRoles).filter(id => id !== newRoleId);
+
+    if(rolesToUnassign.length !== 0)
+      await rolesManager.remove(rolesToUnassign);
 
     /* Don't assign a new streak role if the supposed new streak role is not new. */
-    if(!currentRole)
-      return discord.assignRole(userIdentifier, roleId);
-
-    const rolesToUnassign = roles.values();
-    const roleUnassignPromises = [];
-    for(const roleToUnassign of rolesToUnassign)
-    {
-      if(roleToUnassign.name === roleKey || !roleKeys.includes(roleToUnassign.name))
-        continue;
-
-      roleUnassignPromises.push(discord.unassignRole(userIdentifier, roleToUnassign.id));
-    }
-
-    if(roleUnassignPromises.length !== 0)
-      await Promise.all(roleUnassignPromises);
-
-    if(currentRole.name !== roleKey)
-      await discord.assignRole(userIdentifier, roleId);
+    if(currentRole.id !== newRoleId)
+      await rolesManager.add(newRoleId);
   }
   catch(error)
   {
