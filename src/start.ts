@@ -76,16 +76,14 @@ import { Log } from './utilities/logger';
       {
         for(const command in guildCommandAliases)
         {
-          const alias = guildCommandAliases[command].find((alias: string) =>
-          {
-            const contentWithoutPrefix = content.substring((guildPrefix || prefix).length);
-            const [commandString] = contentWithoutPrefix.split(' ');
-            return commandString === alias;
-          });
+          const contentWithoutPrefix = content.substring((guildPrefix || prefix).length);
+          const [commandString] = contentWithoutPrefix.split(' ');
+          const alias = guildCommandAliases[command]
+            .find((alias: string) => commandString.toLowerCase() === alias);
 
           if(alias)
           {
-            content = content.replace(alias, command);
+            content = content.replace(commandString, command);
             break;
           }
         }
