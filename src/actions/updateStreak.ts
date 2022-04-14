@@ -77,13 +77,21 @@ export async function updateStreak({
 
   const previousCount = previous?.count || 0;
   const previousCountString = `${previousCount} ${streaksName}`;
-
   const currentCountString = `${current.count} ${streaksName}`;
 
-  discord.reply(
-    `Updated your streak from`
-    + ` ${previousCountString} ➡️ **${currentCountString}**`
-  );
+  const replyEmbed = discord.createDiscordEmbed({
+    title: `Updated your streak from ${previousCountString} ➡️ __${currentCountString}__`,
+  });
+
+  /* Temporary short notice for a server. */
+  if(discordGuildId === '696448387964469339')
+    replyEmbed.setDescription(
+      '\n\n\nIf your current streak is inaccurate, please adjust it accordingly using `!set (number)`.'
+      + '\n[Please read this post in #announcements]'
+      + '(https://discord.com/channels/696448387964469339/761613806933245982/963645083717091338)'
+    );
+
+  discord.replyEmbed(replyEmbed);
 
   const streakCount = current.count;
   if(!streaksRoles)
