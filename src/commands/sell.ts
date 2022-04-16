@@ -25,16 +25,17 @@ export const sell: Command =
     {
       switch(sellType)
       {
-        case SellTypes.All:
+        case SellTypes.All: {
           discord.startTyping();
 
-          const soldItemsCost = await Core.Items.sellAllItems({ userIdentifier, discordGuildId });
-          discord.reply(`Sold all items for **${soldItemsCost}** points.`);
+          const { sellPrice } = await Core.Items.sellAllItems({ userIdentifier, discordGuildId });
+          discord.reply(`Sold all items for **${sellPrice}** points.`);
           break;
+        }
 
         case SellTypes.Duplicates:
         case SellTypes.Dup:
-        case SellTypes.Dups:
+        case SellTypes.Dups: {
           discord.startTyping();
 
           const { sellPrice } = await Core.Items.sellDuplicateItems({
@@ -44,6 +45,7 @@ export const sell: Command =
 
           discord.reply(`Sold all excess duplicate items for **${sellPrice}** points.`);
           break;
+        }
       }
     }
     catch(error)
