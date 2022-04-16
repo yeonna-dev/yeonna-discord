@@ -34,7 +34,7 @@ export const bag: Command =
     let totalAmount = 0;
     let totalCost = 0;
     const inventoryTableData = [];
-    for(const { name, amount, price } of items)
+    for(const { name, amount, price, category } of items)
     {
       if(!price || !name) continue;
 
@@ -42,15 +42,16 @@ export const bag: Command =
       totalCost += amount * price;
       inventoryTableData.push([
         name.length >= 20 ? `${name.substring(0, 19)}…` : name,
+        category,
         amount,
         amount * price,
       ]);
     }
 
     const tableData = [
-      ['Item', 'Amount', 'Cost'],
+      ['Item', 'Category', 'Amount', 'Cost'],
       ...inventoryTableData,
-      ['TOTAL', totalAmount, totalCost],
+      ['', 'TOTAL', totalAmount, totalCost],
     ];
 
     const bag = '```ml\n'
