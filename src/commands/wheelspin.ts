@@ -40,13 +40,13 @@ export const wheelspin: Command =
     if(!wheelSpinConfig || !options)
       return;
 
+    let [optionIdentifier] = parseParamsToArray(params);
+    if(!optionIdentifier)
+      return discord.send('Please choose a valid option.');
+
     const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
     if(cooldown)
       return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
-
-    let [optionIdentifier] = parseParamsToArray(params);
-    if(!optionIdentifier)
-      return discord.send('Please choose an animal.');
 
     optionIdentifier = optionIdentifier.toLowerCase();
 
