@@ -11,6 +11,7 @@ import { handleReactions } from './events/reactions';
 
 import { DiscordClient, Discord } from './libs/discord';
 import { Log } from './libs/logger';
+import { Spotify } from './libs/spotify';
 
 (async () =>
 {
@@ -107,4 +108,7 @@ import { Log } from './libs/logger';
   handleReactions(bot);
 
   startJobs(bot);
+
+  /* Start the Spotify Tokens Handler server */
+  Spotify.initialize();
 })();
