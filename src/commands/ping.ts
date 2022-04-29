@@ -1,6 +1,6 @@
 import { Command } from 'comtroller';
 
-import { Discord } from '../utilities/discord';
+import { Discord } from '../libs/discord';
 
 export const ping: Command =
 {

@@ -5,8 +5,8 @@ import { Core } from 'yeonna-core';
 import { cooldowns, checkCooldownInGuild } from '../cooldowns';
 import { getTimeLeft } from '../helpers/getTimeLeft';
 
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 const name = 'wheelspin';
 

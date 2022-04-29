@@ -2,7 +2,7 @@ import { Command } from 'comtroller';
 
 import { getTop } from '../actions/getTop';
 
-import { Discord } from '../utilities/discord';
+import { Discord } from '../libs/discord';
 
 export const collectiblestop: Command =
 {

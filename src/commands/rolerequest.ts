@@ -2,9 +2,9 @@ import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
 import { Config } from 'yeonna-config';
 
-import { Discord } from '../utilities/discord';
-import colors from '../utilities/color-names.json';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import colors from '../libs/color-names.json';
+import { Log } from '../libs/logger';
 
 export const rolerequest: Command =
 {

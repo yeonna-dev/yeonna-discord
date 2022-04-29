@@ -2,9 +2,9 @@ import { Command } from 'comtroller';
 import sharp from 'sharp';
 import axios from 'axios';
 
-import { Log } from '../utilities/logger';
+import { Log } from '../libs/logger';
 
-import { Discord } from '../utilities/discord';
+import { Discord } from '../libs/discord';
 
 // TODO: Update responses.
 export const resizetoemote: Command =

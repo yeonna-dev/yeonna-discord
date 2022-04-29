@@ -1,5 +1,5 @@
 import { Guard } from 'comtroller';
-import { Discord } from '../utilities/discord';
+import { Discord } from '../libs/discord';
 
 export const isDeveloperOnly: Guard = async ({ discord }: { discord: Discord, }) =>
 {

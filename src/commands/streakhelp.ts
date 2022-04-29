@@ -1,7 +1,7 @@
 import { Command } from 'comtroller';
 import { Config } from 'yeonna-config';
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 export const streakhelp: Command =
 {

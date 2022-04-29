@@ -5,8 +5,8 @@ import { getGuildChannelParameter } from '../actions/getGuildChannelParameter';
 
 import { noManageChannelPermissions } from '../guards/discordMemberPermissions';
 
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 // TODO: Update responses.
 export const reactrepostchannel: Command =

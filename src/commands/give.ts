@@ -2,8 +2,8 @@ import { Command, parseParamsToArray } from 'comtroller';
 
 import { Core, NotEnoughPoints } from 'yeonna-core';
 
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 import { isNumber } from '../helpers/isNumber';
 

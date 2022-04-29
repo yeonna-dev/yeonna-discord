@@ -2,8 +2,8 @@ import { parseParamsToArray } from 'comtroller';
 import { GuildMemberRoleManager } from 'discord.js';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 export async function updateStreak({
   discord,

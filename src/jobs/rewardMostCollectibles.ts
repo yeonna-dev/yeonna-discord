@@ -3,8 +3,8 @@ import { Config } from 'yeonna-config';
 import { Client } from 'discord.js';
 import schedule from 'node-schedule';
 
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 export class RewardMostCollectibles
 {

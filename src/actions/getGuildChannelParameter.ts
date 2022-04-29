@@ -1,4 +1,4 @@
-import { Discord } from '../utilities/discord';
+import { Discord } from '../libs/discord';
 
 export function getGuildChannelParameter(
   discord: Discord,

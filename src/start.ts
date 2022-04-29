@@ -9,8 +9,8 @@ import { isDisabled } from './guards/isDisabled';
 import { startJobs } from './jobs';
 import { handleReactions } from './events/reactions';
 
-import { DiscordClient, Discord } from './utilities/discord';
-import { Log } from './utilities/logger';
+import { DiscordClient, Discord } from './libs/discord';
+import { Log } from './libs/logger';
 
 (async () =>
 {

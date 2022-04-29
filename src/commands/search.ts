@@ -3,8 +3,8 @@ import { Core } from 'yeonna-core';
 
 import { cooldowns, checkCooldownInGuild } from '../cooldowns';
 
-import { Discord } from '../utilities/discord';
-import { Log } from '../utilities/logger';
+import { Discord } from '../libs/discord';
+import { Log } from '../libs/logger';
 
 import { getTimeLeft } from '../helpers/getTimeLeft';
 

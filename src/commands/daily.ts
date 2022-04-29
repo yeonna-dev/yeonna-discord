@@ -2,7 +2,7 @@ import { Command } from 'comtroller';
 
 import { updatePoints } from '../actions/updatePoints';
 
-import { Discord } from '../utilities/discord';
+import { Discord } from '../libs/discord';
 
 import { checkCooldownInGuild, cooldowns } from '../cooldowns';
 
