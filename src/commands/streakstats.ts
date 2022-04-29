@@ -46,14 +46,6 @@ export const streakstats: Command =
         ),
       });
 
-      /* Temporary short notice for a server. */
-      if(discordGuildId === '696448387964469339')
-        embed.addField('‍',
-          '\n\n\nIf your current streak is inaccurate, please adjust it accordingly using `!set (number)`.'
-          + '\n[Please read this post in #announcements]'
-          + '(https://discord.com/channels/696448387964469339/761613806933245982/963645083717091338)'
-        );
-
       discord.replyEmbed(embed);
     }
     catch(error)
