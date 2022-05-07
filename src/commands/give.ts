@@ -54,7 +54,7 @@ export const give: Command =
         discordGuildId,
       });
 
-      const memberDisplayName = await discord.getGuildMemberDisplayName();
+      const memberDisplayName = await discord.getGuildMemberDisplayName(toUserIdentifier);
       discord.send(`Transferred ${amount} points to ${memberDisplayName}.`);
     }
     catch(error: any)
