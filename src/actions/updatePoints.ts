@@ -1,10 +1,7 @@
 import { parseParamsToArray } from 'comtroller';
 import { Core } from 'yeonna-core';
-
-import { Discord } from '../libs/discord';
-
 import { isNumber } from '../helpers/isNumber';
-
+import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
 // TODO: Update responses
@@ -68,7 +65,7 @@ export async function updatePoints({
 
   try
   {
-    await Core.Users.updatePoints({
+    await Core.Obtainables.updatePoints({
       userIdentifier: mentionedMemberId,
       amount,
       discordGuildId,

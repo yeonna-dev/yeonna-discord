@@ -1,9 +1,7 @@
-import { Core } from 'yeonna-core';
-import { Config } from 'yeonna-config';
 import { Client } from 'discord.js';
 import schedule from 'node-schedule';
-
-import { Discord } from '../libs/discord';
+import { Config } from 'yeonna-config';
+import { Core } from 'yeonna-core';
 import { Log } from '../libs/logger';
 
 export class RewardMostCollectibles
@@ -55,13 +53,15 @@ export class RewardMostCollectibles
       if(!mostCollectibles) continue;
 
       guildsToReward.push(discordGuildId);
-      topCollectiblesPromises.push(Core.Users.getTopCollectibles({
+      topCollectiblesPromises.push(Core.Obtainables.getTopCollectibles({
         count: mostCollectibles.prizes.length,
         discordGuildId,
       }));
     }
 
     const topCollectibles = await Promise.all(topCollectiblesPromises);
+    if(!topCollectibles)
+      return;
 
     const updateUserPointsPromises: any = [];
     const messages: any = [];
@@ -77,14 +77,18 @@ export class RewardMostCollectibles
       if(!channelId || !prizes) continue;
 
       const winners = topCollectibles[i];
+      if(!winners)
+        continue;
+
       const winnersText = [];
       for(const i in winners)
       {
-        const { discordId } = winners[i];
+        const index = Number(i);
+        const { discordId } = winners[index];
         if(!discordId) continue;
 
-        const reward = prizes[i];
-        updateUserPointsPromises.push(Core.Users.updatePoints({
+        const reward = prizes[index];
+        updateUserPointsPromises.push(Core.Obtainables.updatePoints({
           userIdentifier: discordId,
           discordGuildId,
           amount: reward,

@@ -1,12 +1,9 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
-
-import { cooldowns, checkCooldownInGuild } from '../cooldowns';
-
+import { checkCooldownInGuild, cooldowns } from '../cooldowns';
+import { getTimeLeft } from '../helpers/getTimeLeft';
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
-
-import { getTimeLeft } from '../helpers/getTimeLeft';
 
 const name = 'search';
 
@@ -55,7 +52,7 @@ export const search: Command =
     let collections;
     try
     {
-      collections = await Core.Items.checkForCollection({ userIdentifier, discordGuildId });
+      collections = await Core.Items.checkForCollections({ userIdentifier, discordGuildId });
     }
     catch(error)
     {
@@ -77,7 +74,7 @@ export const search: Command =
       totalBonus += collection.fixedBonus || 0;
     }
 
-    await Core.Users.updatePoints({
+    await Core.Obtainables.updatePoints({
       userIdentifier,
       amount: totalBonus,
       discordGuildId,

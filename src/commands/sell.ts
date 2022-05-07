@@ -1,6 +1,5 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Core } from 'yeonna-core';
-
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
@@ -28,7 +27,11 @@ export const sell: Command =
         case SellTypes.All: {
           discord.startTyping();
 
-          const { sellPrice } = await Core.Items.sellAllItems({ userIdentifier, discordGuildId });
+          const items = await Core.Items.sellAllItems({ userIdentifier, discordGuildId });
+          if(!items)
+            throw new Error();
+
+          const { sellPrice } = items;
           discord.reply(`Sold all items for **${sellPrice}** points.`);
           break;
         }
@@ -38,11 +41,15 @@ export const sell: Command =
         case SellTypes.Dups: {
           discord.startTyping();
 
-          const { sellPrice } = await Core.Items.sellDuplicateItems({
+          const items = await Core.Items.sellDuplicateItems({
             userIdentifier,
             discordGuildId,
           });
 
+          if(!items)
+            throw new Error();
+
+          const { sellPrice } = items;
           discord.reply(`Sold all excess duplicate items for **${sellPrice}** points.`);
           break;
         }
@@ -55,4 +62,3 @@ export const sell: Command =
     }
   },
 };
-

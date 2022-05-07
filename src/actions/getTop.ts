@@ -1,5 +1,4 @@
 import { Core } from 'yeonna-core';
-
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
@@ -11,11 +10,11 @@ export async function getTop(discord: Discord, collectibles?: boolean)
   const count = 10;
   const discordGuildId = discord.getGuildId();
   const top = await (collectibles
-    ? Core.Users.getTopCollectibles({ count, discordGuildId })
-    : Core.Users.getTopPoints({ count, discordGuildId })
+    ? Core.Obtainables.getTopCollectibles({ count, discordGuildId })
+    : Core.Obtainables.getTopPoints({ count, discordGuildId })
   );
 
-  if(top.length === 0)
+  if(!top || top.length === 0)
     return discord.send('No top users.');
 
   let board = '';

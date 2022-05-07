@@ -1,11 +1,8 @@
 import { Command, parseParamsToArray } from 'comtroller';
-
 import { Core, NotEnoughPoints } from 'yeonna-core';
-
+import { isNumber } from '../helpers/isNumber';
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
-
-import { isNumber } from '../helpers/isNumber';
 
 // TODO: Update responses
 export const give: Command =
@@ -50,7 +47,7 @@ export const give: Command =
     const amount = parseFloat(amountString);
     try
     {
-      await Core.Users.transferUserPoints({
+      await Core.Obtainables.transferUserPoints({
         fromUserIdentifier: authorId,
         toUserIdentifier,
         amount,

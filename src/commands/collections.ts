@@ -1,6 +1,5 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
-
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
@@ -19,7 +18,7 @@ export const collections: Command =
         discordGuildId: discord.getGuildId(),
       });
 
-      if(collections.length === 0)
+      if(!collections || collections.length === 0)
         return discord.send('You have not completed any collections yet.');
 
       let collectionNames = [];

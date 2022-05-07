@@ -1,10 +1,8 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
-
-import { cooldowns, checkCooldownInGuild } from '../cooldowns';
+import { checkCooldownInGuild, cooldowns } from '../cooldowns';
 import { getTimeLeft } from '../helpers/getTimeLeft';
-
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
@@ -70,7 +68,7 @@ export const wheelspin: Command =
     {
       try
       {
-        await Core.Users.updatePoints({
+        await Core.Obtainables.updatePoints({
           userIdentifier,
           discordGuildId,
           amount: reward,

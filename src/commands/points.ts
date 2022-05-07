@@ -1,6 +1,5 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Core } from 'yeonna-core';
-
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
@@ -36,7 +35,7 @@ export const points: Command =
     try
     {
       const discordGuildId = discord.getGuildId();
-      const points = await Core.Users.getPoints({ userIdentifier, discordGuildId });
+      const points = await Core.Obtainables.getPoints({ userIdentifier, discordGuildId });
       discord.send(points?.toString() || '0');
     }
     catch(error)

@@ -1,6 +1,5 @@
 import { Command } from 'comtroller';
 import { Core } from 'yeonna-core';
-
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
 
@@ -13,7 +12,7 @@ export const collectibles: Command =
     discord.startTyping();
     try
     {
-      const collectibles = await Core.Users.getCollectibles({
+      const collectibles = await Core.Obtainables.getCollectibles({
         userIdentifier: discord.getAuthorId(),
         discordGuildId: discord.getGuildId(),
       });

@@ -1,13 +1,9 @@
 import { Command, parseParamsToArray } from 'comtroller';
-
 import { Core, NotEnoughCollectibles } from 'yeonna-core';
-
+import { checkCooldownInGuild, cooldowns } from '../cooldowns';
+import { getTimeLeft } from '../helpers/getTimeLeft';
 import { Discord } from '../libs/discord';
 import { Log } from '../libs/logger';
-
-import { checkCooldownInGuild, cooldowns } from '../cooldowns';
-
-import { getTimeLeft } from '../helpers/getTimeLeft';
 
 /* Add 1 hour cooldown for getting collectibles. */
 cooldowns.add('collectible-get', 3600000, true);
@@ -42,7 +38,7 @@ export const collectible: Command =
     if(toGet)
     {
       /* Claim collectible. */
-      await Core.Users.updateCollectibles({
+      await Core.Obtainables.updateCollectibles({
         userIdentifier,
         discordGuildId,
         amount: 1,
@@ -74,7 +70,7 @@ export const collectible: Command =
     try
     {
       /* Give collectible. */
-      await Core.Users.transferUserCollectibles({
+      await Core.Obtainables.transferUserCollectibles({
         fromUserIdentifier: userIdentifier,
         toUserIdentifier: mentionedMemberId,
         amount: 1,

@@ -116,10 +116,12 @@ export async function updateStreak({
 
     /* Assign the new streak role if there is no streak role yet. */
     if(!currentRole)
-      return rolesManager.add(newRoleId);
+    {
+      await rolesManager.add(newRoleId);
+      return;
+    }
 
     const rolesToUnassign = Object.values(streaksRoles).filter(id => id !== newRoleId);
-
     if(rolesToUnassign.length !== 0)
       await rolesManager.remove(rolesToUnassign);
 
