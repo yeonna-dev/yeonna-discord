@@ -37,7 +37,7 @@ dependencies:
   table: 6.8.0
   winston: 3.5.0
   winston-daily-rotate-file: 4.6.0_winston@3.5.0
-  yeonna-config: github.com/yeonna-dev/yeonna-config/3776f0c98616aab7124ecf09cae63f5192c1e680
+  yeonna-config: github.com/yeonna-dev/yeonna-config/b250178d9aa8cf7cfa58bbb30ed49911d99927ed
   yeonna-core: github.com/yeonna-dev/yeonna-core/9104f32dddf2b4f684d69e2ef4b9e650142ea2d9
 
 devDependencies:
@@ -2163,8 +2163,8 @@ packages:
       ci-info: 2.0.0
     dev: true
 
-  /is-core-module/2.8.1:
-    resolution: {integrity: sha512-SdNCUs284hr40hFTFP6l0IfZ/RSrMXF3qgoRHd3/79unUTvrFO/JoXwkGm+5J/Oe3E/b5GsnG330uUNgRpu1PA==}
+  /is-core-module/2.9.0:
+    resolution: {integrity: sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==}
     dependencies:
       has: 1.0.3
 
@@ -2512,7 +2512,7 @@ packages:
     resolution: {integrity: sha512-LtHvNIBgOy5mO8mPEUtkCW/YCRWYEKshIvqhe1GHHyXEHEB5mgICyYnAcl4qan3uFeRROErKGzatFHPf6kDxWw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.3.7
+      semver: 7.3.5
     dev: false
 
   /node-addon-api/4.3.0:
@@ -2951,7 +2951,7 @@ packages:
     resolution: {integrity: sha512-Hhtrw0nLeSrFQ7phPp4OOcVjLPIeMnRlr5mcnVuMe7M/7eBn98A3hmFRLoFo3DLZkivSYwhRUJTyPyWAk56WLw==}
     hasBin: true
     dependencies:
-      is-core-module: 2.8.1
+      is-core-module: 2.9.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
@@ -3541,7 +3541,7 @@ packages:
   /wide-align/1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 4.2.3
+      string-width: 1.0.2
     dev: false
 
   /widest-line/3.1.0:
@@ -3698,10 +3698,10 @@ packages:
       - supports-color
     dev: false
 
-  github.com/yeonna-dev/yeonna-config/3776f0c98616aab7124ecf09cae63f5192c1e680:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-config/tar.gz/3776f0c98616aab7124ecf09cae63f5192c1e680}
+  github.com/yeonna-dev/yeonna-config/b250178d9aa8cf7cfa58bbb30ed49911d99927ed:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-config/tar.gz/b250178d9aa8cf7cfa58bbb30ed49911d99927ed}
     name: yeonna-config
-    version: 0.0.6
+    version: 0.0.7
     prepare: true
     requiresBuild: true
     dependencies:

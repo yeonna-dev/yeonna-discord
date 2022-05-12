@@ -1,7 +1,7 @@
 import { MessageReaction, PartialMessageReaction, TextChannel } from 'discord.js';
 import { Config } from 'yeonna-config';
-
 import { Log } from '../../../libs/logger';
+
 
 const reactRepostWebhookName = 'Yeonna - React Repost';
 
@@ -12,6 +12,7 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   if(!guildId)
     return;
 
+  /* Get the react repost config. */
   let reactRepostConfig;
   try
   {
@@ -23,31 +24,63 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
     Log.error(error);
   }
 
-  if(!reactRepostConfig)
+  const { emote, count, channel, approval } = reactRepostConfig || {};
+  const { emote: approvalEmote, approvers = [] } = approval || {};
+  const reactionChannelId = reaction.message.channelId;
+
+  /* Do nothing if there is no react repost emote, count or channel,
+    or if the reaction is made in the react repost channel. */
+  if(!emote || !count || !channel || reactionChannelId === channel)
     return;
 
-  let reactCount;
+  const reactionEmote = reaction.emoji.toString();
+  if(![emote, approvalEmote].includes(reactionEmote))
+    return;
+
+  /* Get all the reactions of the message where a reaction was added. */
+  let reactions;
   try
   {
-    const react = await reaction.fetch();
-    reactCount = react.count;
+    const message = await reaction.message.fetch();
+    reactions = message.reactions.cache;
   }
   catch(error: any)
   {
     Log.error(error);
   }
 
-  if(!reactCount || reactCount !== reactRepostConfig.count)
+  if(!reactions)
     return;
 
-  const reactRepostChannel = reactRepostConfig.channel;
-  if(!reactRepostChannel)
+  /* Get the count of the reactions that have the emote as the react repost emote. */
+  let countedReactionsCount = reactions
+    .filter(({ emoji }) => emoji.toString() === emote).size;
+
+
+  /* If the approval emote is the same as the react repost emote,
+  deduct 1 to the counted reaction count. */
+  if(approvalEmote === emote)
+    countedReactionsCount--;
+
+  /* Do nothing if the number of react repost emotes is less than the required count to repost. */
+  if(countedReactionsCount < count)
     return;
+
+  /* If the react repost requires approval, check if there has been
+  at least one of the approval emote in the reactions. */
+  const needsApproval = approvers.length !== 0 && !!approvalEmote;
+  if(needsApproval)
+  {
+    const isApprovalEmote = reactionEmote === approvalEmote;
+    const hasApprover = reaction.users.cache.some(({ id }) => approvers.includes(id));
+    if(!isApprovalEmote || !hasApprover)
+      return;
+  }
 
   let repostWebhook;
   try
   {
-    const repostChannel = await reaction.client.channels.fetch(reactRepostChannel) as TextChannel;
+    const repostChannel = await reaction.client.channels.fetch(channel) as TextChannel;
     if(!repostChannel?.isText())
       return;
 
@@ -69,10 +102,12 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   if(!repostWebhook || !member)
     return;
 
+  /* Include any attachments to the message to repost. */
   const attachmentFiles = [];
   for(const { url } of attachments.toJSON())
     attachmentFiles.push(url);
 
+  /* Repost the message on the react repost channel using a webhook. */
   try
   {
     await repostWebhook.send({

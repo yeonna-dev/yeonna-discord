@@ -5,7 +5,7 @@
   "main": "dist/discord.js",
   "scripts": {
     "start": "tsc && node dist/start.js",
-    "dev": "tsnd --transpile-only --respawn --files src/start.ts",
+    "dev": "tsnd --transpile-only --respawn --rs --files src/start.ts",
     "build": "tsc",
     "update-core": "pnpm up -L yeonna-core",
     "update-config": "pnpm up -L yeonna-config",
