@@ -1,17 +1,13 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import { Comtroller } from 'comtroller';
+import dotenv from 'dotenv';
 import { Config } from 'yeonna-config';
-
 import { loadCommands } from './commands';
+import { handleReactions } from './events/reactions';
 import { isDisabled } from './guards/isDisabled';
 import { startJobs } from './jobs';
-import { handleReactions } from './events/reactions';
-
-import { DiscordClient, Discord } from './libs/discord';
+import { Discord, DiscordClient } from './libs/discord';
 import { Log } from './libs/logger';
-import { Spotify } from './libs/spotify';
+dotenv.config();
 
 (async () =>
 {
@@ -110,5 +106,5 @@ import { Spotify } from './libs/spotify';
   startJobs(bot);
 
   /* Start the Spotify Tokens Handler server */
-  Spotify.initialize();
+  // Spotify.initialize();
 })();
