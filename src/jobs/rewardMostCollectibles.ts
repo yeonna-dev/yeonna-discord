@@ -63,18 +63,23 @@ export class RewardMostCollectibles
     if(!topCollectibles)
       return;
 
-    const updateUserPointsPromises: any = [];
-    const messages: any = [];
+    /* Create the promises that will update the points of the winners,
+      which will be executed in parallel. */
+    const updateUserPointsPromises: Promise<unknown>[] = [];
+    const resetCollectiblesPromises: Promise<unknown>[] = [];
+    const messages: { channelId: string, message: string, }[] = [];
     for(const i in topCollectibles)
     {
       const discordGuildId = guildsToReward[i];
       const discordGuild = config[discordGuildId];
       const settings = discordGuild.mostCollectiblesReward;
-      if(!settings) continue;
+      if(!settings)
+        continue;
 
       const channelId = settings.channel;
       const prizes = settings.prizes;
-      if(!channelId || !prizes) continue;
+      if(!channelId || !prizes)
+        continue;
 
       const winners = topCollectibles[i];
       if(!winners)
@@ -85,7 +90,8 @@ export class RewardMostCollectibles
       {
         const index = Number(i);
         const { discordId } = winners[index];
-        if(!discordId) continue;
+        if(!discordId)
+          continue;
 
         const reward = prizes[index];
         updateUserPointsPromises.push(Core.Obtainables.updatePoints({
@@ -100,19 +106,28 @@ export class RewardMostCollectibles
 
       // TODO: Update message
       if(winners.length > 0)
-        messages.push({ channelId, mesesage: `Winners\n${winnersText.join('\n')}` });
+        messages.push({ channelId, message: `Winners\n${winnersText.join('\n')}` });
+
+      /* Reset the collectibles of all users in each guild. */
+      resetCollectiblesPromises.push(Core.Obtainables.resetCollectibles({
+        discordGuildId,
+      }));
     }
 
-    if(updateUserPointsPromises.length > 0)
-      await Promise.all(updateUserPointsPromises);
 
-    for(const { channelId, mesesage } of messages)
+    if(updateUserPointsPromises.length > 0)
+      await Promise.all([
+        ...updateUserPointsPromises,
+        ...resetCollectiblesPromises,
+      ]);
+
+    for(const { channelId, message } of messages)
     {
       try
       {
         const channel = await this.client.channels.fetch(channelId);
         if(channel && channel.type === 'GUILD_TEXT')
-          channel.send(mesesage);
+          channel.send(message);
       }
       catch(error)
       {

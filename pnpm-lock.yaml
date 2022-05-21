@@ -38,7 +38,7 @@ dependencies:
   winston: 3.5.0
   winston-daily-rotate-file: 4.6.0_winston@3.5.0
   yeonna-config: github.com/yeonna-dev/yeonna-config/b250178d9aa8cf7cfa58bbb30ed49911d99927ed
-  yeonna-core: github.com/yeonna-dev/yeonna-core/9104f32dddf2b4f684d69e2ef4b9e650142ea2d9
+  yeonna-core: github.com/yeonna-dev/yeonna-core/1fd83cffdadd47598f7107962c225192c48bb239
 
 devDependencies:
   '@types/node': 15.14.9
@@ -962,7 +962,7 @@ packages:
     dev: false
 
   /@protobufjs/aspromise/1.1.2:
-    resolution: {integrity: sha1-m4sMxmPWaafY9vXQiToU00jzD78=}
+    resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
     dev: false
 
   /@protobufjs/base64/1.1.2:
@@ -974,34 +974,34 @@ packages:
     dev: false
 
   /@protobufjs/eventemitter/1.1.0:
-    resolution: {integrity: sha1-NVy8mLr61ZePntCV85diHx0Ga3A=}
+    resolution: {integrity: sha512-j9ednRT81vYJ9OfVuXG6ERSTdEL1xVsNgqpkxMsbIabzSo3goCjDIveeGv5d03om39ML71RdmrGNjG5SReBP/Q==}
     dev: false
 
   /@protobufjs/fetch/1.1.0:
-    resolution: {integrity: sha1-upn7WYYUr2VwDBYZ/wbUVLDYTEU=}
+    resolution: {integrity: sha512-lljVXpqXebpsijW71PZaCYeIcE5on1w5DlQy5WH6GLbFryLUrBD4932W/E2BSpfRJWseIL4v/KPgBFxDOIdKpQ==}
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/inquire': 1.1.0
     dev: false
 
   /@protobufjs/float/1.0.2:
-    resolution: {integrity: sha1-Xp4avctz/Ap8uLKR33jIy9l7h9E=}
+    resolution: {integrity: sha512-Ddb+kVXlXst9d+R9PfTIxh1EdNkgoRe5tOX6t01f1lYWOvJnSPDBlG241QLzcyPdoNTsblLUdujGSE4RzrTZGQ==}
     dev: false
 
   /@protobufjs/inquire/1.1.0:
-    resolution: {integrity: sha1-/yAOPnzyQp4tyvwRQIKOjMY48Ik=}
+    resolution: {integrity: sha512-kdSefcPdruJiFMVSbn801t4vFK7KB/5gd2fYvrxhuJYg8ILrmn9SKSX2tZdV6V+ksulWqS7aXjBcRXl3wHoD9Q==}
     dev: false
 
   /@protobufjs/path/1.1.2:
-    resolution: {integrity: sha1-bMKyDFya1q0NzP0hynZz2Nf79o0=}
+    resolution: {integrity: sha512-6JOcJ5Tm08dOHAbdR3GrvP+yUUfkjG5ePsHYczMFLq3ZmMkAD98cDgcT2iA1lJ9NVwFd4tH/iSSoe44YWkltEA==}
     dev: false
 
   /@protobufjs/pool/1.1.0:
-    resolution: {integrity: sha1-Cf0V8tbTq/qbZbw2ZQbWrXhG/1Q=}
+    resolution: {integrity: sha512-0kELaGSIDBKvcgS4zkjz1PeddatrjYcmMWOlAuAPwAeccUrPHdUqo/J6LiymHHEiJT5NrF1UVwxY14f+fy4WQw==}
     dev: false
 
   /@protobufjs/utf8/1.1.0:
-    resolution: {integrity: sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=}
+    resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
   /@sapphire/async-queue/1.2.0:
@@ -1157,7 +1157,7 @@ packages:
     dev: false
 
   /archy/1.0.0:
-    resolution: {integrity: sha1-+cjBN1fMHde8N5rHeyxipcKGjEA=}
+    resolution: {integrity: sha512-Xg+9RwCg/0p32teKdGMPTPnVXKD0w3DfHnFTficozsAgsvq2XenPJq/MYpzzQ/v8zrOyJn6Ds39VA4JIDwFfqw==}
     dev: false
 
   /are-we-there-yet/1.1.7:
@@ -2512,7 +2512,7 @@ packages:
     resolution: {integrity: sha512-LtHvNIBgOy5mO8mPEUtkCW/YCRWYEKshIvqhe1GHHyXEHEB5mgICyYnAcl4qan3uFeRROErKGzatFHPf6kDxWw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.3.5
+      semver: 7.3.7
     dev: false
 
   /node-addon-api/4.3.0:
@@ -3541,7 +3541,7 @@ packages:
   /wide-align/1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 1.0.2
+      string-width: 4.2.3
     dev: false
 
   /widest-line/3.1.0:
@@ -3712,10 +3712,10 @@ packages:
       - utf-8-validate
     dev: false
 
-  github.com/yeonna-dev/yeonna-core/9104f32dddf2b4f684d69e2ef4b9e650142ea2d9:
-    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/9104f32dddf2b4f684d69e2ef4b9e650142ea2d9}
+  github.com/yeonna-dev/yeonna-core/1fd83cffdadd47598f7107962c225192c48bb239:
+    resolution: {tarball: https://codeload.github.com/yeonna-dev/yeonna-core/tar.gz/1fd83cffdadd47598f7107962c225192c48bb239}
     name: yeonna-core
-    version: 0.0.22
+    version: 0.0.23
     prepare: true
     requiresBuild: true
     dependencies:
