@@ -2,7 +2,6 @@ import { MessageReaction, PartialMessageReaction, TextChannel } from 'discord.js
 import { Config } from 'yeonna-config';
 import { Log } from '../../../libs/logger';
 
-
 const reactRepostWebhookName = 'Yeonna - React Repost';
 
 /* This feature uses webhooks to repost messages in the guild's react repost channel. */
@@ -24,25 +23,29 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
     Log.error(error);
   }
 
-  const { emote, count, channel, approval } = reactRepostConfig || {};
+  const { emote, count: requiredCount, channel, approval } = reactRepostConfig || {};
   const { emote: approvalEmote, approvers = [] } = approval || {};
   const reactionChannelId = reaction.message.channelId;
 
   /* Do nothing if there is no react repost emote, count or channel,
     or if the reaction is made in the react repost channel. */
-  if(!emote || !count || !channel || reactionChannelId === channel)
+  if(!emote || !requiredCount || !channel || reactionChannelId === channel)
     return;
 
   const reactionEmote = reaction.emoji.toString();
   if(![emote, approvalEmote].includes(reactionEmote))
     return;
 
-  /* Get all the reactions of the message where a reaction was added. */
+  /* Fetch the reactions and approver reactions of the message where the reaction was added. */
   let reactions;
+  let approverReactions;
   try
   {
     const message = await reaction.message.fetch();
-    reactions = message.reactions.cache;
+    reactions = await message.reactions.resolve(emote)?.fetch();
+
+    if(approvalEmote)
+      approverReactions = await message.reactions.resolve(approvalEmote)?.fetch();
   }
   catch(error: any)
   {
@@ -52,31 +55,29 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   if(!reactions)
     return;
 
-  /* Get the count of the reactions that have the emote as the react repost emote. */
-  let countedReactionsCount = reactions
-    .filter(({ emoji }) => emoji.toString() === emote).size;
-
+  let reactionsCount = reactions.count;
 
   /* If the approval emote is the same as the react repost emote,
-  deduct 1 to the counted reaction count. */
+    deduct 1 to the counted reaction count. */
   if(approvalEmote === emote)
-    countedReactionsCount--;
+    reactionsCount--;
 
   /* Do nothing if the number of react repost emotes is less than the required count to repost. */
-  if(countedReactionsCount < count)
+  if(reactionsCount < requiredCount)
     return;
 
   /* If the react repost requires approval, check if there has been
-  at least one of the approval emote in the reactions. */
+    gat least one of the approval emote in the reactions. */
   const needsApproval = approvers.length !== 0 && !!approvalEmote;
-  if(needsApproval)
+  if(needsApproval && approverReactions)
   {
     const isApprovalEmote = reactionEmote === approvalEmote;
-    const hasApprover = reaction.users.cache.some(({ id }) => approvers.includes(id));
+    const hasApprover = approverReactions.count !== 0;
     if(!isApprovalEmote || !hasApprover)
       return;
   }
 
+  /* Fetch the webhook in the repost channel and create it if it's not yet existing. */
   let repostWebhook;
   try
   {
