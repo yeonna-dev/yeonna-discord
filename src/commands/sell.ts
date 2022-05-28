@@ -19,14 +19,18 @@ export const sell: Command =
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();
 
-    const [sellType] = parseParamsToArray(params);
+    let [sellParameter] = parseParamsToArray(params);
+    if(!sellParameter)
+      return;
+
+    discord.startTyping();
+
     try
     {
-      switch(sellType)
+      switch(sellParameter)
       {
+        /* Selling all items */
         case SellTypes.All: {
-          discord.startTyping();
-
           const items = await Core.Items.sellAllItems({ userIdentifier, discordGuildId });
           if(!items)
             throw new Error();
@@ -36,11 +40,10 @@ export const sell: Command =
           break;
         }
 
+        /* Selling by duplicates */
         case SellTypes.Duplicates:
         case SellTypes.Dup:
         case SellTypes.Dups: {
-          discord.startTyping();
-
           const items = await Core.Items.sellDuplicateItems({
             userIdentifier,
             discordGuildId,
@@ -52,6 +55,23 @@ export const sell: Command =
           const { sellPrice } = items;
           discord.reply(`Sold all excess duplicate items for **${sellPrice}** points.`);
           break;
+        }
+
+        /* Selling by category */
+        default: {
+          sellParameter = sellParameter.toLowerCase();
+
+          const items = await Core.Items.sellByCategory({
+            userIdentifier,
+            discordGuildId,
+            category: sellParameter,
+          });
+
+          if(!items)
+            throw new Error();
+
+          const { sellPrice } = items;
+          discord.reply(`Sold all "${sellParameter}" items for **${sellPrice}** points.`);
         }
       }
     }
