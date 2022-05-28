@@ -69,10 +69,10 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   /* If the react repost requires approval, check if there has been
     gat least one of the approval emote in the reactions. */
   const needsApproval = approvers.length !== 0 && !!approvalEmote;
-  if(needsApproval && approverReactions)
+  if(needsApproval)
   {
     const isApprovalEmote = reactionEmote === approvalEmote;
-    const hasApprover = approverReactions.count !== 0;
+    const hasApprover = approverReactions?.count !== 0;
     if(!isApprovalEmote || !hasApprover)
       return;
   }
