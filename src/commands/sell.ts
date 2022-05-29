@@ -70,7 +70,10 @@ export const sell: Command =
           if(!items)
             throw new Error();
 
-          const { sellPrice } = items;
+          const { sellPrice, soldItems } = items;
+          if(soldItems.length === 0)
+            return discord.reply('Sold nothing.');
+
           discord.reply(`Sold all "${sellParameter}" items for **${sellPrice}** points.`);
         }
       }
