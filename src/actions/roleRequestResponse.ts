@@ -1,9 +1,8 @@
 import { parseParamsToArray } from 'comtroller';
+import { Discord } from 'src/libs/discord';
+import { Log } from 'src/libs/logger';
 import { Core, NonPendingRoleRequest } from 'yeonna-core';
 import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestsService';
-
-import { Discord } from '../libs/discord';
-import { Log } from '../libs/logger';
 
 // TODO: Update responses
 export async function roleRequestResponse(

@@ -1,8 +1,8 @@
 import { parseParamsToArray } from 'comtroller';
+import { isNumber } from 'src/helpers/isNumber';
+import { Discord } from 'src/libs/discord';
+import { Log } from 'src/libs/logger';
 import { Core } from 'yeonna-core';
-import { isNumber } from '../helpers/isNumber';
-import { Discord } from '../libs/discord';
-import { Log } from '../libs/logger';
 
 // TODO: Update responses
 export async function updatePoints({

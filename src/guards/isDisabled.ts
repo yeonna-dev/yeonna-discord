@@ -1,7 +1,6 @@
 import { Command, Guard } from 'comtroller';
+import { Discord } from 'src/libs/discord';
 import { Config } from 'yeonna-config';
-
-import { Discord } from '../libs/discord';
 
 export const isDisabled: Guard = async (
   { command, discord }: { command: Command, discord: Discord, }

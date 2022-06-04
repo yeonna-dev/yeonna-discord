@@ -9,9 +9,9 @@ import
   MessagePayload,
   MessageReaction,
   Permissions,
-  User,
+  User
 } from 'discord.js';
-import { Log } from '../logger';
+import { Log } from 'src/libs/logger';
 
 export class Discord
 {

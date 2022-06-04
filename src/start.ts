@@ -1,12 +1,13 @@
 import { Comtroller } from 'comtroller';
 import dotenv from 'dotenv';
+import { loadCommands } from 'src/commands';
+import { handleReactions } from 'src/events/reactions';
+import { isDisabled } from 'src/guards/isDisabled';
+import { startJobs } from 'src/jobs';
+import { Discord, DiscordClient } from 'src/libs/discord';
+import { Log } from 'src/libs/logger';
 import { Config } from 'yeonna-config';
-import { loadCommands } from './commands';
-import { handleReactions } from './events/reactions';
-import { isDisabled } from './guards/isDisabled';
-import { startJobs } from './jobs';
-import { Discord, DiscordClient } from './libs/discord';
-import { Log } from './libs/logger';
+
 dotenv.config();
 
 (async () =>

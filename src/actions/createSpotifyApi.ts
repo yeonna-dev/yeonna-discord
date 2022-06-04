@@ -1,6 +1,6 @@
-import { spotifylogin } from '../commands/spotifylogin';
-import { Discord } from '../libs/discord';
-import { Spotify } from '../libs/spotify';
+import { spotifylogin } from 'src/commands/spotify/spotifylogin.command';
+import { Discord } from 'src/libs/discord';
+import { Spotify } from 'src/libs/spotify';
 
 export async function createSpotifyApi(discord: Discord)
 {

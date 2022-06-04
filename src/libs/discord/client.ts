@@ -1,5 +1,5 @@
-import { Client, Intents, Message, Awaitable } from 'discord.js';
-import { Log } from '../logger';
+import { Awaitable, Client, Intents, Message } from 'discord.js';
+import { Log } from 'src/libs/logger';
 
 /** Abstraction of Discord.js Client class. */
 export class DiscordClient extends Client

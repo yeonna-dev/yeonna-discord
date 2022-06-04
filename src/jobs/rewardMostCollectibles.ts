@@ -1,8 +1,8 @@
 import { Client } from 'discord.js';
 import schedule from 'node-schedule';
+import { Log } from 'src/libs/logger';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
-import { Log } from '../libs/logger';
 
 export class RewardMostCollectibles
 {

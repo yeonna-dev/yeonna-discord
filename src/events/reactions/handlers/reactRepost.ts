@@ -1,6 +1,6 @@
 import { MessageReaction, PartialMessageReaction, TextChannel } from 'discord.js';
+import { Log } from 'src/libs/logger';
 import { Config } from 'yeonna-config';
-import { Log } from '../../../libs/logger';
 
 const reactRepostWebhookName = 'Yeonna - React Repost';
 
