@@ -78,11 +78,7 @@ export const collectible: Command =
         discordGuildId,
       });
 
-      let receiverDisplayName = discord.getMentionedMemberDisplayName();
-      if(!receiverDisplayName)
-        receiverDisplayName = await discord.getGuildMemberDisplayName(receiverId);
-
-      response.received(receiverDisplayName);
+      response.received(receiverId);
     }
     catch(error)
     {

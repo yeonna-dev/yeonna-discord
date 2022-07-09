@@ -2,23 +2,25 @@ import { Command, parseParamsToArray } from 'comtroller';
 import { isNumber } from 'src/helpers/isNumber';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { PointsCommandResponse } from 'src/responses/points';
 import { Core, NotEnoughPoints } from 'yeonna-core';
 
-// TODO: Update responses
 export const give: Command =
 {
   name: 'give',
   aliases: ['pay'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
+    const response = new PointsCommandResponse(discord);
+
     /* Get the receiver user and amount. */
     let [toUserIdentifier, amountString] = parseParamsToArray(params);
     if(!toUserIdentifier)
-      return discord.send('Transfer points to who?');
+      return response.noReceiver();
 
     /* Check if the given value is a valid number. */
     if(isNumber(amountString))
-      return discord.send('Please include the amount.');
+      return response.noAmount();
 
     discord.startTyping();
 
@@ -30,7 +32,7 @@ export const give: Command =
       /* Check if the receiver is a valid guild member. */
       const memberId = await discord.getGuildMemberId(toUserIdentifier);
       if(!memberId)
-        return discord.send('User is not a member of this server.');
+        return response.notMember();
 
       toUserIdentifier = memberId;
     }
@@ -41,7 +43,7 @@ export const give: Command =
 
     /* Check if the receiver is the giver. */
     if(toUserIdentifier === authorId)
-      return discord.send('You cannot give points to yourself.');
+      return response.cannotGiveSelf();
 
     /* Transfer points. */
     const amount = parseFloat(amountString);
@@ -54,17 +56,16 @@ export const give: Command =
         discordGuildId,
       });
 
-      const memberDisplayName = await discord.getGuildMemberDisplayName(toUserIdentifier);
-      discord.send(`Transferred ${amount} points to ${memberDisplayName}.`);
+      response.transferred(amount, toUserIdentifier);
     }
     catch(error: any)
     {
       if(error instanceof NotEnoughPoints)
-        discord.send('Not enough points.');
+        response.notEnough();
       else
       {
         Log.error(error);
-        discord.send('Could not transfer points.');
+        response.couldNotTransfer();
       }
     }
   },

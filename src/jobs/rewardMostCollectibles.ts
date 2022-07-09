@@ -104,9 +104,11 @@ export class RewardMostCollectibles
         winnersText.push(`${Number(i) + 1}. <@${discordId}> = ${reward}`);
       }
 
-      // TODO: Update message
       if(winners.length > 0)
-        messages.push({ channelId, message: `Winners\n${winnersText.join('\n')}` });
+        messages.push({
+          channelId,
+          message: `**Collectible Leaderboard Winners**\n\n${winnersText.join('\n')}`,
+        });
 
       /* Reset the collectibles of all users in each guild. */
       resetCollectiblesPromises.push(Core.Obtainables.resetCollectibles({
