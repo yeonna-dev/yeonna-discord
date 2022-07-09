@@ -540,4 +540,14 @@ export class Discord
 
     return embed;
   }
+
+  userMention(id: string)
+  {
+    return `<@${id}>`;
+  }
+
+  channelMention(id: string)
+  {
+    return `<#${id}>`;
+  }
 }

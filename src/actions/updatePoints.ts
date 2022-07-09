@@ -2,14 +2,14 @@ import { parseParamsToArray } from 'comtroller';
 import { isNumber } from 'src/helpers/isNumber';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { PointsCommandResponse } from 'src/responses/points';
 import { Core } from 'yeonna-core';
 
-// TODO: Update responses
 export async function updatePoints({
   discord,
   params,
   daily,
-  add,
+  add = false,
 }: {
   discord: Discord,
   params: string,
@@ -17,9 +17,10 @@ export async function updatePoints({
   add?: boolean;
 })
 {
-  let
-    user: string,
-    amount: number;
+  const response = new PointsCommandResponse(discord);
+
+  let user: string;
+  let amount: number;
 
   if(daily)
   {
@@ -31,11 +32,11 @@ export async function updatePoints({
   {
     const [userString, amountString] = parseParamsToArray(params);
     if(!userString)
-      return discord.send(add ? 'Add points to who?' : 'Set points of who?');
+      return response.noUserToUpdate(add);
 
     /* Check if the given value is a valid number. */
     if(isNumber(amountString))
-      return discord.send('Please include the amount.');
+      return response.noAmount();
 
     user = userString;
     amount = parseFloat(amountString);
@@ -72,15 +73,15 @@ export async function updatePoints({
       add,
     });
 
-    const response = add
-      ? `Added ${amount} points to ${mentionedMemberDisplayName}.`
-      : `Set points of ${mentionedMemberDisplayName} to ${amount}`;
-
-    discord.send(response);
+    response.updatedUserPoints({
+      isAdded: add,
+      amount,
+      user: mentionedMemberDisplayName,
+    });
   }
   catch(error)
   {
     Log.error(error);
-    discord.send('Could not add points.');
+    response.couldNotAdd();
   }
 }

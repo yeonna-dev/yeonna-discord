@@ -18,14 +18,13 @@ export const collectibles: Command =
     discord.startTyping();
     try
     {
-      const memberDisplayName = await discord.getGuildMemberDisplayName();
-
+      const authorId = discord.getAuthorId();
       const collectibles = await Core.Obtainables.getCollectibles({
-        userIdentifier: discord.getAuthorId(),
+        userIdentifier: authorId,
         discordGuildId: discord.getGuildId(),
       });
 
-      response.show(collectibles, memberDisplayName);
+      response.show(collectibles, authorId);
     }
     catch(error)
     {

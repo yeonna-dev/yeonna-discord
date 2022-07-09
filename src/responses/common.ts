@@ -14,8 +14,15 @@ export class CommandResponse
     title: `Please wait ${getTimeLeft(cooldown)}.`
   });
 
-  guildOnly = () => this.discord.reply('This command can only be used in a guild.');
+  guildOnly = () => this.discord.replyEmbed({
+    title: 'This command can only be used in a guild.',
+  });
 
+  notMember = () => this.discord.replyEmbed({
+    title: 'User is not a member of this server.',
+  });
+
+  // TODO: Provide user IDs only
   leaderboard = (title: string, topData: { user: string, amount: number; }[]) =>
     this.discord.replyEmbed({
       title,

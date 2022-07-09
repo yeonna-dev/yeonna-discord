@@ -12,15 +12,15 @@ export class CollectibleCommandResponse extends CommandResponse
     title: 'You claimed 1 collectible.',
   });
 
-  show = (collectibleCount?: number, memberDisplayName?: string | null) =>
+  show = (collectibleCount?: number, userId?: string | null) =>
     this.discord.replyEmbed({
-      title: memberDisplayName
-        ? `${memberDisplayName} has ${collectibleCount || 0} collectibles.`
-        : `${collectibleCount || 0} collectibles.`,
+      description: `${userId ? this.discord.userMention(userId) : 'User'} has`
+        + ` **${collectibleCount || 0} collectibles**.`,
     });
 
-  received = (receiverName?: string | null) => this.discord.replyEmbed({
-    title: `${receiverName || 'User has'} received 1 collectible.`,
+  received = (receiverId?: string | null) => this.discord.replyEmbed({
+    description: (receiverId ? this.discord.userMention(receiverId) : 'User has')
+      + ` received **1 collectible**.`,
   });
 
   topUsers = (topCollectibles: { user: string, amount: number; }[]) =>
