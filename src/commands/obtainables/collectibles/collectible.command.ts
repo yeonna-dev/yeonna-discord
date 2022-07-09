@@ -1,16 +1,19 @@
 import { Command } from 'comtroller';
 import { getUserParameter } from 'src/actions/getUserParameter';
-import { cooldowns } from 'src/cooldowns';
+import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { CollectibleCommandResponse } from 'src/responses/collectibles';
 import { Core, NotEnoughCollectibles } from 'yeonna-core';
 
+const collectibleGetName = 'collectible-get';
+const collectibleGiveName = 'collectible-give';
+
 /* Add 1 hour cooldown for getting collectibles. */
-cooldowns.add('collectible-get', 3600000, true);
+cooldowns.add(collectibleGetName, 3600000, true);
 
 /* Add 1 minute cooldown for giving collectibles. */
-cooldowns.add('collectible-give', 60000, true);
+cooldowns.add(collectibleGiveName, 60000, true);
 
 export const collectible: Command =
 {
@@ -38,6 +41,14 @@ export const collectible: Command =
 
     if(!receiverId)
     {
+      const cooldown = await checkCooldownInGuild(
+        collectibleGetName,
+        discordGuildId,
+        userIdentifier,
+      );
+      if(cooldown)
+        return response.onCooldown(cooldown);
+
       /* Claim collectible. */
       await Core.Obtainables.updateCollectibles({
         userIdentifier,
@@ -51,6 +62,14 @@ export const collectible: Command =
 
     try
     {
+      const cooldown = await checkCooldownInGuild(
+        collectibleGiveName,
+        discordGuildId,
+        userIdentifier,
+      );
+      if(cooldown)
+        return response.onCooldown(cooldown);
+
       /* Give collectible. */
       await Core.Obtainables.transferUserCollectibles({
         fromUserIdentifier: userIdentifier,
