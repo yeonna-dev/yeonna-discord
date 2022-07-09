@@ -3,8 +3,8 @@ import { noEmotePermissions } from 'src/guards/discordMemberPermissions';
 import { cleanString } from 'src/helpers/cleanString';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { EmoteCommandResponse } from 'src/responses/emotes';
 
-// TODO: Update responses.
 export const emoteremove: Command =
 {
   name: 'emoteremove',
@@ -12,10 +12,12 @@ export const emoteremove: Command =
   guards: [noEmotePermissions],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new EmoteCommandResponse(discord);
+
     const content = discord.getMessageContent();
     let [, emoteName] = cleanString(content).split(' ');
     if(!emoteName)
-      return discord.send('Please type the emote or the name of the emote.');
+      return response.noEmoteOrName();
 
     discord.startTyping();
 
@@ -38,17 +40,17 @@ export const emoteremove: Command =
     }
 
     if(!emoteToDelete)
-      return discord.send('There is no emote with that name.');
+      return response.nonExisting();
 
     try
     {
-      const deleted = await emoteToDelete.delete();
-      discord.send(`\`${deleted}\` has been deleted.`);
+      const deletedEmote = await emoteToDelete.delete();
+      response.deleted(deletedEmote);
     }
     catch(error: any)
     {
       Log.error(error);
-      discord.send('Cannot rename emote.');
+      response.cannotRename();
     }
   },
 };

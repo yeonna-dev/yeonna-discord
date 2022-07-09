@@ -1,16 +1,18 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { ItemCommandResponse } from 'src/responses/items';
 import { table } from 'table';
 import { Core } from 'yeonna-core';
 
-// TODO: Update responses.
 export const bag: Command =
 {
   name: 'bag',
   aliases: ['b', 'items'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new ItemCommandResponse(discord);
+
     discord.startTyping();
 
     let items;
@@ -24,18 +26,19 @@ export const bag: Command =
     catch(error)
     {
       Log.error(error);
-      return discord.send('Cannot get your items. Please try again.');
+      return response.cannotGetItems();
     }
 
     if(!items || !items.length)
-      return discord.send('You do not have items.');
+      return response.noItems();
 
     let totalAmount = 0;
     let totalCost = 0;
     const inventoryTableData = [];
     for(const { name, amount, price, category } of items)
     {
-      if(!price || !name) continue;
+      if(!price || !name)
+        continue;
 
       totalAmount += amount;
       totalCost += amount * price;
@@ -85,6 +88,6 @@ export const bag: Command =
       })
       + '\n```';
 
-    discord.send(bag);
+    discord.reply(bag);
   },
 };

@@ -3,17 +3,19 @@ import { Command } from 'comtroller';
 import sharp from 'sharp';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { EmoteCommandResponse } from 'src/responses/emotes';
 
-// TODO: Update responses.
 export const resizetoemote: Command =
 {
   name: 'resizetoemote',
   aliases: ['rte'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new EmoteCommandResponse(discord);
+
     let url = discord.getMediaFromMessage({ imageOnly: true });
     if(!url)
-      return discord.send('Please add a valid image link or attachment.');
+      return response.noMedia();
 
     try
     {
@@ -28,7 +30,7 @@ export const resizetoemote: Command =
     catch(error: any)
     {
       Log.error(error);
-      discord.send('Cannot resize image. Please try again.');
+      response.cannotResize();
     }
   },
 };

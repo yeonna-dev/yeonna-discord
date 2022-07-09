@@ -102,7 +102,7 @@ export class Discord
       return this.message.member?.displayName;
 
     const member = await this.fetchGuildMember(userId);
-    return member?.displayName;
+    return member?.displayName || member?.nickname;
   }
 
   getMentionedMember()
@@ -117,7 +117,8 @@ export class Discord
 
   getMentionedMemberDisplayName()
   {
-    return this.getMentionedMember()?.displayName;
+    const member = this.getMentionedMember();
+    return member?.displayName || member?.nickname;
   }
 
   getMentionedChannel()
@@ -247,8 +248,17 @@ export class Discord
     return this.message.reply(text);
   }
 
-  replyEmbed(embed: MessageEmbed)
+  private getEmbed(embed: MessageEmbed | Parameters<typeof this.createDiscordEmbed>[0])
   {
+    if(!(embed instanceof MessageEmbed))
+      embed = this.createDiscordEmbed(embed);
+
+    return embed;
+  }
+
+  replyEmbed(embed: Parameters<typeof this.getEmbed>[0])
+  {
+    embed = this.getEmbed(embed);
     return this.message.reply({ embeds: [embed] });
   }
 
@@ -258,8 +268,9 @@ export class Discord
     return new Discord(sentMessage);
   }
 
-  sendEmbed(embed: MessageEmbed)
+  sendEmbed(embed: Parameters<typeof this.getEmbed>[0])
   {
+    embed = this.getEmbed(embed);
     return this.message.channel.send({ embeds: [embed] });
   }
 
@@ -503,8 +514,11 @@ export class Discord
     if(description)
       embed.setDescription(description);
 
-    if(color)
-      embed.setColor(color as ColorResolvable);
+    // TODO: Change default color and make it per-config (server/command)
+    if(!color)
+      color = '#2F3136';
+
+    embed.setColor(color as ColorResolvable);
 
     if(author)
       embed.setAuthor(author);

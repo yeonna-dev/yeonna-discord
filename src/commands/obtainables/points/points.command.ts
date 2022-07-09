@@ -1,9 +1,9 @@
-import { Command, parseParamsToArray } from 'comtroller';
+import { Command } from 'comtroller';
+import { getUserParameter } from 'src/actions/getUserParameter';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { Core } from 'yeonna-core';
 
-// TODO: Update responses
 export const points: Command =
 {
   name: 'points',
@@ -13,22 +13,18 @@ export const points: Command =
     if(!discord.getGuildId())
       return discord.send('This command can only be used in a guild.');
 
-    let [userIdentifier] = parseParamsToArray(params);
-    if(userIdentifier)
+    let userIdentifier;
+    try
     {
-      try
-      {
-        const memberId = await discord.getGuildMemberId(userIdentifier);
-        if(memberId)
-          userIdentifier = memberId;
-      }
-      catch(error)
-      {
-        Log.error(error);
-      }
+      userIdentifier = await getUserParameter({ discord, params, defaultToAuthor: true });
     }
-    else
-      userIdentifier = discord.getAuthorId();
+    catch(error)
+    {
+      Log.error(error);
+    }
+
+    if(!userIdentifier)
+      return;
 
     discord.startTyping();
 

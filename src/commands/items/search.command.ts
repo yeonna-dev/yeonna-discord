@@ -1,8 +1,8 @@
 import { Command } from 'comtroller';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
-import { getTimeLeft } from 'src/helpers/getTimeLeft';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { ItemCommandResponse } from 'src/responses/items';
 import { Core } from 'yeonna-core';
 
 const name = 'search';
@@ -16,6 +16,8 @@ export const search: Command =
   aliases: ['s'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new ItemCommandResponse(discord);
+
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();
     if(!discordGuildId)
@@ -23,7 +25,7 @@ export const search: Command =
 
     const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
     if(cooldown)
-      return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
+      return response.onCooldown(cooldown);
 
     discord.startTyping();
 
@@ -36,17 +38,13 @@ export const search: Command =
     catch(error)
     {
       Log.error(error);
-      return discord.send('Oops. Something went wrong. Please try again.');
+      return response.cannotSearch();
     }
 
-    // TODO: Update message
-    discord.send(item
-      ? `Found **${item.name}**!`
-      : 'You found nothing. Keep searching!'
-    );
-
-    if(!item)
-      return;
+    if(item)
+      response.foundItem(item);
+    else
+      return response.foundNothing();
 
     /* Check for any completed collections. */
     let collections;
@@ -63,14 +61,14 @@ export const search: Command =
       return;
 
     /* If there are any completed collections, reward the user the collection's bonus. */
-    const collectionNames = [];
+    const completedCollections = [];
     let totalBonus = 0;
     for(const collection of collections)
     {
       if(!collection.name || !collection.fixedBonus)
         continue;
 
-      collectionNames.push(collection.name);
+      completedCollections.push(collection);
       totalBonus += collection.fixedBonus || 0;
     }
 
@@ -81,19 +79,6 @@ export const search: Command =
       add: true,
     });
 
-    let completedCollectionsMessage = collectionNames.length === 1
-      ? `You have completed the **${collectionNames.pop()} collection**!`
-      : (
-        `You have completed ${collectionNames.length} collections!\n`
-        + collectionNames.map(name => `• **${name}**`).join('\n')
-      );
-
-    // TODO: Update message
-    // TODO: Update points name
-    discord.send(
-      'Congratulations!'
-      + `\n\n${completedCollectionsMessage}`
-      + `\n\nYou earn a bonus of __**${totalBonus} points**__!`
-    );
+    response.completedCollections(completedCollections, totalBonus);
   },
 };

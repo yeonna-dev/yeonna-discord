@@ -1,6 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { CollectibleCommandResponse } from 'src/responses/collectibles';
 import { Core } from 'yeonna-core';
 
 export const collectibles: Command =
@@ -9,21 +10,27 @@ export const collectibles: Command =
   aliases: ['cs'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new CollectibleCommandResponse(discord);
+
+    if(!discord.getGuildId())
+      return response.guildOnly();
+
     discord.startTyping();
     try
     {
+      const memberDisplayName = await discord.getGuildMemberDisplayName();
+
       const collectibles = await Core.Obtainables.getCollectibles({
         userIdentifier: discord.getAuthorId(),
         discordGuildId: discord.getGuildId(),
       });
 
-      const memberDisplayName = await discord.getGuildMemberDisplayName();
-      discord.send(`${memberDisplayName} has ${collectibles} collectibles.`);
+      response.show(collectibles, memberDisplayName);
     }
     catch(error)
     {
       Log.error(error);
-      discord.send('0');
+      response.cannotGet();
     }
   },
 };

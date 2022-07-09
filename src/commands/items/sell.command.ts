@@ -1,6 +1,7 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { ItemCommandResponse } from 'src/responses/items';
 import { Core } from 'yeonna-core';
 
 enum SellTypes
@@ -16,6 +17,8 @@ export const sell: Command =
   name: 'sell',
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
+    const response = new ItemCommandResponse(discord);
+
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();
 
@@ -35,8 +38,7 @@ export const sell: Command =
           if(!items)
             throw new Error();
 
-          const { sellPrice } = items;
-          discord.reply(`Sold all items for **${sellPrice}** points.`);
+          response.soldAll(items.sellPrice);
           break;
         }
 
@@ -52,8 +54,7 @@ export const sell: Command =
           if(!items)
             throw new Error();
 
-          const { sellPrice } = items;
-          discord.reply(`Sold all excess duplicate items for **${sellPrice}** points.`);
+          response.soldDuplicates(items.sellPrice);
           break;
         }
 
@@ -74,13 +75,13 @@ export const sell: Command =
           if(soldItems.length === 0)
             return discord.reply('Sold nothing.');
 
-          discord.reply(`Sold all "${sellParameter}" items for **${sellPrice}** points.`);
+          response.soldByParameter(sellParameter, sellPrice);
         }
       }
     }
     catch(error)
     {
-      discord.reply('Cannot sell items. Please try again.');
+      response.cannotSell();
       Log.error(error);
     }
   },
