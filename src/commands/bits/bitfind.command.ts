@@ -1,15 +1,18 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { BitCommandResponse } from 'src/responses/bits';
 import { Core } from 'yeonna-core';
+import { UserBit } from 'yeonna-core/dist/modules/bits/services/UsersBitsService';
 
-// TODO: Update responses.
 export const bitfind: Command =
 {
   name: 'bitfind',
   aliases: ['bf'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
+    const response = new BitCommandResponse(discord);
+
     const [search] = parseParamsToArray(params);
     const userIdentifier = discord.getAuthorId();
 
@@ -23,11 +26,11 @@ export const bitfind: Command =
     catch(error)
     {
       Log.error(error);
-      discord.send('Cannot find bits.');
+      response.cannotFind();
     }
 
     if(!result || result.length === 0)
-      return discord.send('No bits found.');
+      return response.noneFound();
 
     const bitsPerPage = 5;
     const pages = result.reduce((batches, element, i) =>
@@ -38,7 +41,7 @@ export const bitfind: Command =
 
       batches[i].push(element);
       return batches;
-    }, [] as any[][]);
+    }, [] as UserBit[][]);
 
     const createPage = (pageNumber: number) =>
     {
@@ -53,6 +56,7 @@ export const bitfind: Command =
     if(result.length <= bitsPerPage)
       return discord.send(createPage(0));
 
+    // TODO: Update responses.
     discord.sendPaginated({ createPage, involvedUserIDs: [userIdentifier] });
   },
 };
