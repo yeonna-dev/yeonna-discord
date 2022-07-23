@@ -38,14 +38,19 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
 
   /* Fetch the reactions and approver reactions of the message where the reaction was added. */
   let reactions;
-  let approverReactions;
+  let approverReactionsCount;
   try
   {
     const message = await reaction.message.fetch();
     reactions = await message.reactions.resolve(emote)?.fetch();
 
     if(approvalEmote)
-      approverReactions = await message.reactions.resolve(approvalEmote)?.fetch();
+    {
+      let approvalReactions = await message.reactions.resolve(approvalEmote)?.fetch();
+      const approvalReactionsUsers = await approvalReactions?.users.fetch();
+      const approverReactions = approvalReactionsUsers?.filter(({ id }) => approvers.includes(id));
+      approverReactionsCount = approverReactions?.size || 0;
+    }
   }
   catch(error: any)
   {
@@ -62,18 +67,18 @@ export async function reactRepost(reaction: MessageReaction | PartialMessageReac
   if(approvalEmote === emote)
     reactionsCount--;
 
-  /* Do nothing if the number of react repost emotes is less than the required count to repost. */
-  if(reactionsCount < requiredCount)
+  /* Do nothing if the number of react repost emotes is
+    not equal to the required count to repost. */
+  if(reactionsCount !== requiredCount)
     return;
 
   /* If the react repost requires approval, check if there has been
-    gat least one of the approval emote in the reactions. */
+    at least one of the approval emote in the reactions. */
   const needsApproval = approvers.length !== 0 && !!approvalEmote;
   if(needsApproval)
   {
-    const isApprovalEmote = reactionEmote === approvalEmote;
-    const hasApprover = approverReactions?.count !== 0;
-    if(!isApprovalEmote || !hasApprover)
+    const hasApprover = approverReactionsCount !== 0;
+    if(!hasApprover)
       return;
   }
 
