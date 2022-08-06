@@ -10,12 +10,32 @@ export class CommandResponse
     this.discord = discord;
   }
 
+  ping = (pingInMs: number) => this.discord.replyEmbed({
+    title: `${~~pingInMs} ms`
+  });
+
   onCooldown = (cooldown: number | boolean) => this.discord.replyEmbed({
     title: `Please wait ${getTimeLeft(cooldown)}.`
   });
 
   guildOnly = () => this.discord.replyEmbed({
     title: 'This command can only be used in a guild.',
+  });
+
+  noChannelMention = () => this.discord.replyEmbed({
+    title: 'Please mention a channel.',
+  });
+
+  inSameChannel = () => this.discord.replyEmbed({
+    title: 'Cannot be the same channel.',
+  });
+
+  notTextChannel = () => this.discord.replyEmbed({
+    title: 'The channel is not a text channel.',
+  });
+
+  cannotSendMessages = () => this.discord.replyEmbed({
+    title: 'Cannot send messages in that channel.',
   });
 
   notMember = () => this.discord.replyEmbed({

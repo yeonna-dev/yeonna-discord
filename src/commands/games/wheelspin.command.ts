@@ -1,8 +1,8 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
-import { getTimeLeft } from 'src/helpers/getTimeLeft';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { GameCommandResponse } from 'src/responses/games';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
@@ -18,6 +18,8 @@ export const wheelspin: Command =
   aliases: ['ws'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
+    const response = new GameCommandResponse(discord);
+
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();
     if(!discordGuildId)
@@ -40,26 +42,26 @@ export const wheelspin: Command =
 
     let [optionIdentifier] = parseParamsToArray(params);
     if(!optionIdentifier)
-      return discord.send('Please choose a valid option.');
+      return response.wheelSpinNotValidOption();
 
     const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
     if(cooldown)
-      return discord.send(`Please wait ${getTimeLeft(cooldown)}.`);
+      return response.onCooldown(cooldown);
 
     optionIdentifier = optionIdentifier.toLowerCase();
 
     const pickedOption = options.find(({ code, name }) =>
       code === optionIdentifier || name.toLowerCase() === optionIdentifier);
     if(!pickedOption)
-      return discord.send('You cannot choose that animal.');
+      return response.wheelSpinNotValidOption();
 
     const reward = pickedOption.reward || wheelSpinConfig.reward;
     if(!reward)
       return;
 
-    const sentMessage = await discord.send(`You chose **${pickedOption.name}**.`
-      + ' Spinning... <a:wheel:857186381583220756>');
+    const sentMessage = await response.wheelSpinSpinning(pickedOption.name);
 
+    /* Wait 4 seconds */
     await new Promise(resolve => setTimeout(resolve, 4000));
 
     const winningOption = options[Math.floor(Math.random() * options.length)];
@@ -81,7 +83,6 @@ export const wheelspin: Command =
       }
     }
 
-    await sentMessage.edit(`The wheel stopped at **${winningOption.name}**.`
-      + ` You ${won ? `win __**${reward}**__ points!` : 'lose.'}`);
+    response.wheelSpinResult(sentMessage, winningOption.name, won, reward);
   },
 };

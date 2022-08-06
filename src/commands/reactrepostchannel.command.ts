@@ -3,9 +3,9 @@ import { getGuildChannelParameter } from 'src/actions/getGuildChannelParameter';
 import { noManageChannelPermissions } from 'src/guards/discordMemberPermissions';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { ReactRepostCommandResponse } from 'src/responses/reactResponse';
 import { Config } from 'yeonna-config';
 
-// TODO: Update responses.
 export const reactrepostchannel: Command =
 {
   name: 'reactrepostchannel',
@@ -13,6 +13,8 @@ export const reactrepostchannel: Command =
   guards: [noManageChannelPermissions],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new ReactRepostCommandResponse(discord);
+
     const guildChannelParameter = getGuildChannelParameter(discord, { excludeSameChannel: true });
     if(!guildChannelParameter)
       return;
@@ -20,16 +22,19 @@ export const reactrepostchannel: Command =
     discord.startTyping();
 
     const { guildId, channelId, channelMention } = guildChannelParameter;
+    if(!channelMention)
+      return;
+
     try
     {
       const { reactRepost } = await Config.ofGuild(guildId);
       await Config.updateGuild(guildId, { reactRepost: { ...reactRepost, channel: channelId } });
-      discord.send(`Set the react reposts approval channel to ${channelMention}.`);
+      response.reactRepostChannelChanged(channelMention);
     }
     catch(error: any)
     {
       Log.error(error);
-      discord.send('Could not set the channel for react reposts.');
+      response.reactRepostChannelCannotSet();
     }
   },
 };
