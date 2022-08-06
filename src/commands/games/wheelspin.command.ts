@@ -44,16 +44,16 @@ export const wheelspin: Command =
     if(!optionIdentifier)
       return response.wheelSpinNotValidOption();
 
-    const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
-    if(cooldown)
-      return response.onCooldown(cooldown);
-
     optionIdentifier = optionIdentifier.toLowerCase();
 
     const pickedOption = options.find(({ code, name }) =>
       code === optionIdentifier || name.toLowerCase() === optionIdentifier);
     if(!pickedOption)
       return response.wheelSpinNotValidOption();
+
+    const cooldown = await checkCooldownInGuild(name, discordGuildId, userIdentifier);
+    if(cooldown)
+      return response.onCooldown(cooldown);
 
     const reward = pickedOption.reward || wheelSpinConfig.reward;
     if(!reward)
