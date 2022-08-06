@@ -23,9 +23,6 @@ export class CollectibleCommandResponse extends CommandResponse
       + ` received **1 collectible**.`,
   });
 
-  topUsers = (topCollectibles: { user: string, amount: number; }[]) =>
-    this.leaderboard(`Top ${topCollectibles.length} Collectibles`, topCollectibles);
-
   cannotGet = () => this.discord.replyEmbed({
     title: 'Cannot get collectibles',
   });
@@ -36,9 +33,5 @@ export class CollectibleCommandResponse extends CommandResponse
 
   cannotTransfer = () => this.discord.replyEmbed({
     title: 'Could not transfer collectible.',
-  });
-
-  noTopUsers = () => this.discord.replyEmbed({
-    title: 'No top users.',
   });
 }

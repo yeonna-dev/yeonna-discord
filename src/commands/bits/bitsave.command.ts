@@ -1,6 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { BitCommandResponse } from 'src/responses/bits';
 import { Core } from 'yeonna-core';
 
 export const bitsave: Command =
@@ -9,8 +10,10 @@ export const bitsave: Command =
   aliases: ['bs'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
+    const response = new BitCommandResponse(discord);
+
     if(!params)
-      return discord.send('Please add content to the bit.');
+      return response.noContent();
 
     try
     {
@@ -23,14 +26,14 @@ export const bitsave: Command =
       });
 
       if(!userBit)
-        return discord.send('You already saved that bit.');
+        return response.alreadySaved();
 
-      discord.send('Saved bit.');
+      response.saved();
     }
     catch(error)
     {
       Log.error(error);
-      discord.send('Could not save bit.');
+      response.couldNotSave();
     }
   },
 };

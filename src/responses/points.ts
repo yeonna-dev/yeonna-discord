@@ -8,23 +8,31 @@ export class PointsCommandResponse extends CommandResponse
     super(discord);
   }
 
-  // TODO: pass discord user IDs
+  show = (amount: number, userId?: string) => (
+    userId
+      ? this.discord.replyEmbed({
+        description: `Points of ${this.discord.userMention(userId)}: **${amount}**`
+      })
+      : this.discord.replyEmbed({ title: amount.toString() })
+  );
+
   updatedUserPoints = ({
     isAdded,
     amount,
-    user,
+    userId,
   }: {
     isAdded: boolean,
     amount: number,
-    user?: string,
+    userId?: string,
   }) => this.discord.replyEmbed({
     description: isAdded
-      ? `Added ${amount} points to ${user || 'that user'}.`
-      : `Set points of ${user || 'that user'} to ${amount}`
+      ? `Added **${amount} points** to ${userId ? this.discord.userMention(userId) : 'that user'}.`
+      : `Set points of ${userId ? this.discord.userMention(userId) : 'that user'} to ${amount}`
   });
 
-  transferred = (amount: number, user: string) => this.discord.replyEmbed({
-    title: `Transferred ${amount} points to ${user || 'that user'}.`
+  transferred = (amount: number, userId: string) => this.discord.replyEmbed({
+    description: `Transferred **${amount} points** to`
+      + ` ${userId ? this.discord.userMention(userId) : 'that user'}.`
   });
 
   noReceiver = () => this.discord.replyEmbed({
@@ -39,11 +47,19 @@ export class PointsCommandResponse extends CommandResponse
     title: 'Please include the amount.',
   });
 
+  notEnough = () => this.discord.replyEmbed({
+    title: 'Not enough points.',
+  });
+
   cannotGiveSelf = () => this.discord.replyEmbed({
     title: 'You cannot give points to yourself.',
   });
 
   couldNotAdd = () => this.discord.replyEmbed({
     title: 'Could not add points.',
+  });
+
+  couldNotTransfer = () => this.discord.replyEmbed({
+    title: 'Could not transfer points.'
   });
 }

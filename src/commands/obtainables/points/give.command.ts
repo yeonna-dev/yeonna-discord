@@ -5,7 +5,6 @@ import { Log } from 'src/libs/logger';
 import { PointsCommandResponse } from 'src/responses/points';
 import { Core, NotEnoughPoints } from 'yeonna-core';
 
-// TODO: Update responses
 export const give: Command =
 {
   name: 'give',
@@ -57,17 +56,16 @@ export const give: Command =
         discordGuildId,
       });
 
-      const memberDisplayName = await discord.getGuildMemberDisplayName(toUserIdentifier);
-      discord.send(`Transferred ${amount} points to ${memberDisplayName}.`);
+      response.transferred(amount, toUserIdentifier);
     }
     catch(error: any)
     {
       if(error instanceof NotEnoughPoints)
-        discord.send('Not enough points.');
+        response.notEnough();
       else
       {
         Log.error(error);
-        discord.send('Could not transfer points.');
+        response.couldNotTransfer();
       }
     }
   },

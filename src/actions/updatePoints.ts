@@ -44,7 +44,6 @@ export async function updatePoints({
 
   const discordGuildId = discord.getGuildId();
   let mentionedMemberId;
-  let mentionedMemberDisplayName;
   try
   {
     const member = await discord.fetchGuildMember(user);
@@ -52,7 +51,6 @@ export async function updatePoints({
       return;
 
     mentionedMemberId = member.id;
-    mentionedMemberDisplayName = member.displayName;
   }
   catch(error)
   {
@@ -76,7 +74,7 @@ export async function updatePoints({
     response.updatedUserPoints({
       isAdded: add,
       amount,
-      user: mentionedMemberDisplayName,
+      userId: mentionedMemberId,
     });
   }
   catch(error)

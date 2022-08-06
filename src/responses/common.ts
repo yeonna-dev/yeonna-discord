@@ -22,12 +22,16 @@ export class CommandResponse
     title: 'User is not a member of this server.',
   });
 
-  // TODO: Provide user IDs only
-  leaderboard = (title: string, topData: { user: string, amount: number; }[]) =>
+  leaderboard = (title: string, topData: { userId: string, amount: number; }[]) =>
     this.discord.replyEmbed({
       title,
       description: topData
-        .map(({ amount, user }, i) => `${i + 1}.  **${amount}** - ${user}`)
+        .map(({ amount, userId }, i) =>
+          `${i + 1}.  **${amount}** - ${this.discord.userMention(userId)}`)
         .join('\n')
     });
+
+  noTopUsers = () => this.discord.replyEmbed({
+    title: 'No top users.',
+  });
 };

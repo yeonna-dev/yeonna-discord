@@ -2,6 +2,7 @@ import { Command } from 'comtroller';
 import { getUserParameter } from 'src/actions/getUserParameter';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { PointsCommandResponse } from 'src/responses/points';
 import { Core } from 'yeonna-core';
 
 export const points: Command =
@@ -10,8 +11,10 @@ export const points: Command =
   aliases: ['p'],
   run: async ({ discord, params }: { discord: Discord, params: string; }) =>
   {
+    const response = new PointsCommandResponse(discord);
+
     if(!discord.getGuildId())
-      return discord.send('This command can only be used in a guild.');
+      return response.guildOnly();
 
     let userIdentifier;
     try
@@ -31,8 +34,12 @@ export const points: Command =
     try
     {
       const discordGuildId = discord.getGuildId();
-      const points = await Core.Obtainables.getPoints({ userIdentifier, discordGuildId });
-      discord.send(points?.toString() || '0');
+      let points = await Core.Obtainables.getPoints({ userIdentifier, discordGuildId });
+      points = points || 0;
+      if(userIdentifier === discord.getAuthorId())
+        response.show(points);
+      else
+        response.show(points, userIdentifier);
     }
     catch(error)
     {
