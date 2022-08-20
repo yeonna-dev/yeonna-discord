@@ -2,6 +2,7 @@ import { parseParamsToArray } from 'comtroller';
 import { GuildMemberRoleManager } from 'discord.js';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { StreakCommandResponse } from 'src/responses/streaks';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
@@ -19,6 +20,8 @@ export async function updateStreak({
   params?: string,
 })
 {
+  const response = new StreakCommandResponse(discord);
+
   const userIdentifier = discord.getAuthorId();
   const discordGuildId = discord.getGuildId();
   if(!discordGuildId)
@@ -50,7 +53,7 @@ export async function updateStreak({
   catch(error)
   {
     Log.error(error);
-    discord.send('Oops. Something went wrong. Please try again.');
+    return response.error();
   }
 
   let streak;
@@ -67,25 +70,17 @@ export async function updateStreak({
   catch(error)
   {
     Log.error(error);
-    return discord.send('Oops. Something went wrong. Please try again.');
+    return response.streakUpdateError();
   }
 
   if(!streak)
     return;
 
   const { previous, current } = streak;
-
   const previousCount = previous?.count || 0;
-  const previousCountString = `${previousCount} ${streaksName}`;
-  const currentCountString = `${current.count} ${streaksName}`;
+  const currentCount = current.count;
+  response.streakUpdate(previousCount, currentCount, streaksName);
 
-  const replyEmbed = discord.createDiscordEmbed({
-    title: `Updated your streak from ${previousCountString} ➡️ __${currentCountString}__`,
-  });
-
-  discord.replyEmbed(replyEmbed);
-
-  const streakCount = current.count;
   if(!streaksRoles)
     return;
 
@@ -93,17 +88,20 @@ export async function updateStreak({
     lower bound of the range where the streak count is. */
   const roleKeys = Object.keys(streaksRoles);
   let roleKey = roleKeys.find((_, i, array) =>
-    !array[i + 1] || Number(array[i + 1]) > streakCount);
+    !array[i + 1] || Number(array[i + 1]) > currentCount);
 
   /* Find the key of the previous role, which would be unassigned
     if there would be a new streak role to assign. */
   let previousRoleKey = roleKeys.find((_, i, array) =>
-    !array[i + 1] || Number(array[i + 1]) > (previous?.count || 0));
+    !array[i + 1] || Number(array[i + 1]) > (previousCount));
 
   if(!roleKey)
     return;
 
   const newRoleId = streaksRoles[Number(roleKey)];
+  if(!newRoleId)
+    return;
+
   const previousRoleId = streaksRoles[Number(previousRoleKey)];
   try
   {
@@ -132,5 +130,6 @@ export async function updateStreak({
   catch(error)
   {
     Log.error(error);
+    response.roleError();
   }
 }

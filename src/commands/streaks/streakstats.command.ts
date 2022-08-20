@@ -1,6 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { StreakCommandResponse } from 'src/responses/streaks';
 import { Core } from 'yeonna-core';
 
 export const streakstats: Command =
@@ -9,6 +10,8 @@ export const streakstats: Command =
   aliases: ['sstats'],
   run: async ({ discord }: { discord: Discord; }) =>
   {
+    const response = new StreakCommandResponse(discord);
+
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();
 
@@ -23,30 +26,7 @@ export const streakstats: Command =
       if(!streak)
         return;
 
-      const { count, longest, updatedAt, createdAt } = streak;
-      const countString = `${count} day${count === 1 ? '' : 's'}`;
-      const longestString = `${longest} day${longest === 1 ? '' : 's'}`;
-
-      const lastUpdateDate = new Date(updatedAt);
-      const lastUpdateSeconds = Math.floor(lastUpdateDate.getTime() / 1000);
-
-      const startedSinceDate = new Date(createdAt);
-      const startedSinceSeconds = Math.floor(startedSinceDate.getTime() / 1000);
-
-      const embed = discord.createDiscordEmbed({
-        description: (
-          'Current streak'
-          + `\n **${countString}**`
-          + '\n\nLast update'
-          + `\n**<t:${lastUpdateSeconds}:F>**`
-          + '\n\nLongest streak'
-          + `\n**${longestString}**`
-          + '\n\nStarted since'
-          + `\n**<t:${startedSinceSeconds}:F>**`
-        ),
-      });
-
-      discord.replyEmbed(embed);
+      response.stats(streak);
     }
     catch(error)
     {

@@ -54,4 +54,8 @@ export class CommandResponse
   noTopUsers = () => this.discord.replyEmbed({
     title: 'No top users.',
   });
+
+  error = () => this.discord.replyEmbed({
+    title: 'Oops. Something went wrong. Please try again.'
+  });
 };

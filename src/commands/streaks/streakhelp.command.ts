@@ -1,6 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { StreakCommandResponse } from 'src/responses/streaks';
 import { Config } from 'yeonna-config';
 
 export const streakhelp: Command =
@@ -9,6 +10,8 @@ export const streakhelp: Command =
   aliases: ['shelp'],
   run: async ({ discord }: { discord: Discord; }) =>
   {
+    const response = new StreakCommandResponse(discord);
+
     const guildId = discord.getGuildId();
     if(!guildId)
       return;
@@ -23,45 +26,14 @@ export const streakhelp: Command =
       if(!prefix)
       {
         const globalConfig = await Config.global();
-        prefix = globalConfig.prefix || ';';
+        prefix = globalConfig.prefix;
       }
-
     }
     catch(error)
     {
       Log.error(error);
     }
 
-    const embed = discord.createDiscordEmbed({
-      title: 'Commands',
-      fields: [
-        {
-          name: `\`${prefix}up\``,
-          value: 'Increase your streak by 1',
-        },
-        {
-          name: `\`${prefix}down\``,
-          value: 'Decrease your streak by 1',
-        },
-        {
-          name: `\`${prefix}set (number)\``,
-          value: 'Set your streak to the specified number',
-        },
-        {
-          name: `\`${prefix}reset\``,
-          value: 'Reset your streak to 0',
-        },
-        {
-          name: `\`${prefix}stats\``,
-          value: 'Show your streak statistics',
-        },
-        {
-          name: `\`${prefix}help\``,
-          value: 'Show this message',
-        },
-      ],
-    });
-
-    discord.replyEmbed(embed);
+    response.help(prefix || ';');
   },
 };
