@@ -2,6 +2,7 @@ import { Command } from 'comtroller';
 import colors from 'src/libs/color-names.json';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
@@ -16,6 +17,7 @@ export const rolerequest: Command =
 class RoleRequest
 {
   private discord: Discord;
+  private response: RoleRequestsCommandResponse;
   private guildId?: string;
   private roleRequestsChannel?: string;
   private name?: string;
@@ -29,6 +31,7 @@ class RoleRequest
   constructor(discord: Discord)
   {
     this.discord = discord;
+    this.response = new RoleRequestsCommandResponse(discord);
     this.start();
   }
 
@@ -36,10 +39,9 @@ class RoleRequest
   {
     const guildId = this.discord.getGuildId();
     if(!guildId)
-      return this.discord.send('This command can only be used in a guild.');
+      return this.response.guildOnly();
 
     this.guildId = guildId;
-
 
     let roleRequestsApprovalChannel;
     try
@@ -50,13 +52,7 @@ class RoleRequest
     catch(error)
     {
       Log.error(error);
-
-      const response = this.createMessageWithMention(
-        'The role requests channel has not been set up yet.'
-        + ' Please inform the server administrator to set this up.'
-      );
-
-      return this.discord.send(response);
+      return this.response.noRoleRequestsChannel();
     }
 
     this.roleRequestsChannel = roleRequestsApprovalChannel;
@@ -76,49 +72,36 @@ class RoleRequest
     this.stopTimer();
 
     if(!this.name && !this.color)
-      return this.sendNoNameOrColor();
+      return this.response.noNameOrColor();
 
     this.discord.startTyping();
 
     const roleRequestId = await this.saveRoleRequest();
     if(!roleRequestId)
-      return this.discord.send('Cannot create a role request. Please try again.');
+      return this.response.cannotCreateRequest();
 
     this.requestId = roleRequestId;
 
     this.postRequest();
-    this.sendRequestResponse();
+    this.response.requestCreated({ name, color });
   }
 
   async promptName()
   {
-    const response = this.createMessageWithMention(
-      'What should be the role name?'
-      + '\nPlease **reply** it to this message.'
-      + "\nReact with ❌ if you don't want a specific name."
-    );
+    const namePrompt = await this.response.roleNamePrompt();
 
-    const namePrompt = await this.discord.send(response);
-
-    return new Promise<string | void>(resolve =>
+    return new Promise<string | undefined>(resolve =>
     {
       this.waitReply(namePrompt.getMessageId(), discord => resolve(discord.getMessageContent()));
-      this.waitCancel(namePrompt, () => resolve());
+      this.waitCancel(namePrompt, () => resolve(undefined));
     });
   }
 
   async promptColor()
   {
-    const response = this.createMessageWithMention(
-      'What should be the role color?'
-      + '\nPlease **reply** it to this message.'
-      + "\nReact with ❌ if you don't want a specific color."
-      + '\n(Please provide a valid __color hex__ code, e.g. #4caf50.)'
-    );
+    const colorPrompt = await this.response.roleColorPrompt();
 
-    const colorPrompt = await this.discord.send(response);
-
-    return new Promise<string | void>(resolve =>
+    return new Promise<string | undefined>(resolve =>
     {
       this.waitReply(colorPrompt.getMessageId(), discord =>
       {
@@ -135,15 +118,13 @@ class RoleRequest
           if(content.match(/^#(?:[0-9a-fA-F]{3}){1,2}$/))
             color = content;
           else
-            return discord.reply(
-              'This color is not valid. Please try using the role request command again.'
-            );
+            return new RoleRequestsCommandResponse(discord).invalidRoleColor();
         }
 
         resolve(color);
       });
 
-      this.waitCancel(colorPrompt, () => resolve());
+      this.waitCancel(colorPrompt, () => resolve(undefined));
     });
   }
 
@@ -194,7 +175,7 @@ class RoleRequest
       return;
 
     if(!this.roleRequestsChannel)
-      return this.discord.send('No role requests channel has been set.');
+      return this.response.noRoleRequestsChannel();
 
     let botPrefix;
     try
@@ -214,40 +195,16 @@ class RoleRequest
       botPrefix = ';';
     }
 
-    const roleRequestEmbed = this.discord.createDiscordEmbed({
-      color: (this.color || 'DEFAULT'),
-      title: '✋ Role Request',
-      description: `Name: **${this.name || '(No name specified)'}**`
-        + `\nColor: **${this.color || '(No color specified)'}**`
-        + `\nRequested By: __${this.discord.getAuthor()}__`
-        + `\n\nTo approve, copy this: \n\`\`\`${botPrefix}rra ${this.requestId}\`\`\``
-        + `\n\nTo decline, copy this: \n\`\`\`${botPrefix}rrd ${this.requestId}\`\`\``,
-      footer: { text: `ID: ${this.requestId}` },
-      timestamp: new Date()
+    if(!this.requestId || !botPrefix)
+      return;
+
+    this.response.requestPost(this.roleRequestsChannel, {
+      name: this.name,
+      color: this.color,
+      requestId: this.requestId,
+      requesterMention: this.discord.getAuthor().toString(),
+      botPrefix
     });
-
-    this.discord.sendInChannel(this.roleRequestsChannel, { embeds: [roleRequestEmbed] });
-  }
-
-  sendRequestResponse()
-  {
-    const roleEmbed = this.discord.createDiscordEmbed({
-      title: this.name || '(No name specified)',
-      color: this.color || 'DEFAULT',
-    });
-
-    const content = this.createMessageWithMention(
-      'Successfully created a request for the role below.'
-      + '\nPlease wait for it to be approved.'
-    );
-
-    this.discord.sendTextWithEmbeds(content, [roleEmbed]);
-  }
-
-  sendNoNameOrColor()
-  {
-    const response = this.createMessageWithMention('Please provide either a name or color.');
-    this.discord.send(response);
   }
 
   startTimer()
@@ -258,12 +215,7 @@ class RoleRequest
         return;
 
       this.stopped = true;
-
-      const response = this.createMessageWithMention(
-        'You did not respond. Please try using the role request command again.'
-      );
-
-      this.discord.send(response);
+      this.response.noReply();
     }, this.timeoutTime);
   }
 

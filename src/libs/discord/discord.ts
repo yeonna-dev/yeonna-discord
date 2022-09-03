@@ -243,9 +243,10 @@ export class Discord
     return this.message.channel.sendTyping();
   }
 
-  reply(text: string)
+  async reply(options: string | MessageOptions | MessagePayload)
   {
-    return this.message.reply(text);
+    const replyMessage = await this.message.reply(options);
+    return new Discord(replyMessage);
   }
 
   private getEmbed(embed: MessageEmbed | Parameters<typeof this.createDiscordEmbed>[0])
@@ -256,10 +257,11 @@ export class Discord
     return embed;
   }
 
-  replyEmbed(embed: Parameters<typeof this.getEmbed>[0])
+  async replyEmbed(embed: Parameters<typeof this.getEmbed>[0])
   {
     embed = this.getEmbed(embed);
-    return this.message.reply({ embeds: [embed] });
+    const replyMessage = await this.message.reply({ embeds: [embed] });
+    return new Discord(replyMessage);
   }
 
   async send(text: string)

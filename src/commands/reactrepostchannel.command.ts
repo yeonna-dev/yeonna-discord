@@ -29,12 +29,12 @@ export const reactrepostchannel: Command =
     {
       const { reactRepost } = await Config.ofGuild(guildId);
       await Config.updateGuild(guildId, { reactRepost: { ...reactRepost, channel: channelId } });
-      response.reactRepostChannelChanged(channelMention);
+      response.channelChanged(channelMention);
     }
     catch(error: any)
     {
       Log.error(error);
-      response.reactRepostChannelCannotSet();
+      response.channelCannotSet();
     }
   },
 };

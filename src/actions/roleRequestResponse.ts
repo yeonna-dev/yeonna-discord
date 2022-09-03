@@ -1,19 +1,21 @@
 import { parseParamsToArray } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
 import { Core, NonPendingRoleRequest } from 'yeonna-core';
 import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestsService';
 
-// TODO: Update responses
 export async function roleRequestResponse(
   discord: Discord,
   params: string,
-  isApproved: Boolean,
+  isApproved: boolean,
 )
 {
+  const response = new RoleRequestsCommandResponse(discord);
+
   const [requestId] = parseParamsToArray(params);
   if(!requestId)
-    return discord.send('No role request ID provided.');
+    return response.noIdProvided();
 
   const requestResponseParams =
   {
@@ -36,14 +38,8 @@ export async function roleRequestResponse(
     if(!(error instanceof NonPendingRoleRequest))
       Log.error(error);
 
-    discord.send(
-      `Cannot ${isApproved ? 'approve' : 'decline'} the role request.`
-      + ' It might not be a pending role request.'
-    );
+    return response.requestResponseFail(isApproved);
   }
-
-  if(!approvedRoleRequest)
-    return;
 
   const { roleName, roleColor, requesterDiscordId } = approvedRoleRequest;
 
@@ -64,23 +60,14 @@ export async function roleRequestResponse(
     catch(error: any)
     {
       Log.error(error);
-      return discord.send(
-        'Cannot create and assign the role.'
-        + ' I might not have the permissions to do so.'
-      );
+      return response.cannotAssignRole();
     }
   }
 
-  const actionString = isApproved ? 'approved' : 'declined';
-  let response = `Your request for ${roleName ? `the "${roleName}"` : 'a'}`
-    + ` role has been **${actionString}**.`;
-  if(isApproved)
-    response += '\nYou now have the role.';
-
   try
   {
-    discord.sendToUser(requesterDiscordId, response);
-    discord.send(`Role request with ID \`${requestId}\` has been **${actionString}**.`);
+    response.requestResponse(requestId, isApproved);
+    response.requestResponseUserDm(requesterDiscordId, roleName, isApproved);
   }
   catch(error)
   {

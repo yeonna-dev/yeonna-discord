@@ -9,11 +9,11 @@ export class ReactRepostCommandResponse extends CommandResponse
     super(discord);
   }
 
-  reactRepostChannelChanged = (channelMention: AnyChannel) => this.discord.replyEmbed({
+  channelChanged = (channelMention: AnyChannel) => this.discord.replyEmbed({
     description: `Set the react reposts approval channel to ${channelMention}`
   });
 
-  reactRepostChannelCannotSet = () => this.discord.replyEmbed({
+  channelCannotSet = () => this.discord.replyEmbed({
     title: 'Could not set the channel for react reposts.',
   });
 }

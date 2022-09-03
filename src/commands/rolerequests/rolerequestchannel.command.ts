@@ -3,9 +3,9 @@ import { getGuildChannelParameter } from 'src/actions/getGuildChannelParameter';
 import { noRolePermissions } from 'src/guards/discordMemberPermissions';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
 import { Config } from 'yeonna-config';
 
-// TODO: Update responses.
 export const rolerequestchannel: Command =
 {
   name: 'rolerequestchannel',
@@ -13,6 +13,8 @@ export const rolerequestchannel: Command =
   guards: [noRolePermissions],
   run: async ({ discord }: { discord: Discord, }) =>
   {
+    const response = new RoleRequestsCommandResponse(discord);
+
     const guildChannelParameter = getGuildChannelParameter(discord, { excludeSameChannel: true });
     if(!guildChannelParameter)
       return;
@@ -20,15 +22,18 @@ export const rolerequestchannel: Command =
     discord.startTyping();
 
     const { guildId, channelId, channelMention } = guildChannelParameter;
+    if(!channelMention)
+      return;
+
     try
     {
       await Config.updateGuild(guildId, { roleRequestsApprovalChannel: channelId });
-      discord.send(`Set the role requests approval channel to ${channelMention}.`);
+      response.channelChanged(channelMention);
     }
     catch(error: any)
     {
       Log.error(error);
-      discord.send('Could not set the channel for role requests.');
+      response.channelCannotSet();
     }
   },
 };
