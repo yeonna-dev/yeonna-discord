@@ -1,7 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { ItemCommandResponse } from 'src/responses/items';
+import { ItemsCommandResponse } from 'src/responses/items';
 import { table } from 'table';
 import { Core } from 'yeonna-core';
 
@@ -11,7 +11,7 @@ export const bag: Command =
   aliases: ['b', 'items'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
-    const response = new ItemCommandResponse(discord);
+    const response = new ItemsCommandResponse(discord);
 
     discord.startTyping();
 
@@ -50,6 +50,7 @@ export const bag: Command =
       ]);
     }
 
+    // TODO: Add in responses?
     const tableData = [
       ['Item', 'Category', 'Amount', 'Cost'],
       ...inventoryTableData,

@@ -1,7 +1,7 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 
-export class StreakCommandResponse extends CommandResponse
+export class StreaksCommandResponse extends CommandResponse
 {
   constructor(discord: Discord)
   {

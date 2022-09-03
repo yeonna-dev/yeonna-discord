@@ -1,7 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { StreakCommandResponse } from 'src/responses/streaks';
+import { StreaksCommandResponse } from 'src/responses/streaks';
 import { Config } from 'yeonna-config';
 
 export const streakhelp: Command =
@@ -10,7 +10,7 @@ export const streakhelp: Command =
   aliases: ['shelp'],
   run: async ({ discord }: { discord: Discord; }) =>
   {
-    const response = new StreakCommandResponse(discord);
+    const response = new StreaksCommandResponse(discord);
 
     const guildId = discord.getGuildId();
     if(!guildId)

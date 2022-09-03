@@ -1,7 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { BitCommandResponse } from 'src/responses/bits';
+import { BitsCommandResponse } from 'src/responses/bits';
 import { Core } from 'yeonna-core';
 
 export const bitsave: Command =
@@ -10,7 +10,7 @@ export const bitsave: Command =
   aliases: ['bs'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
-    const response = new BitCommandResponse(discord);
+    const response = new BitsCommandResponse(discord);
 
     if(!params)
       return response.noContent();

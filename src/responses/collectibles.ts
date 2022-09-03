@@ -1,7 +1,7 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 
-export class CollectibleCommandResponse extends CommandResponse
+export class CollectiblesCommandResponse extends CommandResponse
 {
   constructor(discord: Discord)
   {

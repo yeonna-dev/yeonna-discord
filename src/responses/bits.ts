@@ -1,7 +1,7 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 
-export class BitCommandResponse extends CommandResponse
+export class BitsCommandResponse extends CommandResponse
 {
   constructor(discord: Discord)
   {

@@ -2,7 +2,7 @@ import { parseParamsToArray } from 'comtroller';
 import { GuildMemberRoleManager } from 'discord.js';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { StreakCommandResponse } from 'src/responses/streaks';
+import { StreaksCommandResponse } from 'src/responses/streaks';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
@@ -20,7 +20,7 @@ export async function updateStreak({
   params?: string,
 })
 {
-  const response = new StreakCommandResponse(discord);
+  const response = new StreaksCommandResponse(discord);
 
   const userIdentifier = discord.getAuthorId();
   const discordGuildId = discord.getGuildId();

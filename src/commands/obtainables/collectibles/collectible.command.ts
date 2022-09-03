@@ -3,7 +3,7 @@ import { getUserParameter } from 'src/actions/getUserParameter';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { CollectibleCommandResponse } from 'src/responses/collectibles';
+import { CollectiblesCommandResponse } from 'src/responses/collectibles';
 import { Core, NotEnoughCollectibles } from 'yeonna-core';
 
 const collectibleGetName = 'collectible-get';
@@ -21,7 +21,7 @@ export const collectible: Command =
   aliases: ['c'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
-    const response = new CollectibleCommandResponse(discord);
+    const response = new CollectiblesCommandResponse(discord);
 
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId() as string;

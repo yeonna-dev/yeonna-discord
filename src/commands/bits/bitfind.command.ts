@@ -1,7 +1,7 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { BitCommandResponse } from 'src/responses/bits';
+import { BitsCommandResponse } from 'src/responses/bits';
 import { Core } from 'yeonna-core';
 import { UserBit } from 'yeonna-core/dist/modules/bits/services/UsersBitsService';
 
@@ -11,7 +11,7 @@ export const bitfind: Command =
   aliases: ['bf'],
   run: async ({ discord, params }: { discord: Discord, params: string, }) =>
   {
-    const response = new BitCommandResponse(discord);
+    const response = new BitsCommandResponse(discord);
 
     const [search] = parseParamsToArray(params);
     const userIdentifier = discord.getAuthorId();

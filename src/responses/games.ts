@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 
-export class GameCommandResponse extends CommandResponse
+export class GamesCommandResponse extends CommandResponse
 {
   constructor(discord: Discord)
   {

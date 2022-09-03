@@ -4,7 +4,7 @@ import { noEmotePermissions } from 'src/guards/discordMemberPermissions';
 import { cleanString } from 'src/helpers/cleanString';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { EmoteCommandResponse } from 'src/responses/emotes';
+import { EmotesCommandResponse } from 'src/responses/emotes';
 
 export const emoteadd: Command =
 {
@@ -13,7 +13,7 @@ export const emoteadd: Command =
   guards: [noEmotePermissions],
   run: async ({ discord }: { discord: Discord, }) =>
   {
-    const response = new EmoteCommandResponse(discord);
+    const response = new EmotesCommandResponse(discord);
 
     discord.startTyping();
 

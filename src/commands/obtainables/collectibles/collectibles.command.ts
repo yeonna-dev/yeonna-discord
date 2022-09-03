@@ -1,7 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { CollectibleCommandResponse } from 'src/responses/collectibles';
+import { CollectiblesCommandResponse } from 'src/responses/collectibles';
 import { Core } from 'yeonna-core';
 
 export const collectibles: Command =
@@ -10,7 +10,7 @@ export const collectibles: Command =
   aliases: ['cs'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
-    const response = new CollectibleCommandResponse(discord);
+    const response = new CollectiblesCommandResponse(discord);
 
     if(!discord.getGuildId())
       return response.guildOnly();

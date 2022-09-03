@@ -3,7 +3,7 @@ import { CommandResponse } from 'src/responses/common';
 import { Collection, UserCollection } from 'yeonna-core/dist/modules/items/services/CollectionsService';
 import { Item } from 'yeonna-core/dist/modules/items/services/ItemsService';
 
-export class ItemCommandResponse extends CommandResponse
+export class ItemsCommandResponse extends CommandResponse
 {
   constructor(discord: Discord)
   {

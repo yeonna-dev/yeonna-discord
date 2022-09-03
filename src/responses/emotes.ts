@@ -2,7 +2,7 @@ import { GuildEmoji } from 'discord.js';
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 
-export class EmoteCommandResponse extends CommandResponse
+export class EmotesCommandResponse extends CommandResponse
 {
   constructor(discord: Discord)
   {

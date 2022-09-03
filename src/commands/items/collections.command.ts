@@ -1,7 +1,7 @@
 import { Command } from 'comtroller';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { ItemCommandResponse } from 'src/responses/items';
+import { ItemsCommandResponse } from 'src/responses/items';
 import { Core } from 'yeonna-core';
 
 export const collections: Command =
@@ -10,7 +10,7 @@ export const collections: Command =
   aliases: ['cols'],
   run: async ({ discord }: { discord: Discord, }) =>
   {
-    const response = new ItemCommandResponse(discord);
+    const response = new ItemsCommandResponse(discord);
 
     discord.startTyping();
     try
