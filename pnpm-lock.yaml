@@ -13,6 +13,7 @@ specifiers:
   dotenv: ^16.0.1
   fast-glob: ^3.2.11
   firebase: ^9.8.2
+  husky: ^8.0.1
   node-schedule: ^2.1.0
   nodemon: ^2.0.16
   sharp: ^0.30.6
@@ -51,6 +52,7 @@ devDependencies:
   '@types/sharp': 0.30.2
   '@types/spotify-web-api-node': 5.0.7
   dotenv: 16.0.1
+  husky: 8.0.1
   nodemon: 2.0.16
   ts-node: 10.8.1_yf3perc52s45aq2aecoawphq2m
   tsconfig-paths: 4.0.0
@@ -2648,6 +2650,12 @@ packages:
   /http-parser-js/0.5.6:
     resolution: {integrity: sha512-vDlkRPDJn93swjcjqMSaGSPABbIarsr1TLAui/gLDXzV5VsJNdXNzMYDyNBLQkjWQCJ1uizu8T2oDMhmGt0PRA==}
     dev: false
+
+  /husky/8.0.1:
+    resolution: {integrity: sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
 
   /idb/7.0.1:
     resolution: {integrity: sha512-UUxlE7vGWK5RfB/fDwEGgRf84DY/ieqNha6msMV99UsEMQhJ1RwbCd8AYBj3QMgnE3VZnfQvm4oKVCJTYlqIgg==}
