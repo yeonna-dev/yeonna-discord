@@ -13,7 +13,7 @@ export class StreaksCommandResponse extends CommandResponse
     streaksName = streaksName || 'repeat/s';
     const previousCountString = `${previousCount} ${streaksName}`;
     const currentCountString = `${currentCount} ${streaksName}`;
-    return this.discord.createDiscordEmbed({
+    return this.discord.replyEmbed({
       title: `Updated your streak from ${previousCountString} ➡️ __${currentCountString}__`,
     });
   };
