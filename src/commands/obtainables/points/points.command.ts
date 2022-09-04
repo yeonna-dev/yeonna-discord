@@ -44,7 +44,7 @@ export const points: Command =
     catch(error)
     {
       Log.error(error);
-      discord.send('0');
+      response.show(0);
     }
   },
 };

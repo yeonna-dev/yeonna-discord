@@ -31,7 +31,7 @@ export const streakstats: Command =
     catch(error)
     {
       Log.error(error);
-      return discord.send('Oops. Something went wrong. Please try again.');
+      return response.statsError();
     }
   },
 };

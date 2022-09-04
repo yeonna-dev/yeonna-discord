@@ -1,4 +1,3 @@
-import { Message } from 'discord.js';
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 
@@ -19,7 +18,7 @@ export class GamesCommandResponse extends CommandResponse
   });
 
   wheelSpinResult = (
-    spinningMessage: Message,
+    spinningMessage: Discord,
     winningOption: string,
     isWon: boolean,
     reward: number,

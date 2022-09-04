@@ -8,6 +8,7 @@ export class PointsCommandResponse extends CommandResponse
     super(discord);
   }
 
+  // TODO: Maybe update
   show = (amount: number, userId?: string) => (
     userId
       ? this.discord.replyEmbed({

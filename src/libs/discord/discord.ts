@@ -4,6 +4,7 @@ import
   ColorResolvable,
   FileOptions,
   Message,
+  MessageEditOptions,
   MessageEmbed,
   MessageOptions,
   MessagePayload,
@@ -243,9 +244,9 @@ export class Discord
     return this.message.channel.sendTyping();
   }
 
-  async reply(options: string | MessageOptions | MessagePayload)
+  async reply(content: string | MessageOptions | MessagePayload)
   {
-    const replyMessage = await this.message.reply(options);
+    const replyMessage = await this.message.reply(content);
     return new Discord(replyMessage);
   }
 
@@ -306,9 +307,9 @@ export class Discord
     return user.send(options);
   }
 
-  edit(text: string)
+  edit(content: string | MessageEditOptions | MessagePayload)
   {
-    return this.message.edit(text);
+    return this.message.edit(content);
   }
 
   async createGuildEmoji(mediaUrl: string, name: string)

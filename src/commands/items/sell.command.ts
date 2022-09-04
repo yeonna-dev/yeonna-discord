@@ -73,7 +73,7 @@ export const sell: Command =
 
           const { sellPrice, soldItems } = items;
           if(soldItems.length === 0)
-            return discord.reply('Sold nothing.');
+            return response.soldNothing();
 
           response.soldByParameter(sellParameter, sellPrice);
         }

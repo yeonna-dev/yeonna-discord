@@ -81,10 +81,14 @@ export class StreaksCommandResponse extends CommandResponse
   };
 
   streakUpdateError = () => this.discord.replyEmbed({
-    title: 'An error occurred in updating the streak.'
+    title: 'An error occurred in updating the streak. Please try again.'
   });
 
   roleError = () => this.discord.replyEmbed({
     title: 'The streak was updated, but an error occurred in updating the streak role.',
+  });
+
+  statsError = () => this.discord.replyEmbed({
+    title: 'An error occurred in getting the stats. Please try again.'
   });
 }

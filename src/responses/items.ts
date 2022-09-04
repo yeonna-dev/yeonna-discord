@@ -62,6 +62,10 @@ export class ItemsCommandResponse extends CommandResponse
     title: `Sold all "${sellParameter}" items for **${sellPrice}** points.`,
   });
 
+  soldNothing = () => this.discord.replyEmbed({
+    title: 'Sold nothing...'
+  });
+
   noItems = () => this.discord.replyEmbed({
     title: 'You do not have items.',
   });
