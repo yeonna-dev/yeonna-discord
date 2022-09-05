@@ -14,7 +14,7 @@ export class PointsCommandResponse extends CommandResponse
       ? this.discord.replyEmbed({
         description: `Points of ${this.discord.userMention(userId)}: **${amount}**`
       })
-      : this.discord.replyEmbed({ title: amount.toString() })
+      : this.discord.replyEmbed({ title: `${amount.toString()} points` })
   );
 
   updatedUserPoints = ({

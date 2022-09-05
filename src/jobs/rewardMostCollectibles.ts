@@ -29,6 +29,7 @@ export class RewardMostCollectibles
     });
   }
 
+  // TODO: Update responses
   static async run(client?: Client)
   {
     if(client)
