@@ -6,5 +6,5 @@ export const setpoints: Command =
 {
   name: 'setpoints',
   guards: [isDeveloperOnly],
-  run: ({ discord, params }) => updatePoints({ discord, params }),
+  run: ({ discord, params, config }) => updatePoints({ discord, params, config }),
 };

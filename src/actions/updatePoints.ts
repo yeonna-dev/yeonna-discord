@@ -1,23 +1,22 @@
 import { parseParamsToArray } from 'comtroller';
 import { isNumber } from 'src/helpers/isNumber';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { PointsCommandResponse } from 'src/responses/points';
+import { CommandParameters } from 'src/types';
 import { Core } from 'yeonna-core';
 
 export async function updatePoints({
   discord,
   params,
+  config,
   daily,
   add = false,
-}: {
-  discord: Discord,
-  params: string,
+}: CommandParameters & {
   daily?: number,
   add?: boolean;
 })
 {
-  const response = new PointsCommandResponse(discord);
+  const response = new PointsCommandResponse(discord, config);
 
   let user: string;
   let amount: number;

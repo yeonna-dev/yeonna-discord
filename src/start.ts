@@ -6,7 +6,7 @@ import { isDisabled } from 'src/guards/isDisabled';
 import { startJobs } from 'src/jobs';
 import { Discord, DiscordClient } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
-import { Config } from 'yeonna-config';
+import { Config, ConfigType } from 'yeonna-config';
 
 dotenv.config();
 
@@ -33,9 +33,9 @@ dotenv.config();
     const guildId = discord.getGuildId();
     let content = discord.getMessageContent();
 
+    let guildConfig: ConfigType | undefined = undefined;
     if(guildId)
     {
-      let guildConfig;
       try
       {
         guildConfig = await Config.ofGuild(guildId);
@@ -90,7 +90,7 @@ dotenv.config();
 
     try
     {
-      const command = await comtroller.run(content, { message, discord });
+      const command = await comtroller.run(content, { message, discord, config: guildConfig });
       if(command)
         Log.command(message);
     }

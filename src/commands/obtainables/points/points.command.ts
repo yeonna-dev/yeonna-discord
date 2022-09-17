@@ -1,17 +1,17 @@
 import { Command } from 'comtroller';
 import { getUserParameter } from 'src/actions/getUserParameter';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { PointsCommandResponse } from 'src/responses/points';
+import { CommandParameters } from 'src/types';
 import { Core } from 'yeonna-core';
 
 export const points: Command =
 {
   name: 'points',
   aliases: ['p'],
-  run: async ({ discord, params }: { discord: Discord, params: string; }) =>
+  run: async ({ discord, params, config }: CommandParameters) =>
   {
-    const response = new PointsCommandResponse(discord);
+    const response = new PointsCommandResponse(discord, config);
 
     if(!discord.getGuildId())
       return response.guildOnly();

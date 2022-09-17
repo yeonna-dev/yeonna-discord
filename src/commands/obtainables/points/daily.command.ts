@@ -1,8 +1,8 @@
 import { Command } from 'comtroller';
 import { updatePoints } from 'src/actions/updatePoints';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
-import { Discord } from 'src/libs/discord';
 import { PointsCommandResponse } from 'src/responses/points';
+import { CommandParameters } from 'src/types';
 
 const command = 'daily';
 
@@ -13,9 +13,9 @@ export const daily: Command =
 {
   name: command,
   aliases: ['d'],
-  run: async ({ discord, params }: { discord: Discord, params: string; }) =>
+  run: async ({ discord, params, config }: CommandParameters) =>
   {
-    const response = new PointsCommandResponse(discord);
+    const response = new PointsCommandResponse(discord, config);
 
     const authorId = discord.getAuthorId();
     const guildId = discord.getGuildId();
@@ -33,6 +33,6 @@ export const daily: Command =
     );
 
     const daily = Math.floor(Math.random() * (max - min)) + min;
-    await updatePoints({ discord, params, daily });
+    await updatePoints({ discord, params, config, daily });
   },
 };

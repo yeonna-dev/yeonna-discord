@@ -1,17 +1,17 @@
 import { Command, parseParamsToArray } from 'comtroller';
 import { isNumber } from 'src/helpers/isNumber';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { PointsCommandResponse } from 'src/responses/points';
+import { CommandParameters } from 'src/types';
 import { Core, NotEnoughPoints } from 'yeonna-core';
 
 export const give: Command =
 {
   name: 'give',
   aliases: ['pay'],
-  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
+  run: async ({ discord, params, config }: CommandParameters) =>
   {
-    const response = new PointsCommandResponse(discord);
+    const response = new PointsCommandResponse(discord, config);
 
     /* Get the receiver user and amount. */
     let [toUserIdentifier, amountString] = parseParamsToArray(params);

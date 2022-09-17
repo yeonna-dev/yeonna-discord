@@ -1,20 +1,23 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
+import { ConfigType } from 'yeonna-config';
 
 export class PointsCommandResponse extends CommandResponse
 {
-  constructor(discord: Discord)
+  private pointsName: string;
+
+  constructor(discord: Discord, config: ConfigType)
   {
     super(discord);
+    this.pointsName = config.pointsName || 'points';
   }
 
-  // TODO: Maybe update
   show = (amount: number, userId?: string) => (
     userId
       ? this.discord.replyEmbed({
-        description: `Points of ${this.discord.userMention(userId)}: **${amount}**`
+        description: `${this.pointsName} of ${this.discord.userMention(userId)}: **${amount}**`
       })
-      : this.discord.replyEmbed({ title: `${amount.toString()} points` })
+      : this.discord.replyEmbed({ title: `${amount.toString()} ${this.pointsName}` })
   );
 
   updatedUserPoints = ({
@@ -27,21 +30,21 @@ export class PointsCommandResponse extends CommandResponse
     userId?: string,
   }) => this.discord.replyEmbed({
     description: isAdded
-      ? `Added **${amount} points** to ${userId ? this.discord.userMention(userId) : 'that user'}.`
-      : `Set points of ${userId ? this.discord.userMention(userId) : 'that user'} to ${amount}`
+      ? `Added **${amount}** ${this.pointsName} to ${userId ? this.discord.userMention(userId) : 'that user'}.`
+      : `Set ${this.pointsName} of ${userId ? this.discord.userMention(userId) : 'that user'} to **${amount}**`
   });
 
   transferred = (amount: number, userId: string) => this.discord.replyEmbed({
-    description: `Transferred **${amount} points** to`
+    description: `Transferred **${amount} ${this.pointsName}** to`
       + ` ${userId ? this.discord.userMention(userId) : 'that user'}.`
   });
 
   noReceiver = () => this.discord.replyEmbed({
-    title: 'Transfer points to who?',
+    title: `Transfer ${this.pointsName} to who?`,
   });
 
   noUserToUpdate = (toAdd: boolean) => this.discord.replyEmbed({
-    title: toAdd ? 'Add points to who?' : 'Set points of who?',
+    title: toAdd ? `Add ${this.pointsName} to who?` : `Set ${this.pointsName} of who?`,
   });
 
   noAmount = () => this.discord.replyEmbed({
@@ -49,18 +52,18 @@ export class PointsCommandResponse extends CommandResponse
   });
 
   notEnough = () => this.discord.replyEmbed({
-    title: 'Not enough points.',
+    title: `Not enough ${this.pointsName}.`,
   });
 
   cannotGiveSelf = () => this.discord.replyEmbed({
-    title: 'You cannot give points to yourself.',
+    title: `You cannot give ${this.pointsName} to yourself.`,
   });
 
   couldNotAdd = () => this.discord.replyEmbed({
-    title: 'Could not add points.',
+    title: `Could not add ${this.pointsName}.`,
   });
 
   couldNotTransfer = () => this.discord.replyEmbed({
-    title: 'Could not transfer points.'
+    title: `Could not transfer ${this.pointsName}.`
   });
 }
