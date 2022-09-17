@@ -1,8 +1,8 @@
-import { Command } from 'comtroller';
 import { isDeveloperOnly } from 'src/guards/isDeveloper';
 import { RewardMostCollectibles } from 'src/jobs/rewardMostCollectibles';
+import { YeonnaCommand } from 'src/types';
 
-export const collectiblesreset: Command =
+export const collectiblesreset: YeonnaCommand =
 {
   name: 'collectiblesreset',
   aliases: ['creset'],

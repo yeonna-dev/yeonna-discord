@@ -1,12 +1,11 @@
-import { Command } from 'comtroller';
 import { SpotifyTokensHandler } from 'spotify-tokens-handler';
-import { Discord } from 'src/libs/discord';
+import { YeonnaCommand } from 'src/types';
 
-export const spotifylogin: Command =
+export const spotifylogin: YeonnaCommand =
 {
   name: 'spotifylogin',
   aliases: ['s.login'],
-  run: ({ discord }: { discord: Discord, }) =>
+  run: ({ discord }) =>
   {
     discord.startTyping();
 

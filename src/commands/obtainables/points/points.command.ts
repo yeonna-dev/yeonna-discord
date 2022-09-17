@@ -1,15 +1,14 @@
-import { Command } from 'comtroller';
 import { getUserParameter } from 'src/actions/getUserParameter';
 import { Log } from 'src/libs/logger';
 import { PointsCommandResponse } from 'src/responses/points';
-import { CommandParameters } from 'src/types';
+import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
 
-export const points: Command =
+export const points: YeonnaCommand =
 {
   name: 'points',
   aliases: ['p'],
-  run: async ({ discord, params, config }: CommandParameters) =>
+  run: async ({ discord, params, config }) =>
   {
     const response = new PointsCommandResponse(discord, config);
 

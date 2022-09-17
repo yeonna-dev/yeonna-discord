@@ -1,14 +1,14 @@
-import { Command, parseParamsToArray } from 'comtroller';
+import { parseParamsToArray } from 'comtroller';
 import { createSpotifyApi } from 'src/actions/createSpotifyApi';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { Spotify } from 'src/libs/spotify';
+import { YeonnaCommand } from 'src/types';
 
-export const spotifyqueue: Command =
+export const spotifyqueue: YeonnaCommand =
 {
   name: 'spotifyqueue',
   aliases: ['s.q'],
-  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
+  run: async ({ discord, params }) =>
   {
     const [spotifyUrl] = parseParamsToArray(params);
     if(!spotifyUrl)

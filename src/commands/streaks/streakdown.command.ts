@@ -1,7 +1,7 @@
-import { Command } from 'comtroller';
 import { updateStreak } from 'src/actions/updateStreak';
+import { YeonnaCommand } from 'src/types';
 
-export const streakdown: Command =
+export const streakdown: YeonnaCommand =
 {
   name: 'streakdown',
   aliases: ['sdown'],

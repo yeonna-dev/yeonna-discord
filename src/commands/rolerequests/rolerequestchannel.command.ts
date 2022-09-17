@@ -1,17 +1,16 @@
-import { Command } from 'comtroller';
 import { getGuildChannelParameter } from 'src/actions/getGuildChannelParameter';
 import { noRolePermissions } from 'src/guards/discordMemberPermissions';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
+import { YeonnaCommand } from 'src/types';
 import { Config } from 'yeonna-config';
 
-export const rolerequestchannel: Command =
+export const rolerequestchannel: YeonnaCommand =
 {
   name: 'rolerequestchannel',
   aliases: ['rrc'],
   guards: [noRolePermissions],
-  run: async ({ discord }: { discord: Discord, }) =>
+  run: async ({ discord }) =>
   {
     const response = new RoleRequestsCommandResponse(discord);
 

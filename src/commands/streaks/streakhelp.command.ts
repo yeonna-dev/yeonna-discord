@@ -1,14 +1,13 @@
-import { Command } from 'comtroller';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { StreaksCommandResponse } from 'src/responses/streaks';
+import { YeonnaCommand } from 'src/types';
 import { Config } from 'yeonna-config';
 
-export const streakhelp: Command =
+export const streakhelp: YeonnaCommand =
 {
   name: 'streakhelp',
   aliases: ['shelp'],
-  run: async ({ discord }: { discord: Discord; }) =>
+  run: async ({ discord }) =>
   {
     const response = new StreaksCommandResponse(discord);
 

@@ -1,8 +1,8 @@
-import { Command, parseParamsToArray } from 'comtroller';
+import { parseParamsToArray } from 'comtroller';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { GamesCommandResponse } from 'src/responses/games';
+import { YeonnaCommand } from 'src/types';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
@@ -11,11 +11,11 @@ const name = 'wheelspin';
 /* Add 60 second cooldown. */
 cooldowns.add(name, 60000);
 
-export const wheelspin: Command =
+export const wheelspin: YeonnaCommand =
 {
   name,
   aliases: ['ws'],
-  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
+  run: async ({ discord, params }) =>
   {
     const response = new GamesCommandResponse(discord);
 

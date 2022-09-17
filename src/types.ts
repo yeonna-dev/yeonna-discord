@@ -8,3 +8,7 @@ export type CommandParameters = {
   config: ConfigType;
 };
 
+export interface YeonnaCommand extends Command
+{
+  run(parameters: CommandParameters): void;
+}

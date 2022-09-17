@@ -1,14 +1,13 @@
-import { Command } from 'comtroller';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { BitsCommandResponse } from 'src/responses/bits';
+import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
 
-export const bitsave: Command =
+export const bitsave: YeonnaCommand =
 {
   name: 'bitsave',
   aliases: ['bs'],
-  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
+  run: async ({ discord, params }) =>
   {
     const response = new BitsCommandResponse(discord);
 

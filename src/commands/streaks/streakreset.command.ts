@@ -1,7 +1,7 @@
-import { Command } from 'comtroller';
 import { updateStreak } from 'src/actions/updateStreak';
+import { YeonnaCommand } from 'src/types';
 
-export const streakreset: Command =
+export const streakreset: YeonnaCommand =
 {
   name: 'streakreset',
   aliases: ['sreset'],

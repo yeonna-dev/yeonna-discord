@@ -1,17 +1,16 @@
-import { Command } from 'comtroller';
 import { DiscordAPIError } from 'discord.js';
 import { noEmotePermissions } from 'src/guards/discordMemberPermissions';
 import { cleanString } from 'src/helpers/cleanString';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { EmotesCommandResponse } from 'src/responses/emotes';
+import { YeonnaCommand } from 'src/types';
 
-export const emoteadd: Command =
+export const emoteadd: YeonnaCommand =
 {
   name: 'emoteadd',
   aliases: ['ea'],
   guards: [noEmotePermissions],
-  run: async ({ discord }: { discord: Discord, }) =>
+  run: async ({ discord }) =>
   {
     const response = new EmotesCommandResponse(discord);
 

@@ -1,7 +1,7 @@
-import { Command, parseParamsToArray } from 'comtroller';
-import { Discord } from 'src/libs/discord';
+import { parseParamsToArray } from 'comtroller';
 import { Log } from 'src/libs/logger';
 import { ItemsCommandResponse } from 'src/responses/items';
+import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
 
 enum SellTypes
@@ -12,10 +12,10 @@ enum SellTypes
   Dups = 'dups',
 };
 
-export const sell: Command =
+export const sell: YeonnaCommand =
 {
   name: 'sell',
-  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
+  run: async ({ discord, params }) =>
   {
     const response = new ItemsCommandResponse(discord);
 

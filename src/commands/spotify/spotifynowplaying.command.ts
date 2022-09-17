@@ -1,13 +1,12 @@
-import { Command } from 'comtroller';
 import { createSpotifyApi } from 'src/actions/createSpotifyApi';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
+import { YeonnaCommand } from 'src/types';
 
-export const spotifynowplaying: Command =
+export const spotifynowplaying: YeonnaCommand =
 {
   name: 'spotifynowplaying',
   aliases: ['s.np'],
-  run: async ({ discord }: { discord: Discord, }) =>
+  run: async ({ discord }) =>
   {
     discord.startTyping();
 

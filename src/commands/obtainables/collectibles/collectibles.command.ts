@@ -1,14 +1,13 @@
-import { Command } from 'comtroller';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { CollectiblesCommandResponse } from 'src/responses/collectibles';
+import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
 
-export const collectibles: Command =
+export const collectibles: YeonnaCommand =
 {
   name: 'collectibles',
   aliases: ['cs'],
-  run: async ({ discord }: { discord: Discord, }) =>
+  run: async ({ discord }) =>
   {
     const response = new CollectiblesCommandResponse(discord);
 

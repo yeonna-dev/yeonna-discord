@@ -1,16 +1,16 @@
-import { Command } from 'comtroller';
 import colors from 'src/libs/color-names.json';
 import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
+import { YeonnaCommand } from 'src/types';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
-export const rolerequest: Command =
+export const rolerequest: YeonnaCommand =
 {
   name: 'rolerequest',
   aliases: ['rr'],
-  run: async ({ discord }: { discord: Discord, params: string, }) =>
+  run: async ({ discord }) =>
     new RoleRequest(discord),
 };
 

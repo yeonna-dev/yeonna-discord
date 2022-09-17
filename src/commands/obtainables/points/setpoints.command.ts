@@ -1,8 +1,8 @@
-import { Command } from 'comtroller';
 import { updatePoints } from 'src/actions/updatePoints';
 import { isDeveloperOnly } from 'src/guards/isDeveloper';
+import { YeonnaCommand } from 'src/types';
 
-export const setpoints: Command =
+export const setpoints: YeonnaCommand =
 {
   name: 'setpoints',
   guards: [isDeveloperOnly],

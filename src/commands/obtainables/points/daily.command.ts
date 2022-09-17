@@ -1,19 +1,18 @@
-import { Command } from 'comtroller';
 import { updatePoints } from 'src/actions/updatePoints';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
 import { PointsCommandResponse } from 'src/responses/points';
-import { CommandParameters } from 'src/types';
+import { YeonnaCommand } from 'src/types';
 
 const command = 'daily';
 
 /* Add 24-hour cooldown. */
 cooldowns.add(command, 86400000, true);
 
-export const daily: Command =
+export const daily: YeonnaCommand =
 {
   name: command,
   aliases: ['d'],
-  run: async ({ discord, params, config }: CommandParameters) =>
+  run: async ({ discord, params, config }) =>
   {
     const response = new PointsCommandResponse(discord, config);
 

@@ -1,8 +1,7 @@
-import { Command } from 'comtroller';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { ItemsCommandResponse } from 'src/responses/items';
+import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
 
 const name = 'search';
@@ -10,11 +9,11 @@ const name = 'search';
 /* Add 25 second cooldown. */
 cooldowns.add(name, 25000);
 
-export const search: Command =
+export const search: YeonnaCommand =
 {
   name,
   aliases: ['s'],
-  run: async ({ discord }: { discord: Discord, }) =>
+  run: async ({ discord }) =>
   {
     const response = new ItemsCommandResponse(discord);
 

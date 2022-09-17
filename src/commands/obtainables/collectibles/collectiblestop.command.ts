@@ -1,10 +1,9 @@
-import { Command } from 'comtroller';
 import { getTop } from 'src/actions/getTop';
-import { Discord } from 'src/libs/discord';
+import { YeonnaCommand } from 'src/types';
 
-export const collectiblestop: Command =
+export const collectiblestop: YeonnaCommand =
 {
   name: 'collectiblestop',
   aliases: ['ctop'],
-  run: ({ discord }: { discord: Discord, }) => getTop(discord, true),
+  run: ({ discord }) => getTop(discord, true),
 };

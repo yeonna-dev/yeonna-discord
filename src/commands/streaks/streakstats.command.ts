@@ -1,14 +1,13 @@
-import { Command } from 'comtroller';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { StreaksCommandResponse } from 'src/responses/streaks';
+import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
 
-export const streakstats: Command =
+export const streakstats: YeonnaCommand =
 {
   name: 'streakstats',
   aliases: ['sstats'],
-  run: async ({ discord }: { discord: Discord; }) =>
+  run: async ({ discord }) =>
   {
     const response = new StreaksCommandResponse(discord);
 

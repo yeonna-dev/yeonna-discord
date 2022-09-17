@@ -1,15 +1,15 @@
-import { Command, parseParamsToArray } from 'comtroller';
+import { parseParamsToArray } from 'comtroller';
 import { isNumber } from 'src/helpers/isNumber';
 import { Log } from 'src/libs/logger';
 import { PointsCommandResponse } from 'src/responses/points';
-import { CommandParameters } from 'src/types';
+import { YeonnaCommand } from 'src/types';
 import { Core, NotEnoughPoints } from 'yeonna-core';
 
-export const give: Command =
+export const give: YeonnaCommand =
 {
   name: 'give',
   aliases: ['pay'],
-  run: async ({ discord, params, config }: CommandParameters) =>
+  run: async ({ discord, params, config }) =>
   {
     const response = new PointsCommandResponse(discord, config);
 

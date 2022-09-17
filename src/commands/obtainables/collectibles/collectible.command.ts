@@ -1,9 +1,8 @@
-import { Command } from 'comtroller';
 import { getUserParameter } from 'src/actions/getUserParameter';
 import { checkCooldownInGuild, cooldowns } from 'src/cooldowns';
-import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { CollectiblesCommandResponse } from 'src/responses/collectibles';
+import { YeonnaCommand } from 'src/types';
 import { Core, NotEnoughCollectibles } from 'yeonna-core';
 
 const collectibleGetName = 'collectible-get';
@@ -15,11 +14,11 @@ cooldowns.add(collectibleGetName, 3600000, true);
 /* Add 1 minute cooldown for giving collectibles. */
 cooldowns.add(collectibleGiveName, 60000, true);
 
-export const collectible: Command =
+export const collectible: YeonnaCommand =
 {
   name: 'collectible',
   aliases: ['c'],
-  run: async ({ discord, params }: { discord: Discord, params: string, }) =>
+  run: async ({ discord, params }) =>
   {
     const response = new CollectiblesCommandResponse(discord);
 
