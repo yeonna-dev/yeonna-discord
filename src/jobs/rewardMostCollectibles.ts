@@ -1,6 +1,7 @@
 import { Client } from 'discord.js';
 import schedule from 'node-schedule';
 import { Log } from 'src/libs/logger';
+import { GuildConfig } from 'src/types';
 import { Config } from 'yeonna-config';
 import { Core } from 'yeonna-core';
 
@@ -72,7 +73,7 @@ export class RewardMostCollectibles
     for(const i in topCollectibles)
     {
       const discordGuildId = guildsToReward[i];
-      const discordGuild = config[discordGuildId];
+      const discordGuild = config[discordGuildId] as GuildConfig;
       const settings = discordGuild.mostCollectiblesReward;
       if(!settings)
         continue;
@@ -105,10 +106,12 @@ export class RewardMostCollectibles
         winnersText.push(`${Number(i) + 1}. <@${discordId}> = ${reward}`);
       }
 
+      let collectiblesName = discordGuild.collectiblesName;
+      collectiblesName = collectiblesName.charAt(0).toUpperCase() + collectiblesName.substring(1);
       if(winners.length > 0)
         messages.push({
           channelId,
-          message: `**Collectible Leaderboard Winners**\n\n${winnersText.join('\n')}`,
+          message: `**${collectiblesName} Leaderboard Winners**\n\n${winnersText.join('\n')}`,
         });
 
       /* Reset the collectibles of all users in each guild. */

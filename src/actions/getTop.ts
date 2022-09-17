@@ -35,8 +35,11 @@ export async function getTop(discord: Discord, config: GuildConfig, isCollectibl
   let pointsName = config.pointsName || 'points';
   pointsName = pointsName.charAt(0).toUpperCase() + pointsName.substring(1);
 
+  let collectiblesName = config.collectiblesName || 'collectibles';
+  collectiblesName = collectiblesName.charAt(0).toUpperCase() + collectiblesName.substring(1);
+
   response.leaderboard(
-    `Top ${topAmounts.length} ${isCollectibles ? 'Collectibles' : pointsName}`,
+    `Top ${topAmounts.length} ${isCollectibles ? collectiblesName : pointsName}`,
     topAmounts
   );
 }

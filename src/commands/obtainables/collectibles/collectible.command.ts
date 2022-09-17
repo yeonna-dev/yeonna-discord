@@ -18,9 +18,9 @@ export const collectible: YeonnaCommand =
 {
   name: 'collectible',
   aliases: ['c'],
-  run: async ({ discord, params }) =>
+  run: async ({ discord, params, config }) =>
   {
-    const response = new CollectiblesCommandResponse(discord);
+    const response = new CollectiblesCommandResponse(discord, config);
 
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId() as string;

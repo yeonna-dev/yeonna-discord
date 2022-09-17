@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { loadCommands } from 'src/commands';
 import { handleReactions } from 'src/events/reactions';
 import { isDisabled } from 'src/guards/isDisabled';
+import { setConfigDefaults } from 'src/helpers/setConfigDefaults';
 import { startJobs } from 'src/jobs';
 import { Discord, DiscordClient } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
@@ -90,7 +91,7 @@ dotenv.config();
 
     try
     {
-      const config = handleConfigDefaults(guildConfig);
+      const config = setConfigDefaults(guildConfig);
       const command = await comtroller.run(content, { message, discord, config });
       if(command)
         Log.command(message);
@@ -110,12 +111,3 @@ dotenv.config();
   /* Start the Spotify Tokens Handler server */
   // Spotify.initialize();
 })();
-
-function handleConfigDefaults(config?: ConfigType)
-{
-  const guildConfig = config || {};
-  if(!guildConfig.pointsName)
-    guildConfig.pointsName = 'points';
-
-  return guildConfig;
-}

@@ -7,9 +7,9 @@ export const collectibles: YeonnaCommand =
 {
   name: 'collectibles',
   aliases: ['cs'],
-  run: async ({ discord }) =>
+  run: async ({ discord, config }) =>
   {
-    const response = new CollectiblesCommandResponse(discord);
+    const response = new CollectiblesCommandResponse(discord, config);
 
     if(!discord.getGuildId())
       return response.guildOnly();
