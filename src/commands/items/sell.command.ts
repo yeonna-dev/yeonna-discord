@@ -15,9 +15,9 @@ enum SellTypes
 export const sell: YeonnaCommand =
 {
   name: 'sell',
-  run: async ({ discord, params }) =>
+  run: async ({ discord, params, config }) =>
   {
-    const response = new ItemsCommandResponse(discord);
+    const response = new ItemsCommandResponse(discord, config);
 
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();

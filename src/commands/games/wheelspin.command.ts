@@ -15,9 +15,9 @@ export const wheelspin: YeonnaCommand =
 {
   name,
   aliases: ['ws'],
-  run: async ({ discord, params }) =>
+  run: async ({ discord, params, config }) =>
   {
-    const response = new GamesCommandResponse(discord);
+    const response = new GamesCommandResponse(discord, config);
 
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();

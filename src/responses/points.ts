@@ -1,15 +1,15 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
-import { ConfigType } from 'yeonna-config';
+import { GuildConfig } from 'src/types';
 
 export class PointsCommandResponse extends CommandResponse
 {
   private pointsName: string;
 
-  constructor(discord: Discord, config: ConfigType)
+  constructor(discord: Discord, config: GuildConfig)
   {
     super(discord);
-    this.pointsName = config.pointsName || 'points';
+    this.pointsName = config.pointsName;
   }
 
   show = (amount: number, userId?: string) => (

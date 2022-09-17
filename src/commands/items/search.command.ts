@@ -13,9 +13,9 @@ export const search: YeonnaCommand =
 {
   name,
   aliases: ['s'],
-  run: async ({ discord }) =>
+  run: async ({ discord, config }) =>
   {
-    const response = new ItemsCommandResponse(discord);
+    const response = new ItemsCommandResponse(discord, config);
 
     const userIdentifier = discord.getAuthorId();
     const discordGuildId = discord.getGuildId();

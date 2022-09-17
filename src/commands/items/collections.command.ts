@@ -7,9 +7,9 @@ export const collections: YeonnaCommand =
 {
   name: 'collections',
   aliases: ['cols'],
-  run: async ({ discord }) =>
+  run: async ({ discord, config }) =>
   {
-    const response = new ItemsCommandResponse(discord);
+    const response = new ItemsCommandResponse(discord, config);
 
     discord.startTyping();
     try

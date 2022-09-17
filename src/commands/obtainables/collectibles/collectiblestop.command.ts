@@ -5,5 +5,5 @@ export const collectiblestop: YeonnaCommand =
 {
   name: 'collectiblestop',
   aliases: ['ctop'],
-  run: ({ discord }) => getTop(discord, true),
+  run: ({ discord, config }) => getTop(discord, config, true),
 };

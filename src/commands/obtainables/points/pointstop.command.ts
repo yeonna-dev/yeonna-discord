@@ -5,5 +5,5 @@ export const pointstop: YeonnaCommand =
 {
   name: 'pointstop',
   aliases: ['ptop'],
-  run: ({ discord }) => getTop(discord),
+  run: ({ discord, config }) => getTop(discord, config),
 };

@@ -7,9 +7,9 @@ export const bag: YeonnaCommand =
 {
   name: 'bag',
   aliases: ['b', 'items'],
-  run: async ({ discord }) =>
+  run: async ({ discord, config }) =>
   {
-    const response = new ItemsCommandResponse(discord);
+    const response = new ItemsCommandResponse(discord, config);
 
     discord.startTyping();
 

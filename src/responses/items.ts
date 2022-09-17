@@ -1,5 +1,6 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
+import { GuildConfig } from 'src/types';
 import { table } from 'table';
 import { Collection, UserCollection } from 'yeonna-core/dist/modules/items/services/CollectionsService';
 import { InventoryItem } from 'yeonna-core/dist/modules/items/services/InventoriesService';
@@ -7,9 +8,12 @@ import { Item } from 'yeonna-core/dist/modules/items/services/ItemsService';
 
 export class ItemsCommandResponse extends CommandResponse
 {
-  constructor(discord: Discord)
+  private pointsName: string;
+
+  constructor(discord: Discord, config: GuildConfig)
   {
     super(discord);
+    this.pointsName = config.pointsName;
   }
 
   foundItem = (item: Item) => this.discord.replyEmbed({
@@ -31,7 +35,7 @@ export class ItemsCommandResponse extends CommandResponse
 
     return this.discord.replyEmbed({
       title: 'Congratulations!',
-      description: `${response}\nYou earn a bonus of __**${totalBonus} points**__!`,
+      description: `${response}\nYou earn a bonus of __**${totalBonus} ${this.pointsName}**__!`,
     });
   };
 
@@ -119,15 +123,15 @@ export class ItemsCommandResponse extends CommandResponse
   };
 
   soldAll = (sellPrice: number) => this.discord.replyEmbed({
-    title: `Sold all items for **${sellPrice}** points.`,
+    title: `Sold all items for **${sellPrice}** ${this.pointsName}.`,
   });
 
   soldDuplicates = (sellPrice: number) => this.discord.replyEmbed({
-    title: `Sold all excess duplicate items for **${sellPrice}** points.`,
+    title: `Sold all excess duplicate items for **${sellPrice}** ${this.pointsName}.`,
   });
 
   soldByParameter = (sellParameter: string, sellPrice: number) => this.discord.replyEmbed({
-    title: `Sold all "${sellParameter}" items for **${sellPrice}** points.`,
+    title: `Sold all "${sellParameter}" items for **${sellPrice}** ${this.pointsName}.`,
   });
 
   soldNothing = () => this.discord.replyEmbed({

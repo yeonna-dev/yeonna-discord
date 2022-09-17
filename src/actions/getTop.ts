@@ -1,8 +1,9 @@
 import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
+import { GuildConfig } from 'src/types';
 import { Core } from 'yeonna-core';
 
-export async function getTop(discord: Discord, isCollectibles?: boolean)
+export async function getTop(discord: Discord, config: GuildConfig, isCollectibles?: boolean)
 {
   const response = new CommandResponse(discord);
 
@@ -31,8 +32,11 @@ export async function getTop(discord: Discord, isCollectibles?: boolean)
     });
   }
 
+  let pointsName = config.pointsName || 'points';
+  pointsName = pointsName.charAt(0).toUpperCase() + pointsName.substring(1);
+
   response.leaderboard(
-    `Top ${topAmounts.length} ${isCollectibles ? 'Collectibles' : 'Points'}`,
+    `Top ${topAmounts.length} ${isCollectibles ? 'Collectibles' : pointsName}`,
     topAmounts
   );
 }

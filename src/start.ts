@@ -90,7 +90,8 @@ dotenv.config();
 
     try
     {
-      const command = await comtroller.run(content, { message, discord, config: guildConfig });
+      const config = handleConfigDefaults(guildConfig);
+      const command = await comtroller.run(content, { message, discord, config });
       if(command)
         Log.command(message);
     }
@@ -109,3 +110,12 @@ dotenv.config();
   /* Start the Spotify Tokens Handler server */
   // Spotify.initialize();
 })();
+
+function handleConfigDefaults(config?: ConfigType)
+{
+  const guildConfig = config || {};
+  if(!guildConfig.pointsName)
+    guildConfig.pointsName = 'points';
+
+  return guildConfig;
+}
