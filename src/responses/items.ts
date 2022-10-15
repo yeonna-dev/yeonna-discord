@@ -17,7 +17,11 @@ export class ItemsCommandResponse extends CommandResponse
   }
 
   foundItem = (item: Item) => this.discord.replyEmbed({
-    title: `Found **${item.name}**!`,
+    title: '🔎 You found...',
+    description: `
+      **${item.name}**! ${item?.emote}
+    `,
+    thumbnail: item.image,
   });
 
   foundNothing = () => this.discord.replyEmbed({

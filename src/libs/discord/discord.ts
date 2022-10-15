@@ -487,6 +487,7 @@ export class Discord
     footer,
     image,
     fields,
+    thumbnail,
   }: {
     title?: string;
     description?: string;
@@ -507,6 +508,7 @@ export class Discord
       value: string;
       inline?: boolean;
     }[];
+    thumbnail?: string,
   }): MessageEmbed
   {
     const embed = new MessageEmbed();
@@ -534,6 +536,9 @@ export class Discord
 
     if(image)
       embed.setImage(image);
+
+    if(thumbnail)
+      embed.setThumbnail(thumbnail);
 
     if(fields)
     {
