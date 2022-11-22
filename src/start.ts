@@ -75,15 +75,18 @@ dotenv.config();
       {
         for(const command in guildCommandAliases)
         {
-          const contentWithoutPrefix = content.substring((guildPrefix || prefix).length);
-          const [commandString] = contentWithoutPrefix.split(' ');
-          const alias = guildCommandAliases[command]
-            .find((alias: string) => commandString.toLowerCase() === alias);
-
-          if(alias)
+          if(Array.isArray(guildCommandAliases[command]))
           {
-            content = content.replace(commandString, command);
-            break;
+            const contentWithoutPrefix = content.substring((guildPrefix || prefix).length);
+            const [commandString] = contentWithoutPrefix.split(' ');
+            const alias = guildCommandAliases[command]
+              .find((alias: string) => commandString.toLowerCase() === alias);
+
+            if(alias)
+            {
+              content = content.replace(commandString, command);
+              break;
+            }
           }
         }
       }
