@@ -30,6 +30,13 @@ export const bag: YeonnaCommand =
     if(!items || !items.length)
       return response.noItems();
 
-    response.items(items);
+    try
+    {
+      await response.items(items);
+    }
+    catch(error)
+    {
+      Log.error(error);
+    }
   },
 };
