@@ -101,6 +101,35 @@ export class ItemsCommandResponse extends CommandResponse
       ),
     });
 
+    /* Split the table by 20 lines each if the number of lines is less than 20. */
+    const tableLines = itemsTable.split('\n');
+    const splitIntoLinesCount = 15;
+    if(tableLines.length > splitIntoLinesCount)
+    {
+      const replyPromises = [];
+      let messageChunk: string[] = [
+        '**Current Items**\n'
+        + '```ml\n'
+      ];
+
+      for(let i = 0; i < tableLines.length; i++)
+      {
+        messageChunk.push(tableLines[i]);
+
+        if(i % splitIntoLinesCount === 0 || i === tableLines.length - 1)
+        {
+          messageChunk.push('\n```');
+
+          const replyPromise = this.discord.reply(messageChunk.join('\n'));
+          replyPromises.push(replyPromise);
+
+          messageChunk = ['```ml\n'];
+        }
+      }
+
+      return Promise.all(replyPromises);
+    }
+
     return this.discord.reply(
       '**Current Items**'
       + '\n```ml\n'
