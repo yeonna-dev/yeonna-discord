@@ -14,7 +14,7 @@ export const rolerequestchannel: YeonnaCommand =
   {
     const response = new RoleRequestsCommandResponse(discord);
 
-    const guildChannelParameter = getGuildChannelParameter(discord, { excludeSameChannel: true });
+    const guildChannelParameter = getGuildChannelParameter(discord);
     if(!guildChannelParameter)
       return;
 
