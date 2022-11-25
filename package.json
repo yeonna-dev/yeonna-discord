@@ -19,7 +19,6 @@
     "comtroller": "github:esfox/comtroller",
     "discord.js": "^13.7.0",
     "fast-glob": "^3.2.11",
-    "firebase": "^9.8.2",
     "node-schedule": "^2.1.0",
     "sharp": "^0.30.6",
     "spotify-tokens-handler": "github:esfox/spotify-tokens-handler",
