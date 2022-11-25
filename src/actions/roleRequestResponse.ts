@@ -5,6 +5,12 @@ import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
 import { Core, NonPendingRoleRequest } from 'yeonna-core';
 import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestsService';
 
+enum Direction
+{
+  Above = 'above',
+  Below = 'below',
+}
+
 export async function roleRequestResponse(
   discord: Discord,
   params: string,
@@ -13,7 +19,13 @@ export async function roleRequestResponse(
 {
   const response = new RoleRequestsCommandResponse(discord);
 
-  const [requestId] = parseParamsToArray(params);
+  /*
+    requestId - ID of the role request
+    direction - could be `above` or `below`
+    relativeRoleId - ID of the role where the new role will be placed relative to,
+      depending on the given `direction`
+   */
+  const [requestId, direction, relativeRoleId] = parseParamsToArray(params);
   if(!requestId)
     return response.noIdProvided();
 
@@ -43,34 +55,79 @@ export async function roleRequestResponse(
 
   const { roleName, roleColor, requesterDiscordId } = approvedRoleRequest;
 
-  if(isApproved)
+  const respond = () =>
   {
     try
     {
-      const createdRoleId = await discord.createRole({
-        name: roleName,
-        color: roleColor,
-      });
-
-      if(!createdRoleId)
-        return;
-
-      await discord.assignRole(requesterDiscordId, createdRoleId);
+      response.requestResponse(requestId, isApproved);
+      response.requestResponseUserDm(requesterDiscordId, roleName, isApproved);
     }
-    catch(error: any)
+    catch(error)
     {
       Log.error(error);
-      return response.cannotAssignRole();
     }
-  }
+  };
 
+  if(!isApproved)
+    return respond();
+
+  /* Create the role */
+  let createdRoleId;
   try
   {
-    response.requestResponse(requestId, isApproved);
-    response.requestResponseUserDm(requesterDiscordId, roleName, isApproved);
+    createdRoleId = await discord.createRole({
+      name: roleName,
+      color: roleColor,
+    });
+
   }
   catch(error)
   {
     Log.error(error);
   }
+
+  if(!createdRoleId)
+    return response.cannotCreateRole();
+
+  /* If a valid direction is given, set the position of the created role
+    in the direction relative to the given `relativeRoleId`.
+    Only `above` and `below` are the valid directions. */
+  const hasValidDirection = Object.values(Direction).includes(direction as Direction);
+  if(hasValidDirection && !!relativeRoleId)
+  {
+    try
+    {
+      /* Get the position of the relative role. */
+      const relativeRole = await discord.getGuildRole(relativeRoleId);
+      if(!relativeRole)
+        return;
+
+      const relativeRolePosition = relativeRole.position;
+      let newRolePosition = 0;
+      if(direction === Direction.Above)
+        newRolePosition = relativeRolePosition;
+      else
+        newRolePosition = relativeRolePosition - 1;
+
+      await discord.moveRole(createdRoleId, newRolePosition);
+    }
+    catch(error)
+    {
+      Log.error(error);
+      response.cannotRelativeMoveRole();
+    }
+  }
+
+  /* Assign the role to the user that requested it */
+  try
+  {
+    await discord.assignRole(requesterDiscordId, createdRoleId);
+  }
+  catch(error: any)
+  {
+    Log.error(error);
+    return response.cannotAssignRole();
+  }
+
+  respond();
 }

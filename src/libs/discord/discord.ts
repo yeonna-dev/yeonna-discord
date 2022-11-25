@@ -336,7 +336,25 @@ export class Discord
     return role.id;
   }
 
-  async getRoles(memberId: string, asCollection?: boolean)
+  async moveRole(roleId: string, position: number)
+  {
+    const guild = this.message.guild;
+    if(!guild)
+      return;
+
+    return guild.roles.setPosition(roleId, position);
+  }
+
+  async getGuildRole(roleId: string)
+  {
+    const guild = this.message.guild;
+    if(!guild)
+      return;
+
+    return guild.roles.fetch(roleId);
+  }
+
+  async getMemberRoles(memberId: string, asCollection?: boolean)
   {
     const member = await this.fetchGuildMember(memberId);
     if(!member)

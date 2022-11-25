@@ -31,13 +31,18 @@ export class RoleRequestsCommandResponse extends CommandResponse
   }) =>
   {
     const { name, color, requestId, requesterMention, botPrefix } = role;
+    const approveCommand = `${botPrefix}rra ${requestId}`;
     const requestEmbed = this.discord.createDiscordEmbed({
       color: (color || 'DEFAULT'),
       title: '✋ Role Request',
       description: `Name: **${name || '(No name specified)'}**`
         + `\nColor: **${color || '(No color specified)'}**`
         + `\nRequested By: __${requesterMention}__`
-        + `\n\nTo approve, copy this: \n\`\`\`${botPrefix}rra ${requestId}\`\`\``
+        + `\n\nTo approve, copy this: \n\`\`\`${approveCommand}\`\`\``
+        + '\n`above` or `below` followed by a **role ID** can be added to the approve command'
+        + ' in order to set the position of the requested role relative to the role'
+        + ' with the given role ID.'
+        + `\nFor example: \`${approveCommand} above 587630489607733249\``
         + `\n\nTo decline, copy this: \n\`\`\`${botPrefix}rrd ${requestId}\`\`\``,
       footer: { text: `ID: ${requestId}` },
       timestamp: new Date()
@@ -94,6 +99,15 @@ export class RoleRequestsCommandResponse extends CommandResponse
 
   cannotCreateRequest = () => this.discord.replyEmbed({
     title: 'Cannot create a role request. Please try again.',
+  });
+
+  cannotCreateRole = () => this.discord.replyEmbed({
+    title: 'Cannot create the requested role. I might not have permissions.',
+  });
+
+  cannotRelativeMoveRole = () => this.discord.replyEmbed({
+    title: 'Cannot move the created role relative to the given relative role.',
+    description: 'I might not have permissions to move roles above that relative role.',
   });
 
   cannotAssignRole = () => this.discord.replyEmbed({

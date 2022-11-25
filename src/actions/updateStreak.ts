@@ -105,7 +105,7 @@ export async function updateStreak({
   const previousRoleId = streaksRoles[Number(previousRoleKey)];
   try
   {
-    const roles = await discord.getRoles(userIdentifier, true);
+    const roles = await discord.getMemberRoles(userIdentifier, true);
     if(!roles)
       return;
 
