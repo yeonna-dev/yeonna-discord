@@ -22,23 +22,31 @@ export class RoleRequestsCommandResponse extends CommandResponse
       + '\n(Please provide a valid __color hex__ code, e.g. #4caf50.)'
   });
 
+  requestNotesPrompt = () => this.discord.replyEmbed({
+    title: 'Any notes you would like to add to the request?',
+    description: '\nPlease __**reply**__ it to this message.'
+      + "\nReact with ❌ if you don't have any notes to add.",
+  });
+
   requestPost = (requestChannelId: string, role: {
     name?: string;
     color?: string,
+    notes?: string,
     requestId: string,
     requesterMention: string,
     botPrefix: string,
   }) =>
   {
-    const { name, color, requestId, requesterMention, botPrefix } = role;
+    const { name, color, notes, requestId, requesterMention, botPrefix } = role;
     const approveCommand = `${botPrefix}rra ${requestId}`;
     const requestEmbed = this.discord.createDiscordEmbed({
       color: (color || 'DEFAULT'),
       title: '✋ Role Request',
-      description: `Name: **${name || '(No name specified)'}**`
+      description: `Requested By: __${requesterMention}__`
+        + `\nName: **${name || '(No name specified)'}**`
         + `\nColor: **${color || '(No color specified)'}**`
-        + `\nRequested By: __${requesterMention}__`
-        + `\n\nTo approve, copy this: \n\`\`\`${approveCommand}\`\`\``
+        + (notes ? `\nNotes:\n\`\`\`\n${notes}\n\`\`\`` : '')
+        + `\nTo approve, copy this: \n\`\`\`${approveCommand}\`\`\``
         + '\n`above` or `below` followed by a **role ID** can be added to the approve command'
         + ' in order to set the position of the requested role relative to the role'
         + ' with the given role ID.'
@@ -91,6 +99,11 @@ export class RoleRequestsCommandResponse extends CommandResponse
 
   noNameOrColor = () => this.discord.replyEmbed({
     title: 'Please do the command again and provide either a name or color.'
+  });
+
+  notesTooLong = (maxNotesLength: number) => this.discord.replyEmbed({
+    title: `Notes are too long.`,
+    description: `Maximum of ${maxNotesLength} characters is allowed.`
   });
 
   noReply = () => this.discord.replyEmbed({

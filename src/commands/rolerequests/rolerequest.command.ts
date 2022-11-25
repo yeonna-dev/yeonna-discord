@@ -22,11 +22,13 @@ class RoleRequest
   private roleRequestsChannel?: string;
   private name?: string;
   private color?: string;
+  private notes?: string;
   private requestId?: string;
   private timeout?: NodeJS.Timeout;
   private stopped?: boolean;
 
   private timeoutTime = 60000;
+  private maxNotesLength = 300;
 
   constructor(discord: Discord)
   {
@@ -69,10 +71,20 @@ class RoleRequest
     if(color)
       this.color = color;
 
-    this.stopTimer();
+    this.restartTimer();
 
     if(!this.name && !this.color)
       return this.response.noNameOrColor();
+
+    const notes = await this.promptNotes();
+    if(notes)
+    {
+      this.notes = notes;
+      if(notes.length > this.maxNotesLength)
+        return this.response.notesTooLong(this.maxNotesLength);
+    }
+
+    this.stopTimer();
 
     this.discord.startTyping();
 
@@ -105,8 +117,6 @@ class RoleRequest
     {
       this.waitReply(colorPrompt.getMessageId(), discord =>
       {
-        this.stopTimer();
-
         let content = discord
           .getMessageContent()
           .toLowerCase()
@@ -125,6 +135,23 @@ class RoleRequest
       });
 
       this.waitCancel(colorPrompt, () => resolve(undefined));
+    });
+  }
+
+  async promptNotes()
+  {
+    const notesPrompt = await this.response.requestNotesPrompt();
+
+    return new Promise<string | undefined>(resolve =>
+    {
+      this.waitReply(notesPrompt.getMessageId(), discord =>
+      {
+        let notes = discord.getMessageContent().replace(/\s\s+/g, ' ');
+        if(notes)
+          resolve(notes);
+      });
+
+      this.waitCancel(notesPrompt, () => resolve(undefined));
     });
   }
 
@@ -157,6 +184,7 @@ class RoleRequest
       const roleRequest = await Core.Discord.createRoleRequest({
         roleName: this.name,
         roleColor: this.color,
+        requestNotes: this.notes,
         requesterDiscordId: this.discord.getAuthorId(),
         discordGuildId: this.guildId,
       });
@@ -201,6 +229,7 @@ class RoleRequest
     this.response.requestPost(this.roleRequestsChannel, {
       name: this.name,
       color: this.color,
+      notes: this.notes,
       requestId: this.requestId,
       requesterMention: this.discord.getAuthor().toString(),
       botPrefix
