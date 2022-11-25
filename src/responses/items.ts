@@ -43,8 +43,12 @@ export class ItemsCommandResponse extends CommandResponse
     });
   };
 
-  items = (items: InventoryItem[]) =>
+  items = (items: InventoryItem[], ownerDiscordId: string) =>
   {
+    this.discord.replyEmbed({
+      title: 'Please check my private message',
+    });
+
     const tableHeader = ['Item', 'Category', 'Amount', 'Cost'];
     const tableBody = [];
     let totalAmount = 0;
@@ -101,7 +105,7 @@ export class ItemsCommandResponse extends CommandResponse
       ),
     });
 
-    /* Split the table by 20 lines each if the number of lines is less than 20. */
+    /* Split the table by 10 lines each if the number of lines is less than 10. */
     const tableLines = itemsTable.split('\n');
     const splitIntoLinesCount = 15;
     if(tableLines.length > splitIntoLinesCount)
@@ -116,11 +120,11 @@ export class ItemsCommandResponse extends CommandResponse
       {
         messageChunk.push(tableLines[i]);
 
-        if(i % splitIntoLinesCount === 0 || i === tableLines.length - 1)
+        if((i + 1) % splitIntoLinesCount === 0 || i === tableLines.length - 1)
         {
           messageChunk.push('\n```');
 
-          const replyPromise = this.discord.reply(messageChunk.join('\n'));
+          const replyPromise = this.discord.sendToUser(ownerDiscordId, messageChunk.join('\n'));
           replyPromises.push(replyPromise);
 
           messageChunk = ['```ml\n'];
@@ -130,7 +134,7 @@ export class ItemsCommandResponse extends CommandResponse
       return Promise.all(replyPromises);
     }
 
-    return this.discord.reply(
+    return this.discord.sendToUser(ownerDiscordId,
       '**Current Items**'
       + '\n```ml\n'
       + itemsTable

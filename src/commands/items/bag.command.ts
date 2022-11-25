@@ -13,6 +13,7 @@ export const bag: YeonnaCommand =
 
     discord.startTyping();
 
+    const userIdentifier = discord.getAuthorId();
     let items;
     try
     {
@@ -32,7 +33,7 @@ export const bag: YeonnaCommand =
 
     try
     {
-      await response.items(items);
+      await response.items(items, userIdentifier);
     }
     catch(error)
     {
