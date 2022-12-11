@@ -559,10 +559,7 @@ export class Discord
       embed.setThumbnail(thumbnail);
 
     if(fields)
-    {
-      for(const { name, value, inline } of fields)
-        embed.addField(name, value, inline);
-    }
+      embed.addFields(fields);
 
     return embed;
   }

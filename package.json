@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "comtroller": "github:esfox/comtroller",
+    "dayjs": "^1.11.7",
     "discord.js": "^13.7.0",
     "fast-glob": "^3.2.11",
     "node-schedule": "^2.1.0",
