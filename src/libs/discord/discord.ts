@@ -385,26 +385,43 @@ export class Discord
   /* User-involved interactions */
   /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-  async sendPaginated({
+  async sendPaginated<T = unknown>({
     createPage,
-    involvedUserIDs,
+    data,
+    itemsPerPage,
+    pageControlUserIds,
   }: {
-    createPage(page: number): string,
-    involvedUserIDs: string[],
+    createPage({ pageItems, pageNumber }: { pageItems: T[], pageNumber: number; }): string,
+    data: T[],
+    itemsPerPage: number,
+    pageControlUserIds: string[],
   }): Promise<void>
   {
     let pageNumber = 0;
-    const sentMessage = await this.message.channel.send(createPage(pageNumber));
+    const pages = data.reduce((batches, element, i) =>
+    {
+      i = Math.floor(i / itemsPerPage);
+      if(!batches[i])
+        batches[i] = [];
+
+      batches[i].push(element);
+      return batches;
+    }, [] as T[][]);
+
+    let pageItems = pages[pageNumber];
+
+    const sentMessage = await this.message.channel.send(createPage({ pageItems, pageNumber }));
     const previousIcon = '⬅️';
     const nextIcon = '➡️';
     await sentMessage.react(previousIcon);
     await sentMessage.react(nextIcon);
 
     const filter = ({ emoji }: MessageReaction, user: User) =>
-      [previousIcon, nextIcon].includes(emoji.name || '') && involvedUserIDs.includes(user.id);
+      [previousIcon, nextIcon].includes(emoji.name || '') && pageControlUserIds.includes(user.id);
 
     const reactCollector = sentMessage
       .createReactionCollector({ filter, time: 50000, dispose: true });
+
 
     const onReact = async ({ emoji }: MessageReaction) =>
     {
@@ -413,7 +430,8 @@ export class Discord
         return;
 
       pageNumber = newPage;
-      await sentMessage.edit(createPage(pageNumber));
+      pageItems = pages[pageNumber];
+      await sentMessage.edit(createPage({ pageItems, pageNumber }));
     };
 
     reactCollector.on('collect', onReact);

@@ -18,10 +18,10 @@ export const bitfind: YeonnaCommand =
 
     discord.startTyping();
 
-    let result;
+    let bits;
     try
     {
-      result = await Core.Bits.findUserBits({ userIdentifier, search });
+      bits = await Core.Bits.findUserBits({ userIdentifier, search });
     }
     catch(error)
     {
@@ -29,34 +29,28 @@ export const bitfind: YeonnaCommand =
       response.cannotFind();
     }
 
-    if(!result || result.length === 0)
+    if(!bits || bits.length === 0)
       return response.noneFound();
 
     const bitsPerPage = 5;
-    const pages = result.reduce((batches, element, i) =>
+    const createPage = ({ pageItems, pageNumber }: { pageItems: UserBit[], pageNumber: number; }) =>
     {
-      i = Math.floor(i / bitsPerPage);
-      if(!batches[i])
-        batches[i] = [];
-
-      batches[i].push(element);
-      return batches;
-    }, [] as UserBit[][]);
-
-    const createPage = (pageNumber: number) =>
-    {
-      const pageData = pages[pageNumber];
-      const pageContent = pageData
+      const pageContent = pageItems
         .map(({ bit }, i) => `${(pageNumber * bitsPerPage) + i + 1}. ${bit.content}`)
         .join('\n');
 
       return `Found bits\n\n${pageContent}`;
     };
 
-    if(result.length <= bitsPerPage)
-      return discord.send(createPage(0));
+    if(bits.length <= bitsPerPage)
+      return discord.send(createPage({ pageItems: bits, pageNumber: 0 }));
 
     // TODO: Update responses.
-    discord.sendPaginated({ createPage, involvedUserIDs: [userIdentifier] });
+    discord.sendPaginated({
+      createPage,
+      data: bits,
+      itemsPerPage: bitsPerPage,
+      pageControlUserIds: [userIdentifier],
+    });
   },
 };
