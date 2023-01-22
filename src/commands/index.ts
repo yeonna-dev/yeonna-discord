@@ -11,12 +11,12 @@ export async function loadCommands()
     ignore: [`**/index.{js,ts}`],
   });
 
-  const importPromises = [];
+  const commands = [];
   for(const { path, name } of commandFiles)
-    importPromises.push(
-      import(path)
-        .then(imported => imported[name.substring(0, name.indexOf('.'))])
-    );
+  {
+    const imported = await import(path);
+    commands.push(imported[name.substring(0, name.indexOf('.'))]);
+  }
 
-  return Promise.all(importPromises);
+  return commands;
 };
