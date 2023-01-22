@@ -3,7 +3,7 @@ import { Log } from 'src/libs/logger';
 import { BitsCommandResponse } from 'src/responses/bits';
 import { YeonnaCommand } from 'src/types';
 import { Core } from 'yeonna-core';
-import { UserBit } from 'yeonna-core/dist/modules/bits/services/UsersBitsService';
+import { UserBit } from 'yeonna-core/dist/modules/bits/services/UserBitService';
 
 export const bitfind: YeonnaCommand =
 {

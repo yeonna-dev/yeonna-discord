@@ -3,7 +3,7 @@ import { Discord } from 'src/libs/discord';
 import { Log } from 'src/libs/logger';
 import { RoleRequestsCommandResponse } from 'src/responses/roleRequests';
 import { Core, NonPendingRoleRequest } from 'yeonna-core';
-import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestsService';
+import { RoleRequest } from 'yeonna-core/dist/modules/discord/services/RoleRequestService';
 
 enum Direction
 {

@@ -2,9 +2,9 @@ import { Discord } from 'src/libs/discord';
 import { CommandResponse } from 'src/responses/common';
 import { GuildConfig } from 'src/types';
 import { table } from 'table';
-import { Collection, UserCollection } from 'yeonna-core/dist/modules/items/services/CollectionsService';
-import { InventoryItem } from 'yeonna-core/dist/modules/items/services/InventoriesService';
-import { Item } from 'yeonna-core/dist/modules/items/services/ItemsService';
+import { Collection, UserCollection } from 'yeonna-core/dist/modules/items/services/CollectionService';
+import { InventoryItem } from 'yeonna-core/dist/modules/items/services/InventoryService';
+import { Item } from 'yeonna-core/dist/modules/items/services/ItemService';
 
 export class ItemsCommandResponse extends CommandResponse
 {
