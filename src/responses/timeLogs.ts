@@ -56,6 +56,10 @@ export class TimeLogsCommandResponse extends CommandResponse
     });
   };
 
+  noTimeLogs = () => this.discord.replyEmbed({
+    title: 'No time logs',
+  });
+
   cannotAddTimeLog = () => this.discord.replyEmbed({
     title: 'An error occurred in adding the time log. Please try again.'
   });

@@ -408,7 +408,7 @@ export class Discord
       return batches;
     }, [] as T[][]);
 
-    let pageItems = pages[pageNumber];
+    let pageItems = pages[pageNumber] || [];
 
     const sentMessage = await this.message.channel.send(createPage({ pageItems, pageNumber }));
     const previousIcon = '⬅️';
