@@ -27,7 +27,6 @@
     "table": "^6.8.0",
     "winston": "^3.7.2",
     "winston-daily-rotate-file": "^4.7.1",
-    "yeonna-config": "github:yeonna-dev/yeonna-config",
     "yeonna-core": "github:yeonna-dev/yeonna-core"
   },
   "devDependencies": {
